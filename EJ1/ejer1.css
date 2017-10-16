@@ -1,0 +1,99 @@
+body {
+	
+	margin-left: 20px;
+	margin-right: 20px;
+	
+} 
+
+.cabecera {
+	margin-top: 50px;
+	margin-bottom: 50px;
+	text-align: center;
+	border: 5px solid blue;
+	border-radius: 30%;
+	color: brown;
+	background-color: beige;
+	padding-top: 30px;
+	padding-bottom: 30px;
+	padding-left: 50px;
+}
+
+.subtitulo {
+	
+	
+	
+	font-size: 20px;
+	text-align:center;
+	
+	
+	
+}
+
+h2 {
+	font-family: Arial;
+	text-decoration: underline;
+	color: lightgreen;
+}
+
+p {
+	text-align: justify;
+}
+
+.programa{
+	
+	border: 1px solid black;
+	
+}
+
+.programaSesion{
+	
+	border: 1px solid black;
+	background-color:aquamarine;
+	
+}
+
+.programaCoffee{
+	
+	border: 1px solid black;
+	background-color:beige;
+	
+}
+
+.programaComida{
+	
+	border: 1px solid black;
+	background-color:bisque;
+	
+}
+
+.programaCharla{
+	
+	border: 1px solid black;
+	background-color:lightgreen;
+	
+}
+
+.programaAsamblea{
+	
+	border: 1px solid black;
+	background-color:limegreen;
+	
+}
+
+.programaClausura{
+	
+	border: 1px solid black;
+	background-color:burlywood;
+	
+}
+
+.programaVisita{
+	
+	border: 1px solid black;
+	background-color:peachpuff;
+	
+}
+
+
+
+	
