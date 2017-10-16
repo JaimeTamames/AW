@@ -5,7 +5,7 @@ body {
 	margin: 0px;
 }
 .cabeceraBox {
-	background: linear-gradient(to bottom, lawngreen, green);
+	background: linear-gradient(to bottom, #0C8D31, #0C5621);
 	display: flex;
 	flex-direction: row;
 	align-items: center;
@@ -52,31 +52,55 @@ body {
 	border-radius: 10px 10px 10px 10px;
 }
 
-div.tareasBox {
+.tareasBox {
 	
-	
-	display: flex;
-	flex-direction:colum;
+	position: absolute;
+	top:50%;
+	left:50%;
+	/*indicamos que el margen izquierdo, es la mitad de la anchura*/
+	margin-left:-200px;
+	/*indicamos que el margen superior, es la mitad de la altura*/
+	margin-top:-150px;
+	padding:5px;
+
 	
 }
 
-div.tarea1Box {
+
+
+.tarea1Box {
 	
 	width:500px;
 	display: flex;
 	flex-direction:row;
-	background-color: #FF6;
+	background-color: #FACE7C;		
+	border:1px solid #808080;
+	margin-bottom:3px;
+	
 	
 }
 
-div.tarea2Box {
+.tarea2Box {
 	
 	display: flex;
 	flex-direction:row;
-	background-color: #FF6;
+	background-color: #FACE7C;
 	width:500px;
 	text-decoration:line-through;
-	color:#999;
+	color:#999;		
+	border:1px solid #808080;
+	margin-bottom:3px;
+	
+}
+
+.añadirTarea {
+	
+	display: flex;
+	flex-direction:row;
+	background-color: #96F5B1;
+	width:500px;	
+	border:1px solid #808080;
+	margin-bottom:3px;
 	
 }
 
@@ -94,10 +118,26 @@ div.tarea2Box {
 	
 	background-image:url(RecursosEj2/tick.gif);
 	background-repeat:no-repeat;
-	background-position:left;
-	padding-left:25px;
-	width: 150px;
-	height: 30px;
+	background-position-x:7px;
+	background-position-y:6px;
+	right:0px;
+	width: 170px;
+	height: 29px;
+	margin-top:10px;
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+	background-color: #4F3910;
+	border: 1px #DB8A2B;
+	border-radius: 10px 10px 10px 10px;
+	
+}
+
+.eliminarFin {
+	
+	right:0px;
+	width: 250px;
+	height: 29px;
 	margin-top:10px;
 	color: black;
 	font-size: 15px;
@@ -107,4 +147,3 @@ div.tarea2Box {
 	border-radius: 10px 10px 10px 10px;
 	
 }
-
