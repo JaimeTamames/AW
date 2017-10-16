@@ -73,7 +73,10 @@ div.tarea2Box {
 	
 	display: flex;
 	flex-direction:row;
-	background-color: #FA6;
+	background-color: #FF6;
+	width:500px;
+	text-decoration:line-through;
+	color:#999;
 	
 }
 
