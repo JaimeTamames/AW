@@ -76,6 +76,8 @@ body {
 	background-color: #FACE7C;		
 	border:1px solid #808080;
 	margin-bottom:3px;
+	height:40px;
+	align-items: center;
 	
 	
 }
@@ -90,6 +92,8 @@ body {
 	color:#999;		
 	border:1px solid #808080;
 	margin-bottom:3px;
+	height:40px;
+	align-items: center;
 	
 }
 
@@ -98,9 +102,11 @@ body {
 	display: flex;
 	flex-direction:row;
 	background-color: #96F5B1;
-	width:500px;	
+	width:500px;
+	height:40px;	
 	border:1px solid #808080;
-	margin-bottom:3px;
+	margin-bottom:3px;	
+	align-items: center;
 	
 }
 
@@ -129,14 +135,16 @@ body {
 	font-weight: bold;
 	background-color: #4F3910;
 	border: 1px #DB8A2B;
-	border-radius: 10px 10px 10px 10px;
+	border-radius: 10px 10px 10px 10px;	
+	
+	
 	
 }
 
 .eliminarFin {
 	
 	right:0px;
-	width: 250px;
+	width: 270px;
 	height: 29px;
 	margin-top:10px;
 	color: black;
@@ -146,4 +154,23 @@ body {
 	border: 1px #DB8A2B;
 	border-radius: 10px 10px 10px 10px;
 	
+}
+
+.textAñadir {
+	
+	width: 350px;
+	
+}
+
+.añadirTar {
+	
+	width: 100px;
+	height: 29px;
+	color: white;
+	font-size: 15px;
+	font-weight: bold;
+	background-color: #060;
+	border: 1px #DB8A2B;
+	border-radius: 10px 10px 10px 10px;
+	margin-left:10px; 
 }
