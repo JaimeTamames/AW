@@ -173,12 +173,10 @@ body {
 
 .eliminarFin {
 	
-	right:0px;
 	width: 350px;
 	height: 29px;
-	margin-top:10px;
+	margin-top: 10px;
 	color: black;
-	font-size: 15px;
 	font-weight: bold;
 	background-color: #DB8A2B;
 	border: 1px #DB8A2B;
