@@ -216,3 +216,9 @@ body {
 	border-radius: 10px 10px 10px 10px;
 	margin-left: 10px; 
 }
+
+.lista {
+	
+	list-style-type:none;
+	
+}

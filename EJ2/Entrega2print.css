@@ -1,0 +1,119 @@
+@charset "UTF-8";
+/* CSS Document */
+
+
+
+.pag{
+	
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	
+}
+
+.userImg {
+
+	visibility:hidden;
+}
+.email {
+
+	visibility:hidden;
+}
+
+.desconectar {
+
+	visibility:hidden;
+}
+
+.tareasBox {
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+}
+
+
+
+.tarea1Box {
+
+	display: flex;
+	flex-direction: row;
+	
+}
+
+.tarea2Box {
+	
+	text-decoration:line-through;
+	color:#999;
+	display: flex;
+	flex-direction: row;
+	
+}
+
+.marcaFinBox{
+
+	visibility:hidden;
+}
+
+.text-TagBox{
+	
+	display: flex;
+	flex-direction: row;
+	flex-grow: 100;
+	align-items: center;
+}
+
+.tag {
+	
+	padding-left: 6px;
+	padding-right: 6px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	margin-left: 5px;
+	margin-right: 5px;
+	color: white;
+	
+}
+
+
+
+.marcaFin {
+	
+	visibility:hidden;
+}
+
+.eliminarFin {
+	
+	visibility:hidden;
+}
+
+.añadirTarea {
+	
+
+	visibility:hidden;
+	
+}
+
+.textAñadir {
+	
+
+	visibility:hidden;
+}
+
+.añadirTar {
+	
+	visibility:hidden;
+}
+
+.li2 {
+
+	color:#000;
+	
+}
+
+.textoGris {
+
+	color:#999;
+	
+}
