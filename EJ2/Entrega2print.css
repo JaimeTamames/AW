@@ -29,7 +29,6 @@
 .tarea2Box {
 	
 	text-decoration:line-through;
-	color:gray;
 	display: flex;
 	flex-direction: row;
 	
@@ -46,7 +45,7 @@
 	
 	margin-left: 5px;
 	margin-right: 5px;
-	color: gray;
+	color: #CCC;
 	
 }
 
@@ -83,4 +82,10 @@
 	visibility: hidden;
 	width: 0px;
 	height: 0px;
+}
+
+p.textoGris {
+	
+	color:#999;
+	
 }
