@@ -3,22 +3,6 @@
 /* Ruben Barrado y Jaime Tamames*/
 
 
-.pag{
-	
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	
-}
-
-.tareasBox {
-	
-	display: flex;
-	flex-direction: column;
-	align-items:flex-start;
-
-}
-
 .tarea1Box {
 
 	display: flex;
