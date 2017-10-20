@@ -7,6 +7,7 @@
 
 	display: flex;
 	flex-direction: row;
+	height:20px;
 	
 }
 
@@ -15,6 +16,13 @@
 	text-decoration:line-through;
 	display: flex;
 	flex-direction: row;
+	height:20px;
+	
+}
+
+.cabeceraBox {
+	
+	height:70px;
 	
 }
 
@@ -22,15 +30,14 @@
 	
 	display: flex;
 	flex-direction: row;
-
+	
 }
 
 .tag {
 	
 	margin-left: 5px;
-	margin-right: 5px;
+	margin-right: 5px;	
 	color: #CCC;
-	
 }
 
 .userImgBox{
