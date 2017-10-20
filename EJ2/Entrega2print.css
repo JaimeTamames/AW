@@ -13,10 +13,16 @@
 
 .tareasBox {
 	
+	position:absolute;
+	margin-top:70px;
 	display: flex;
 	flex-direction: column;
+<<<<<<< HEAD
 	align-items:flex-start;
 
+=======
+	text-align:start;
+>>>>>>> AW/master
 }
 
 .tarea1Box {
@@ -39,6 +45,7 @@
 	
 	display: flex;
 	flex-direction: row;
+<<<<<<< HEAD
 
 }
 
@@ -47,6 +54,16 @@
 	margin-left: 5px;
 	margin-right: 5px;
 	color: gray;
+=======
+	align-items: center;
+}
+
+.tag {
+
+	margin-left: 5px;
+	margin-right: 5px;
+	color:#CCC;
+>>>>>>> AW/master
 	
 }
 
