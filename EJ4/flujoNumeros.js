@@ -16,21 +16,43 @@ class FlujoNumeros {
  * Imprime la suma de los dos primeros números del flujo pasado como parámetro.
  */
 function sumaDosLog(flujo) {
-    /* Implementar */    
+    let x = 0;
+	let solucion = 0;
+		
+	while (x<2){
+		solucion = solucion + flujo[x];
+		x++;
+	}
+	
+	return solucion;
 }
 
 /**
  * Llama a la función f con la suma de los dos primeros números del flujo pasado como parámetro.
  */
 function sumaDos(flujo, f) {
-    /* Implementar */
+    
+	return f(sumaDosLog(flujo));
+	
 }
 
 /**
  * Llama a la función f con la suma de todos los números del flujo pasado como parámetro
  */
 function sumaTodo(flujo, f) {
-    /* Implementar */    
+
+	let x = 0;
+	let solucion = 0;
+		
+	while (x<flujo.length()){
+		solucion = solucion + flujo[x];
+		x++;
+	}
+	
+	return f(solucion);
+
+
+	
 }
 
 
