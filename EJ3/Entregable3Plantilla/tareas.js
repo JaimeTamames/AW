@@ -20,28 +20,43 @@ let listaTareas = [
  * Devuelve las tareas de la lista de entrada que no hayan sido finalizadas.
  */
 function getToDoTasks(tasks) {
-  /* Implementar */
+	
+	let res = (tasks.filter(n => n.done === false || n.done === undefined)).map(n => n.text);
+	console.log(res);
 }
 
 /**
  * Devuelve las tareas que contengan el tag especificado
  */
 function findByTag(tasks, tag) {
-  /* Implementar */
+	
+	let res = tasks.filter(n => n.tags.indexOf(tag, 0) > -1);
+	console.log(res);
 }
 
 /**
  * Devuelve las tareas que contengan alguno de los tags especificados
  */
-function findByTags(tasks, tags) {
-  /* Implementar */
+function findByTags(tasks, myTags) {
+  
+	let res = tasks.filter(n => n.tags.some( x => myTags.indexOf(x, 0) > -1 ));
+	console.log(res);
 }
 
 /**
  * Devuelve el número de tareas finalizadas
  */
 function countDone(tasks) {
-  /* Implementar */
+ 
+	let res = tasks.reduce((acum,x) => acum += terminada(x), 0);
+	console.log(res);
+	
+	function terminada (task){
+		
+		if(task.done === true){return 1;}
+		else return 0;
+		
+	}
 }
 
 /**
@@ -50,6 +65,13 @@ function countDone(tasks) {
 function createTask(text) {
   /* Implementar */
 }
+
+/**
+console.log(getToDoTasks(listaTareas));
+console.log(findByTag(listaTareas, "personal"));
+console.log(findByTags(listaTareas, ["personal", "pdap"]))
+console.log(countDone(listaTareas));
+*/
 
 
 /*
