@@ -63,7 +63,18 @@ function countDone(tasks) {
  * Construye una tarea a partir de un texto con tags de la forma "@tag"
  */
 function createTask(text) {
-  /* Implementar */
+  
+  let pos = text.indexOf("@", 0) + 1; // Obtenemos la posicion del primer tag
+  
+  let fin = text.length;  //guardamos la longitud de la cadena
+    
+  let tagsList = text.slice(pos, fin).replace(" ", "").split("@");  //array de tags
+  
+  let task = [{text: text.slice(0,pos-1).trim(), tags: tagsList}];
+  
+  console.log(task);
+  
+  
 }
 
 /**
@@ -71,6 +82,7 @@ console.log(getToDoTasks(listaTareas));
 console.log(findByTag(listaTareas, "personal"));
 console.log(findByTags(listaTareas, ["personal", "pdap"]))
 console.log(countDone(listaTareas));
+console.log(createTask("Y por aqui va otra @personal"));
 */
 
 
