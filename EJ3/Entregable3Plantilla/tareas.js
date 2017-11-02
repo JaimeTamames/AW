@@ -1,4 +1,7 @@
 /**
+ * Jaime Tamames y Ruben Barrado
+ *
+ *
  * ============================
  * Ejercicio entregable 3.
  * Funciones de orden superior.
@@ -7,6 +10,7 @@
  * Puedes ejecutar los tests ejecutando `mocha` desde el directorio en el que se encuentra
  * el fichero `tareas.js`.
  */
+
 "use strict";
 
 let listaTareas = [
@@ -22,7 +26,7 @@ let listaTareas = [
 function getToDoTasks(tasks) {
 	
 	let res = (tasks.filter(n => n.done === false || n.done === undefined)).map(n => n.text);
-	console.log(res);
+	return res;
 }
 
 /**
@@ -31,7 +35,7 @@ function getToDoTasks(tasks) {
 function findByTag(tasks, tag) {
 	
 	let res = tasks.filter(n => n.tags.indexOf(tag, 0) > -1);
-	console.log(res);
+	return res;
 }
 
 /**
@@ -40,7 +44,7 @@ function findByTag(tasks, tag) {
 function findByTags(tasks, myTags) {
   
 	let res = tasks.filter(n => n.tags.some( x => myTags.indexOf(x, 0) > -1 ));
-	console.log(res);
+	return res;
 }
 
 /**
@@ -49,7 +53,7 @@ function findByTags(tasks, myTags) {
 function countDone(tasks) {
  
 	let res = tasks.reduce((acum,x) => acum += terminada(x), 0);
-	console.log(res);
+	return res;
 	
 	function terminada (task){
 		
@@ -63,28 +67,36 @@ function countDone(tasks) {
  * Construye una tarea a partir de un texto con tags de la forma "@tag"
  */
 function createTask(text) {
-  
-  let pos = text.indexOf("@", 0) + 1; // Obtenemos la posicion del primer tag
-  
-  let fin = text.length;  //guardamos la longitud de la cadena
+
+	let res;
+  	let exp = new RegExp("/\@[A-Za-z0-9]+/g");
+  	let find = text.indexOf("@");
+	
+	if(find === -1){ 
     
-  let tagsList = text.slice(pos, fin).replace(" ", "").split("@");  //array de tags
-  
-  let task = [{text: text.slice(0,pos-1).trim(), tags: tagsList}];
-  
-  console.log(task);
-  
-  
+     	res ={ text: text.trim(), tags:[] };
+	  
+  	}else{
+		text = text.trim();
+  		let aux = text.substring(0, find);
+		res = text.replace(exp, " ").substring(find-1, text.length).split(" @");
+		res = {text: aux.trim(), tags: res.slice(1)};
+  }
+	
+	return res;
 }
+
 
 /**
 console.log(getToDoTasks(listaTareas));
 console.log(findByTag(listaTareas, "personal"));
 console.log(findByTags(listaTareas, ["personal", "pdap"]))
 console.log(countDone(listaTareas));
+<<<<<<< HEAD
+=======
 console.log(createTask("Y por aqui va otra @personal"));
+>>>>>>> AW/master
 */
-
 
 /*
   NO MODIFICAR A PARTIR DE AQUI
