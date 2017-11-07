@@ -11,20 +11,17 @@ class FlujoNumeros {
     }
 }
 
-
 /**
  * Imprime la suma de los dos primeros números del flujo pasado como parámetro.
  */
 function sumaDosLog(flujo) {
-    let x = 0;
-	let solucion = 0;
+    
+	flujo.siguienteNumero(num => suma(flujo, num));
 		
-	while (x<2){
-		solucion = solucion + flujo[x];
-		x++;
+	function suma(flujo, n){
+		
+		flujo.siguienteNumero(num => {console.log(num + n);});
 	}
-	
-	return solucion;
 }
 
 /**
@@ -50,15 +47,13 @@ function sumaTodo(flujo, f) {
 	}
 	
 	return f(solucion);
-
-
-	
 }
 
 
+sumaDosLog(new FlujoNumeros());
+
 
 /* NO MODIFICAR A PARTIR DE AQUÍ */
-
 module.exports = {
     FlujoNumeros: FlujoNumeros,
     sumaDosLog: sumaDosLog,
