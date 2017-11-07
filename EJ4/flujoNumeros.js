@@ -29,8 +29,12 @@ function sumaDosLog(flujo) {
  */
 function sumaDos(flujo, f) {
     
-	return f(sumaDosLog(flujo));
-	
+	flujo.siguienteNumero(num => suma(flujo, num));
+		
+	function suma(flujo, n){
+		
+		flujo.siguienteNumero(num => f(num + n));
+	}
 }
 
 /**
@@ -38,19 +42,21 @@ function sumaDos(flujo, f) {
  */
 function sumaTodo(flujo, f) {
 
-	let x = 0;
-	let solucion = 0;
-		
-	while (x<flujo.length()){
-		solucion = solucion + flujo[x];
-		x++;
-	}
 	
-	return f(solucion);
 }
 
-
+// 1
 sumaDosLog(new FlujoNumeros());
+
+// 2
+sumaDos(new FlujoNumeros(), suma => {
+	console.log(`El resultado de la suma de los dos primeros números es ${suma}`);
+});
+
+// 3
+sumaTodo(new FlujoNumeros(), suma => {
+	console.log(`El resultado de la suma de todos los números es ${suma}`);
+});
 
 
 /* NO MODIFICAR A PARTIR DE AQUÍ */
