@@ -1,3 +1,5 @@
+//Jaime Tamames y Ruben Barrado
+
 class FlujoNumeros {
     constructor() {
         this.numeros = [6, 1, 4, 3, 10, 9, 8];
@@ -42,7 +44,22 @@ function sumaDos(flujo, f) {
  */
 function sumaTodo(flujo, f) {
 
-	
+	flujo.siguienteNumero(num => sumaTodo(flujo, num));
+		
+	function sumaTodo(flujo, n){
+		
+		flujo.siguienteNumero(num => {
+			
+			if(num === undefined){
+			
+				f(n);
+						
+			}else{
+			
+				sumaTodo(flujo, num + n);
+			}
+		});
+	}
 }
 
 // 1
