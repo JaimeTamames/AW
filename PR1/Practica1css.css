@@ -18,7 +18,6 @@ body{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	width: 100%;
 }
 
 .logoBox{
@@ -39,7 +38,6 @@ body{
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	width: 100%;
 	margin-left: 20%;
 }
 
@@ -89,45 +87,24 @@ body{
 	height: 80%;
 }
 
-.emailBox{
+.formLineBox{
 	
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-
-	width: 100%;
 	
 }
 
-.passwordBox{
+.formTextBox{
 	
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-
-	width: 100%;
+	flex-grow: 1;
 	
 }
 
-.emailText{
+.formInputTextBox{
 	
-	
-	
-}
-
-.passwordText{
-
-	
-}
-
-.emailInputText{
-	
-	width: 300%;
-}
-
-.passwordInputText{
-	
-	width: 300%;
+	flex-grow: 0;
+	width: 80%;
 }
 
 .boton{
@@ -156,12 +133,12 @@ body{
 
 .fuenteGrande{
 	
-	font-size: 28px;
+	font-size: 25px;
 }
 
 .fuenteMedia{
 	
-	font-size: 22px;
+	font-size: 20px;
 }
 
 .negrita{
@@ -172,6 +149,16 @@ body{
 .blanco{
 	
 	color: white;
+}
+
+.anchoTotal{
+	
+	width: 100%;
+}
+
+.altoTotal{
+	
+	height: 100%;
 }
 
 .cuerpoBox{
