@@ -4,5 +4,179 @@
 body{
 	
 	background-image: url(RecursosGraficosP1/img/Fondo.jpg);
+}
 
+.pag{
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.cabeceraBox{
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+.logoBox{
+
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.logoImg{
+	
+	width: 70%;
+	height: 20%;
+}
+
+.botoneraBox{
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	margin-left: 20%;
+}
+
+.botonesBotonera{
+	
+	background-color: transparent;
+	border: hidden;
+	
+	margin-left: 30%;
+	margin-right: 30%;
+	
+	cursor: pointer;
+	
+}
+
+.botonesBotonera:hover{
+	
+	
+	text-shadow: 0 5px black;
+}
+
+.botonesBotonera:active {
+
+  transform: translateY(3px);
+}
+
+.registroBox{
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
+	background-color: #6C3698;
+	border-radius: 25px;
+	width: 800px;
+	height: 240px;
+}
+
+.registroPost{
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+
+	width: 80%;
+	height: 80%;
+}
+
+.emailBox{
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	width: 100%;
+	
+}
+
+.passwordBox{
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+
+	width: 100%;
+	
+}
+
+.emailText{
+	
+	
+	
+}
+
+.passwordText{
+
+	
+}
+
+.emailInputText{
+	
+	width: 300%;
+}
+
+.passwordInputText{
+	
+	width: 300%;
+}
+
+.boton{
+	
+	background-color:#BB67FE;
+	border-radius: 25px;
+	cursor: pointer;
+	
+}
+
+.boton:hover{
+	
+	
+	text-shadow: 0 5px black;
+}
+
+.boton:active {
+
+  transform: translateY(3px);
+}
+
+.fuentePropia{
+	
+	font-family: "Gloria Hallelujah";
+}
+
+.fuenteGrande{
+	
+	font-size: 28px;
+}
+
+.fuenteMedia{
+	
+	font-size: 22px;
+}
+
+.negrita{
+	
+	font-weight: bold;
+}
+
+.blanco{
+	
+	color: white;
+}
+
+.cuerpoBox{
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
