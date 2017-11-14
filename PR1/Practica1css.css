@@ -33,33 +33,33 @@ body{
 	height: 20%;
 }
 
-.botoneraBox{
+.linksBox{
 	
 	display: flex;
 	flex-direction: row;
 	align-items: center;
 	margin-left: 20%;
+	height: 60px;
 }
 
-.botonesBotonera{
+.menu{
 	
-	background-color: transparent;
-	border: hidden;
+	text-decoration: none;
+}
+
+.linksMenu{
 	
-	margin-left: 30%;
-	margin-right: 30%;
-	
-	cursor: pointer;
+	text-decoration: none;
+	margin-left: 5%;
 	
 }
 
-.botonesBotonera:hover{
-	
+.linksMenu:hover{
 	
 	text-shadow: 0 5px black;
 }
 
-.botonesBotonera:active {
+.linksMenu:active {
 
   transform: translateY(3px);
 }
