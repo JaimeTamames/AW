@@ -45,7 +45,7 @@
 			<p class="fuentePropia negrita fuenteGrande">Nuevo usuario</p>
 		</div>
 		
-		<div class="registroBox">
+		<div class="newUserBox">
 		
 			<form action="NuevoUsuario.html" method="post" class="registroPost">			
 				
@@ -53,7 +53,7 @@
 				
 				<div class="formTextBox"><p class="fuenteMedia blanco">Email</p></div>
 			
-				<div class="formInputTextBox"><input class="anchoTotal altoTotal fuenteMedia" type="email"></div>
+				<div class="formInputTextBox2"><input class="anchoTotal altoTotal fuenteMedia" type="email"></div>
 						
 				</div>
 				
@@ -61,7 +61,7 @@
 				
 					<div class="formTextBox"><p class="fuenteMedia blanco">Contraseña</p></div>
 				
-					<div class="formInputTextBox"><input class="anchoTotal altoTotal fuenteMedia" type="password"></div>
+					<div class="formInputTextBox2"><input class="anchoTotal altoTotal fuenteMedia" type="password"></div>
 					
 				</div>
 				
@@ -69,7 +69,7 @@
 				
 					<div class="formTextBox"><p class="fuenteMedia blanco">Nombre Completo</p></div>
 				
-					<div class="formInputTextBox"><input class="anchoTotal altoTotal fuenteMedia" type="email"></div>
+					<div class="formInputTextBox2"><input class="anchoTotal altoTotal fuenteMedia" type="email"></div>
 						
 				</div>
 				
@@ -77,18 +77,44 @@
 				
 					<div class="formTextBox"><p class="fuenteMedia blanco">Sexo</p></div>
 				
-					<div class="formInputTextBox">
-						<input class="anchoTotal altoTotal fuenteMedia" type="radiogroup">
+					<div class="formInputTextBox2">
+						<input type="radio" name="genero" value="Masculino">
+						<label class="fuenteMedia blanco espacioIzq espacioDer">Masculino</label>
+						<input type="radio" name="genero" value="Femenino">
+						<label class="fuenteMedia blanco espacioIzq espacioDer">Femenino</label>
+						<input type="radio" name="genero" value="Otro">
+						<label class="fuenteMedia blanco espacioIzq espacioDer">Otro</label>
 					</div>
 						
 				</div>
+							
+				<div class="formLineBox anchoTotal">
 				
+					<div class="formTextBox"><p class="fuenteMedia blanco">Fecha de Nacimiento</p></div>
+				
+					<div class="formInputTextBox2"><input class="altoTotal fuenteMedia" type="datetime" value="dd/mm/aaaa"></div>
+						
+				</div>
+				
+				<div class="formLineBox anchoTotal">
+				
+					<div class="formTextBox"><p class="fuenteMedia blanco">Imagen de Perfil</p></div>
+				
+					<div class="formInputTextBox2">
+						
+						<input class="altoTotal fuenteMedia" type="button" Value="Seleccionar archivo">
+					
+						<p class="fuenteMedia espacioIzq">Ningun dato seleccionado</p>
+					
+					</div>
+						
+				</div>
+									
 				<div>
 				
-					<input class="boton fuentePropia negrita fuenteGrande blanco" type="button"  value="Conectar"/>
+					<input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="button"  value="Crear Usuario"/>
 					
-				</div>		
-			
+				</div>
 			
 			</form>
 			

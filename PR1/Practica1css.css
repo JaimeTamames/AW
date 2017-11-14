@@ -77,6 +77,19 @@ body{
 	height: 240px;
 }
 
+.newUserBox {
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	
+	background-color: #6C3698;
+	border-radius: 25px;
+	width: 800px;
+	height: 400px;
+}
+
 .registroPost{
 	
 	display: flex;
@@ -105,6 +118,33 @@ body{
 	
 	flex-grow: 0;
 	width: 80%;
+}
+
+.formInputTextBox2{
+	
+	display:flex;
+	flex-grow: 0;
+	width: 70%;
+	flex-direction:row;
+	align-items:center;
+}
+
+.espacioIzq {
+	
+	margin-left:6px;	
+	
+}
+
+.espacioDer {
+	
+	margin-right:10px;	
+	
+}
+
+.espacioArriba {
+	
+	margin-top:10px;	
+	
 }
 
 .boton{
@@ -138,7 +178,7 @@ body{
 
 .fuenteMedia{
 	
-	font-size: 22px;
+	font-size: 20px;
 }
 
 .negrita{
