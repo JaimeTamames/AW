@@ -33,6 +33,38 @@ body{
 	height: 20%;
 }
 
+.perfilImg {
+	
+	width: 100%;
+	height:100%;
+	
+}
+
+.perfilImgBox {
+	
+	width:15%;
+	height:15%;
+	display: inline;
+	border: solid 2px;
+	
+}
+
+.perfilImgMenuBox {
+	
+	width:5%;
+	height:5%;
+	
+}
+
+.puntosUserBox {
+	
+	display:flex;
+	flex-direction:row;
+	padding-left:200px;
+	align-items:center;
+	
+}
+
 .linksBox{
 	
 	display: flex;
@@ -77,6 +109,8 @@ body{
 	height: 240px;
 }
 
+
+
 .newUserBox {
 	
 	display: flex;
@@ -88,6 +122,43 @@ body{
 	border-radius: 25px;
 	width: 800px;
 	height: 400px;
+}
+
+.perfilBox {
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	margin-left:300px;
+	
+}
+
+.datosPerfil {
+	
+	display: flex;
+	flex-direction: column;
+	margin-left: 40px;
+	justify-content: flex-start;
+	align-items: flex-start;
+	
+}
+
+.datosPerfilSecundariosBox {
+
+	padding-top:20px;
+	
+}
+
+.datoSecundario {
+	
+	padding-bottom:5px;
+	
+}
+
+.botonModificarPerfilBox {
+	
+	padding-top:20px;
+	
 }
 
 .registroPost{
@@ -179,6 +250,11 @@ body{
 .fuenteMedia{
 	
 	font-size: 20px;
+}
+
+.fuentePequeña {
+	
+	font-size: 15px;
 }
 
 .negrita{
