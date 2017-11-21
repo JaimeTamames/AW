@@ -38,9 +38,10 @@ class DAOTasks {
 		this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
             connection.query(
-                "SELECT *" +
+                "SELECT task.id AS id, task.text AS text, task.done AS done,  tag.tag AS tag" +
                 " FROM task" +
-                " WHERE user = ?", 
+				" LEFT JOIN tag ON task.id = tag.taskId" +
+                " WHERE task.user = ?", 
                 [email],
                 (err, rows) => {
                     if (err) { callback(err); return; }
@@ -49,15 +50,26 @@ class DAOTasks {
                     	callback(null, undefined);
                 	} else {
 						
-						let task, i;
+						let task, i, aux;
 						
 						//Con for each
-						rows.forEach((row) => {
+						for(i = 0; i < rows.length; i++){
 							
-							task = [row.id, row.text, row.done];
+							//aux = i + 1;
 							
-							callback(null, task);
-                		});
+							if(i + 1 < rows.length && rows[i].id === rows[i + 1].id){
+								
+								callback(null, "nada");
+							}else{
+								
+								task = [rows[i].id, rows[i].text, rows[i].done, rows[i].tag];
+								callback(null, task);
+							}
+							
+							
+							
+							
+                		}
 						
                 	}
                 }
@@ -82,8 +94,23 @@ class DAOTasks {
      */
     insertTask(email, task, callback) {
 
-        /* Implementar */
-        
+        /* Implementar 
+		this.pool.getConnection((err, connection) => {
+            if (err) { callback (err); return; }
+            connection.query(
+                "INSERT INTO task (user, text, done)" +
+				" VALUES (?, ?, ?)",
+                [email, task.text, task.done],
+                (err, rows) => {
+                    if (err) { callback(err); return; }
+                    else {
+						connection.release();
+                    	callback(null, undefined);
+                	} 
+                }
+            );    
+        });
+        */
     }
 
     /**
