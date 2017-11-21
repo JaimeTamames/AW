@@ -35,6 +35,34 @@ class DAOTasks {
     getAllTasks(email, callback) {
 
         /* Implementar */
+		this.pool.getConnection((err, connection) => {
+            if (err) { callback (err); return; }
+            connection.query(
+                "SELECT *" +
+                " FROM task" +
+                " WHERE user = ?", 
+                [email],
+                (err, rows) => {
+                    if (err) { callback(err); return; }
+					connection.release();
+                    if (rows.length === 0) {
+                    	callback(null, undefined);
+                	} else {
+						
+						let task, i;
+						
+						//Con for each
+						rows.forEach((row) => {
+							
+							task = [row.id, row.text, row.done];
+							
+							callback(null, task);
+                		});
+						
+                	}
+                }
+            );    
+        });
 
     }
 
