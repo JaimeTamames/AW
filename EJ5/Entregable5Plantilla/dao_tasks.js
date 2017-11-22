@@ -38,9 +38,8 @@ class DAOTasks {
 		this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
             connection.query(
-                "SELECT task.id AS id, task.text AS text, task.done AS done,  tag.tag AS tag" +
+                " SELECT task.id AS id, task.text AS text, task.done AS done" +
                 " FROM task" +
-				" LEFT JOIN tag ON task.id = tag.taskId" +
                 " WHERE task.user = ?", 
                 [email],
                 (err, rows) => {
@@ -53,21 +52,20 @@ class DAOTasks {
 						let task, i, aux;
 						
 						//Con for each
-						for(i = 0; i < rows.length; i++){
-							
-							//aux = i + 1;
-							
-							if(i + 1 < rows.length && rows[i].id === rows[i + 1].id){
-								
-								callback(null, "nada");
-							}else{
-								
-								task = [rows[i].id, rows[i].text, rows[i].done, rows[i].tag];
-								callback(null, task);
-							}
+						for(i = 0; i < rows.length; i++){													
 							
 							
-							
+							this.getTags(rows[i].id, rows[i].text, rows[i].done, (err, tasks) => {
+        		
+								if (err) {
+									console.error(err);
+								}
+								else {	
+									
+									callback(null, tasks);
+									
+								}									
+							});																										
 							
                 		}
 						
@@ -77,6 +75,64 @@ class DAOTasks {
         });
 
     }
+	
+
+	
+	getTags(id,text,done,callback) {
+	
+		
+		this.getAllTagbyTask(id, (err, tags) => {
+        		
+			if (err) {
+				console.error(err);
+			}
+			else {	
+				
+				callback(null, [id,text,done,tags]);
+				
+			}									
+		})		
+		
+	}
+	
+	
+	//funcion que retorna todas las tag de un id
+	getAllTagbyTask(id, callback) {
+
+		this.pool.getConnection((err, connection) => {
+            if (err) { callback (err); return; }
+            connection.query(
+                "SELECT tag.tag AS tag" +
+                " FROM tag" +
+                " WHERE tag.taskId = ?", 
+                [id],
+                (err, rows) => {
+                    if (err) { callback(err); return; }
+					connection.release();
+                    if (rows.length === 0) {
+                    	callback(null, null);
+                	} else {
+						
+						let tags = [];
+						let i;
+						
+						//Con for each
+						for(i = 0; i < rows.length; i++){
+											
+							tags.push(rows[i].tag);							
+							
+                		}
+						
+						callback(null, tags);					
+						
+                	}
+                }
+            );    
+        });
+
+    }
+	
+	
 
     /**
      * Inserta una tarea asociada a un usuario.
@@ -94,7 +150,7 @@ class DAOTasks {
      */
     insertTask(email, task, callback) {
 
-        /* Implementar 
+        //Implementar 
 		this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
             connection.query(
@@ -110,7 +166,7 @@ class DAOTasks {
                 }
             );    
         });
-        */
+       
     }
 
     /**
