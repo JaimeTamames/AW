@@ -101,7 +101,7 @@ class DAOTasks {
             if (err) { callback (err); return; }
             connection.query(
                 "INSERT INTO task (user, text, done)" +
-				" VALUES (?, ?, ?)",
+				"VALUES (?, ?, ?)",
                 [email, task.text, task.done],
                 (err, rows) => {
                     if (err) { callback(err); return; }
