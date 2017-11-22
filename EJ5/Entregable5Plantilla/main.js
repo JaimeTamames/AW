@@ -23,9 +23,9 @@ let daoTask = new daoTasks.DAOTasks(pool);
 	
 let newTask = {
 		
-    text: "Terminar ejercicio entregable 6",
+    text: "Terminar ejercicio entregable 5",
     done: true,
-    tags: ["awaw", "ejercicio6"]
+    tags: ["aw", "ejercicio"]
 			
     }
 

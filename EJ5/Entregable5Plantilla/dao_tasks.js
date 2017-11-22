@@ -103,27 +103,33 @@ class DAOTasks {
                 "INSERT INTO task (user, text, done)" +
 				" VALUES (?, ?, ?)",
                 [email, task.text, task.done],
-                (err, rows) => {
+                (err, result) => {
                     if (err) { callback(err); return; }
                     else {
+						
 						connection.release();
-						
-						let i;
-						
-						for(i = 0; i < task.tags.length; i++){
+				
+						if(task.tags.length > 0){
 							
+							let i;
+							let sql = "INSERT INTO tag (taskId, tag) VALUES ?";
+							let sqlValues = [];
+						
+							for(i = 0; i < task.tags.length; i++){
+							
+								sqlValues.push([result.insertId, task.tags[i]]);
+							}
+
 							connection.query(
-                				"INSERT INTO tag (taskId, tag)" +
-								" VALUES (last_insert_id(), ?)",
-                				[task.tags[i]],
+                				sql, [sqlValues],
                 				(err, rows) => {
-                    				if (err) { callback(err); return; } 
+                    				if (err) { callback(err); return; }
+									connection.release();
                 				}
             				);
-						}
-						
-                    	callback(null, undefined);
-                	} 
+                		} 
+						callback(null, undefined);
+					}
                 }
             );    
         });
