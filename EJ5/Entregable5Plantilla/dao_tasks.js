@@ -37,11 +37,17 @@ class DAOTasks {
         /* Implementar */
 		this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
-            connection.query(
-                " SELECT task.id AS id, task.text AS text, task.done AS done" +
+            connection.query(                
+				"SELECT task.id AS id, task.text AS text, task.done AS done,  tag.tag AS tag" +
+                " FROM task" +
+				" LEFT JOIN tag ON task.id = tag.taskId" +
+                " WHERE task.user = ?", 
+                [email],				
+				//ESTO FUNCIONA CON LOS 2 SELECT
+				/*" SELECT task.id AS id, task.text AS text, task.done AS done" +
                 " FROM task" +
                 " WHERE task.user = ?", 
-                [email],
+                [email],*/					
                 (err, rows) => {
                     if (err) { callback(err); return; }
 					connection.release();
@@ -49,23 +55,42 @@ class DAOTasks {
                     	callback(null, undefined);
                 	} else {
 						
-						let task, i, aux;
+						let task;
+						let i = 0;
+						let tags;
+						let fin;
 						
 						//Con for each
-						for(i = 0; i < rows.length; i++){													
+						for(i = 0; i < rows.length; i++){	
 							
+							tags = []; //asi se reinicializa en cada vuelta;
+							fin = false;
 							
-							this.getTags(rows[i].id, rows[i].text, rows[i].done, (err, tasks) => {
-        		
-								if (err) {
-									console.error(err);
+							if(i != rows.length){
+								
+								//ESTE WHILE VA ABANZANDO POR LAS FILAS IGUAL QUE ROW Y ACUMULA LOS TAGS HASTA QUE EL SIGUIENTE ES DIFERENTE
+								//AL SALIR ACUMULA EL ULTIMO IGUAL E IMPRIME, ESTA CONTROLADO QUE SE SALGA DEL ARRAY, PERO DA ERROR AUN 
+								while(rows[i].id === rows[i+1].id && !fin){
+
+									tags.push(rows[i].tag);								
+									if (i+1 === rows.length)
+										fin = true;
+									else
+									i++;	
+									
 								}
-								else {	
-									
-									callback(null, tasks);
-									
-								}									
-							});																										
+								
+							}
+							tags.push(rows[i].tag);	
+							
+							//DIFERENCIA ENTRE SI HAY TAGS O NO E IMPRIME UNA COSA U OTRA
+							
+							if(tags.length === 0)
+								callback(null, [rows[i].id, rows[i].text, rows[i].done, null])
+							else
+								callback(null, [rows[i].id, rows[i].text, rows[i].done, tags])
+							
+																														
 							
                 		}
 						
@@ -77,60 +102,7 @@ class DAOTasks {
     }
 	
 
-	
-	getTags(id,text,done,callback) {
-	
-		
-		this.getAllTagbyTask(id, (err, tags) => {
-        		
-			if (err) {
-				console.error(err);
-			}
-			else {	
-				
-				callback(null, [id,text,done,tags]);
-				
-			}									
-		})		
-		
-	}
-	
-	
-	//funcion que retorna todas las tag de un id
-	getAllTagbyTask(id, callback) {
 
-		this.pool.getConnection((err, connection) => {
-            if (err) { callback (err); return; }
-            connection.query(
-                "SELECT tag.tag AS tag" +
-                " FROM tag" +
-                " WHERE tag.taskId = ?", 
-                [id],
-                (err, rows) => {
-                    if (err) { callback(err); return; }
-					connection.release();
-                    if (rows.length === 0) {
-                    	callback(null, null);
-                	} else {
-						
-						let tags = [];
-						let i;
-						
-						//Con for each
-						for(i = 0; i < rows.length; i++){
-											
-							tags.push(rows[i].tag);							
-							
-                		}
-						
-						callback(null, tags);					
-						
-                	}
-                }
-            );    
-        });
-
-    }
 	
 	
 
