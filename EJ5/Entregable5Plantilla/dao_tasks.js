@@ -38,16 +38,11 @@ class DAOTasks {
 		this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
             connection.query(                
-				"SELECT task.id AS id, task.text AS text, task.done AS done,  tag.tag AS tag" +
+				"SELECT task.id AS id, task.text AS text, task.done AS done, tag.tag AS tag" +
                 " FROM task" +
 				" LEFT JOIN tag ON task.id = tag.taskId" +
                 " WHERE task.user = ?", 
                 [email],				
-				//ESTO FUNCIONA CON LOS 2 SELECT
-				/*" SELECT task.id AS id, task.text AS text, task.done AS done" +
-                " FROM task" +
-                " WHERE task.user = ?", 
-                [email],*/					
                 (err, rows) => {
                     if (err) { callback(err); return; }
 					connection.release();
@@ -55,43 +50,28 @@ class DAOTasks {
                     	callback(null, undefined);
                 	} else {
 						
-						let task;
-						let i = 0;
-						let tags;
-						let fin;
+						let task, i = 0, aux;
 						
-						//Con for each
-						for(i = 0; i < rows.length; i++){	
+						while(i < rows.length){
 							
-							tags = []; //asi se reinicializa en cada vuelta;
-							fin = false;
-							
-							if(i != rows.length){
+							aux = [];
 								
-								//ESTE WHILE VA ABANZANDO POR LAS FILAS IGUAL QUE ROW Y ACUMULA LOS TAGS HASTA QUE EL SIGUIENTE ES DIFERENTE
-								//AL SALIR ACUMULA EL ULTIMO IGUAL E IMPRIME, ESTA CONTROLADO QUE SE SALGA DEL ARRAY, PERO DA ERROR AUN 
-								while(rows[i].id === rows[i+1].id && !fin){
-
-									tags.push(rows[i].tag);								
-									if (i+1 === rows.length)
-										fin = true;
-									else
-									i++;	
+							while(i + 1 < rows.length && rows[i].id === rows[i + 1].id){
 									
-								}
-								
+								aux.push(rows[i].tag);
+								i++;
 							}
-							tags.push(rows[i].tag);	
 							
-							//DIFERENCIA ENTRE SI HAY TAGS O NO E IMPRIME UNA COSA U OTRA
+							aux.push(rows[i].tag);
 							
-							if(tags.length === 0)
-								callback(null, [rows[i].id, rows[i].text, rows[i].done, null])
-							else
-								callback(null, [rows[i].id, rows[i].text, rows[i].done, tags])
+							if(rows[i].tag === null){
+								task = [rows[i].id, rows[i].text, rows[i].done];
+							}else{
+								task = [rows[i].id, rows[i].text, rows[i].done, aux];
+							}
 							
-																														
-							
+							callback(null, task);
+							i++;			
                 		}
 						
                 	}
@@ -101,11 +81,6 @@ class DAOTasks {
 
     }
 	
-
-
-	
-	
-
     /**
      * Inserta una tarea asociada a un usuario.
      * 
