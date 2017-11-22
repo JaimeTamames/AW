@@ -16,7 +16,6 @@ class DAOTasks {
         this.pool = pool;
     }
 
-
     /**
      * Devuelve todas las tareas de un determinado usuario.
      * 
@@ -108,12 +107,26 @@ class DAOTasks {
                     if (err) { callback(err); return; }
                     else {
 						connection.release();
+						
+						let i;
+						
+						for(i = 0; i < task.tags.length; i++){
+							
+							connection.query(
+                				"INSERT INTO tag (taskId, tag)" +
+								" VALUES (last_insert_id(), ?)",
+                				[task.tags[i]],
+                				(err, rows) => {
+                    				if (err) { callback(err); return; } 
+                				}
+            				);
+						}
+						
                     	callback(null, undefined);
                 	} 
                 }
             );    
         });
-       
     }
 
     /**

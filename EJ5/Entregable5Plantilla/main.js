@@ -23,9 +23,9 @@ let daoTask = new daoTasks.DAOTasks(pool);
 	
 let newTask = {
 		
-    text: "Terminar ejercicio entregable 5",
+    text: "Terminar ejercicio entregable 6",
     done: true,
-    tags: ["aw", "ejercicio"]
+    tags: ["awaw", "ejercicio6"]
 			
     }
 
@@ -38,9 +38,6 @@ daoUser.isUserCorrect("usuario@ucm.es", "mipass", (err, result) => {
     } else {
         console.log("Usuario y/o contraseña incorrectos");
     }	
-	
-		
-	
 });
 
 daoTask.getAllTasks("usuario@ucm.es", (err, tasks) => {
@@ -49,32 +46,20 @@ daoTask.getAllTasks("usuario@ucm.es", (err, tasks) => {
         console.error(err);
     } else {
         console.log(tasks);
-    }       		
-		
+    }       				
 });
-
-
-
-	/*		
-    daoTask.insertTask("usuario@ucm.es", newTask, (err) => {
-		
-        if (err) {
-			
-            console.error(err);
-			
-        } else {
-			
-            console.log("Elemento insertado correctamente");
-			
-        }
-		
-        pool.end();
-			
-    });
 	
-	*/
-
-
-
-
-
+daoTask.insertTask("usuario@ucm.es", newTask, (err) => {
+		
+     if (err) {
+			
+         console.error(err);
+			
+     } else {
+			
+         console.log("Elemento insertado correctamente");
+     }
+		
+     pool.end();
+			
+});
