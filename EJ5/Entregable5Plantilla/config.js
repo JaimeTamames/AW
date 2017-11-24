@@ -14,7 +14,7 @@ module.exports = {
   user: "root",
   
   // Contraseña con la que se accede a la BD
-  password: "aw",
+  password: "awaw",
   
   // Nombre de la base de datos
   database: "tareas"
