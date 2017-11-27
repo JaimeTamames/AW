@@ -1,3 +1,5 @@
+//Jaime Tamames y Ruben Barrado
+
 "use strict";
 
 /* Este módulo contiene las opciones de configuración
