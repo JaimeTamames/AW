@@ -75,6 +75,16 @@ body {
 	border-radius: 10px 10px 10px 10px;
 }
 
+.desconectar:hover{
+	
+	background-color: #E2A359;
+}
+
+.desconectar:active{
+	
+	transform: translateY(1px);
+}
+
 .tareasBox {
 	display: flex;
 	flex-direction: column;
@@ -82,8 +92,6 @@ body {
 	margin-top: 3%;
 	width: 600px;
 }
-
-
 
 .tarea1Box {
 	justify-content: space-between;
@@ -123,7 +131,7 @@ body {
 	align-items: center;
 }
 
-.tag {
+.tag{
 	
 	background-color: #DB8A2B;
 	border-radius: 10px 10px 10px 10px;
@@ -162,7 +170,18 @@ body {
 	margin-right: 5px;
 }
 
+.marcaFin:hover{
+	
+	background-color: #9E7220;
+}
+
+.marcaFin:active{
+	
+	transform: translateY(1px);
+}
+
 .eliminarFin {
+	
 	width: 350px;
 	height: 29px;
 	color: black;
@@ -173,7 +192,18 @@ body {
 	font-size: 20px;
 }
 
+.eliminarFin:hover{
+	
+	background-color: #E2A359;
+}
+
+.eliminarFin:active{
+	
+	transform: translateY(1px);
+}
+
 .añadirTarea {
+	
 	display: flex;
 	flex-direction: row;
 	background-color: #96F5B1;
@@ -201,6 +231,16 @@ body {
 	border: 1px #DB8A2B;
 	border-radius: 10px 10px 10px 10px;
 	margin-left: 10px; 
+}
+
+.añadirTar:hover{
+	
+	background-color: #008E00;
+}
+
+.añadirTar:active{
+	
+	transform: translateY(1px);
 }
 
 .lista {
