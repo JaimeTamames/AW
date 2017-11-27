@@ -25,3 +25,31 @@ app.listen(config.port, function (err) {
         console.log(`Servidor escuchando en puerto ${config.port}.`);
     }
 });
+
+//Ficheros estaticos
+const ficherosEstaticos = path.join(__dirname, "public");
+app.use(express.static(ficherosEstaticos));
+
+//Plantillas
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+//Obtener tareas de usuario@ucm.es
+app.get("/tasks", (request, response) => {
+
+    daoT.getAllTasks("usuario@ucm.es",(err, taskList )=>{
+
+        if(err) {
+            console.log(err);
+            response.end();
+        }else{
+            response.status(200);
+            response.render("tasks" ,{ taskList:taskList} );
+        }
+
+    });
+    
+
+});
+
+
