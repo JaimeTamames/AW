@@ -49,6 +49,20 @@ body{
 	
 }
 
+.perfilImgfriendBox {
+	
+	width:10%;
+	display: inline;
+	border: solid 2px;
+	
+}
+
+.nombreFriendBox {
+	
+	margin-left: 10px;
+	
+}
+
 .perfilImgMenuBox {
 	
 	width:5%;
@@ -179,9 +193,61 @@ body{
 	
 }
 
+.botonesSolicitudesBox {
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	
+}
+
+.solicitudesAmistadBox {
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 50%;
+	justify-content: space-between;
+	
+}
+
+.AmigosBox {
+	
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 50%;
+	justify-content: space-between;
+	
+}
+
+.PanelBusquedabox {
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	width: 50%;
+	justify-content: space-between;
+	
+}
+
+.friendsBox {
+	
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+		
+}
+
 .formTextBox{
 	
 	flex-grow: 1;
+	
+}
+
+.formInputbusquedaBox {
+	
+	width: 60%;
 	
 }
 
