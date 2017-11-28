@@ -52,4 +52,10 @@ app.get("/tasks", (request, response) => {
 
 });
 
+app.post("/addTask", (request, response) => {
+	
+	console.log("AÑADIENDOOOOOO TAREAAAAAA");
+	response.end();
+});
+
 
