@@ -51,6 +51,7 @@ app.get("/tasks", (request, response) => {
         }
 
     });
+<<<<<<< HEAD
 });
  
 //Declaracion del middelware bodyParser para obtener el contenido de la peticion post
@@ -80,6 +81,9 @@ app.post("/finish", function(request, response) {
     let taskId = request.body.taskId;
 
     daoT.markTaskDone(taskId, (err, callback)=>{
+=======
+	
+>>>>>>> c19ec8faf3ffd8edbe5c61b61ae17e9aadb3b827
 
         if(err) {
             console.log(err);
@@ -91,10 +95,19 @@ app.post("/finish", function(request, response) {
     });
 });
 
+<<<<<<< HEAD
 //Eliminar tareas completadas de usuario@ucm.es
 app.get("/deleteCompleted", (request, response) => {
 
     daoT.deleteCompleted("usuario@ucm.es", (err, callback)=>{
+=======
+app.post("/addTask", (request, response) => {
+	
+	console.log("AÑADIENDOOOOOO TAREAAAAAA");
+	response.end();
+});
+
+>>>>>>> c19ec8faf3ffd8edbe5c61b61ae17e9aadb3b827
 
         if(err) {
             console.log(err);

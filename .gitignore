@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # https://git-scm.com/docs/gitignore
 # https://help.github.com/articles/ignoring-files
 # Example.gitignore files : https://github.com/github/gitignore
@@ -12,3 +13,17 @@ EJ3/.DS_Store
 /EJ6/GestorTareas/nbproject/private/
 .DS_Store
 EJ3/.DS_Store
+=======
+# https://git-scm.com/docs/gitignore
+# https://help.github.com/articles/ignoring-files
+# Example.gitignore files : https://github.com/github/gitignore
+_notes/
+/bower_components/
+/node_modules/
+EJ2/Entrega2print.css
+.DS_Store
+.DS_Store
+.DS_Store
+EJ3/.DS_Store
+/EJ6/GestorTareas/nbproject/private/
+>>>>>>> c19ec8faf3ffd8edbe5c61b61ae17e9aadb3b827
