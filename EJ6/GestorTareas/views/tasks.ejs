@@ -52,9 +52,9 @@
                     <form method="POST" id="form" action="/finish">
 					
                         <input value="<%= task.id %>" name="taskId" type="hidden">
-						<% if(!task.done){ %>
-                        <input class="finalizada" value="Marcar finalizada" type="submit">
-						<% } %>
+                        <% if(!task.done){ %>
+                            <input class="finalizada" value="Marcar finalizada" type="submit">
+                        <% } %>
 						
                     </form>
 
