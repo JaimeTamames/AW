@@ -6,6 +6,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const config = require("./config");
 const daoTasks = require("./dao_tasks");
+const daoUsers = require("./dao_users");
 const taskUtils = require("./task_utils");
 const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
@@ -40,6 +41,7 @@ let pool = mysql.createPool({
 
 //Pool de conexiones a la BBDD
 let daoT = new daoTasks.DAOTasks(pool);
+let daoU = new daoUsers.DAOUsers(pool);
 
 app.listen(config.port, function (err) {
     if (err) {
@@ -134,4 +136,15 @@ app.get("/deleteCompleted", (request, response) => {
         }
 
     });
+});
+
+//Manejador del login.html
+
+app.get("/login.html", (request, response) => {
+	
+	response.status(200);
+    response.set("Content-Type", "text/plain; encoding=utf-8");
+    response.write("¡Hola!");
+	
+	response.end();
 });

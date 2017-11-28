@@ -31,10 +31,12 @@
             </div>
         </div>
     </form>
-
-    <div class="error">
-        Mensaje de error
-    </div>
+	
+	<% if(errorMsg !== null) {%>
+		<div class="error">
+			<%= errorMsg %>
+		</div>
+	<% } %>
 
 
 </body>
