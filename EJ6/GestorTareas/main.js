@@ -1,3 +1,5 @@
+//Jaime Tamames y Ruben Barrado
+
 const express = require("express");
 const mysql = require("mysql");
 const path = require("path");
@@ -15,6 +17,7 @@ let pool = mysql.createPool({
     password: config.mysqlConfig.password
 });
 
+//Pool de conexiones a la BBDD
 let daoT = new daoTasks.DAOTasks(pool);
 
 app.listen(config.port, function (err) {
@@ -48,8 +51,58 @@ app.get("/tasks", (request, response) => {
         }
 
     });
-    
+});
+ 
+//Declaracion del middelware bodyParser para obtener el contenido de la peticion post
+app.use(bodyParser.urlencoded({ extended: false }));
 
+//Añadir tareas a usuario@ucm.es
+app.post("/addTask", function(request, response) {
+    
+    let task = taskUtils.createTask(request.body.taskText);
+    task.done = false;
+
+    daoT.insertTask("usuario@ucm.es", task, (err, callback)=>{
+
+        if(err) {
+            console.log(err);
+            response.end();
+        }else{
+            response.status(200);
+            response.redirect("/tasks");
+        }
+    });
 });
 
+//Marcar tareas finalizadas de usuario@ucm.es
+app.post("/finish", function(request, response) {
+    
+    let taskId = request.body.taskId;
 
+    daoT.markTaskDone(taskId, (err, callback)=>{
+
+        if(err) {
+            console.log(err);
+            response.end();
+        }else{
+            response.status(200);
+            response.redirect("/tasks");
+        }
+    });
+});
+
+//Eliminar tareas completadas de usuario@ucm.es
+app.get("/deleteCompleted", (request, response) => {
+
+    daoT.deleteCompleted("usuario@ucm.es", (err, callback)=>{
+
+        if(err) {
+            console.log(err);
+            response.end();
+        }else{
+            response.status(200);
+            response.redirect("/tasks");
+        }
+
+    });
+});
