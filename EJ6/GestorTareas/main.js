@@ -59,19 +59,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Añadir tareas a usuario@ucm.es
 app.post("/addTask", function(request, response) {
     
-    let task = taskUtils.createTask(request.body.taskText);
-    task.done = false;
+	if (request.body.taskText !== ""){
+		let task = taskUtils.createTask(request.body.taskText);
+		task.done = false;
 
-    daoT.insertTask("usuario@ucm.es", task, (err, callback)=>{
+		daoT.insertTask("usuario@ucm.es", task, (err, callback)=>{
 
-        if(err) {
-            console.log(err);
-            response.end();
-        }else{
-            response.status(200);
-            response.redirect("/tasks");
-        }
-    });
+			if(err) {
+				console.log(err);
+				response.end();
+			}else{
+				response.status(200);
+				response.redirect("/tasks");
+			}
+		});
+	}
+	else {
+		
+		response.status(200);
+		response.redirect("/tasks");
+		
+	}
+		
 });
 
 //Marcar tareas finalizadas de usuario@ucm.es
