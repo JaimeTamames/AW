@@ -31,6 +31,7 @@ const middlewareSession = express_session({
 
 app.use(middlewareSession);
 
+
 let pool = mysql.createPool({
     database: config.mysqlConfig.database,
     host: config.mysqlConfig.host,
@@ -165,7 +166,7 @@ app.post("/login", (request, response) => {
 			
 			if(!callback){				
 				
-				response.status(200);
+				response.status(400);
 				response.render("login", {errorMsg:"Dirección de correo y/o contraseña no validos"});
 			}
 			else {
@@ -174,14 +175,14 @@ app.post("/login", (request, response) => {
 				response.status(200);
 				let currentUser = user;
 				
-				daoT.getAllTasks(user,(err, taskList )=>{
+				daoT.getAllTasks(currentUser,(err, taskList )=>{
 
 					if(err) {
 						console.log(err);
 						response.end();
 					}else{
 						response.status(200);
-						response.render("tasks" ,{ taskList:taskList} );
+						response.render("tasks" ,{ taskList:taskList, userEmail:currentUser} );
 					}
 
 				});
@@ -191,4 +192,13 @@ app.post("/login", (request, response) => {
 		}	
 		
 	});	
+});
+
+
+app.get("/logout", (request, response) => {
+
+	response.status(200);
+	request.session.destroy();
+	response.redirect("login.html");
+
 });
