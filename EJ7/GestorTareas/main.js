@@ -140,11 +140,55 @@ app.get("/deleteCompleted", (request, response) => {
 
 //Manejador del login.html
 
-app.get("/login.html", (request, response) => {
+app.get("/login.html", (request, response) => {	
 	
-	response.status(200);
-    response.set("Content-Type", "text/plain; encoding=utf-8");
-    response.write("¡Hola!");
+		response.status(200);
+        response.render("login", {errorMsg:null});
 	
-	response.end();
+});
+
+app.post("/login", (request, response) => {
+	
+	let user = request.body.mail;
+	let pass = request.body.pass;
+	
+	daoU.isUserCorrect(user, pass, (err, callback) => {
+		
+		if(err) {
+			
+			console.log(err);
+            response.end();
+			
+			
+		}
+		else {
+			
+			if(!callback){				
+				
+				response.status(200);
+				response.render("login", {errorMsg:"Dirección de correo y/o contraseña no validos"});
+			}
+			else {
+				
+				
+				response.status(200);
+				let currentUser = user;
+				
+				daoT.getAllTasks(user,(err, taskList )=>{
+
+					if(err) {
+						console.log(err);
+						response.end();
+					}else{
+						response.status(200);
+						response.render("tasks" ,{ taskList:taskList} );
+					}
+
+				});
+			}		
+			
+			
+		}	
+		
+	});	
 });
