@@ -62,15 +62,17 @@ app.set("views", path.join(__dirname, "views"));
 
 //Obtener tareas de usuario@ucm.es
 app.get("/tasks", (request, response) => {
+    
+    let user = request.session.currentUser;
 
-    daoT.getAllTasks("usuario@ucm.es",(err, taskList )=>{
+    daoT.getAllTasks(user,(err, taskList )=>{
 
         if(err) {
             console.log(err);
             response.end();
         }else{
             response.status(200);
-            response.render("tasks" ,{ taskList:taskList} );
+            response.render("tasks" ,{ taskList:taskList, userMail:user} );
         }
 
     });
@@ -82,13 +84,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Añadir tareas a usuario@ucm.es
 app.post("/addTask", function(request, response) {
     
+        let user = request.session.currentUser;
+    
         //Para no añadir tareas vacias o con un espacio
 	if (request.body.taskText !== "" && request.body.taskText !== " "){
             
             let task = taskUtils.createTask(request.body.taskText);
             task.done = false;
 
-            daoT.insertTask("usuario@ucm.es", task, (err, callback)=>{
+            daoT.insertTask(user, task, (err, callback)=>{
 
 		if(err) {
                     console.log(err);
@@ -124,8 +128,10 @@ app.post("/finish", function(request, response) {
 
 //Eliminar tareas completadas de usuario@ucm.es
 app.get("/deleteCompleted", (request, response) => {
+    
+    let user = request.session.currentUser;
 
-    daoT.deleteCompleted("usuario@ucm.es", (err, callback)=>{
+    daoT.deleteCompleted(user, (err, callback)=>{
 
         if(err) {
             console.log(err);
@@ -168,19 +174,9 @@ app.post("/login", (request, response) => {
             else {
 
                 response.status(200);
-                let currentUser = user;
-
-                daoT.getAllTasks(user,(err, taskList )=>{
-
-                    if(err) {
-                        console.log(err);
-                        response.end();
-                    }else{
-                        response.status(200);
-                        response.render("tasks" ,{ taskList:taskList, userEmail:user} );
-                    }
-
-                });
+                request.session.currentUser = user;
+                
+                response.redirect("/tasks");
             }			
         }	
     });	
