@@ -12,6 +12,7 @@ const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
 
 const MySQLStore = express_mysql_session(express_session);
+const app = express();
 
 const sessionStore = new MySQLStore({
     database: "tareas",
@@ -20,8 +21,7 @@ const sessionStore = new MySQLStore({
     password: "awaw"
 })
 
-const app = express();
-
+//Middleware sesion
 const middlewareSession = express_session({
     saveUninitialized: false,
     secret: "foobar34",
@@ -30,7 +30,6 @@ const middlewareSession = express_session({
 });
 
 app.use(middlewareSession);
-
 
 let pool = mysql.createPool({
     database: config.mysqlConfig.database,
@@ -140,65 +139,58 @@ app.get("/deleteCompleted", (request, response) => {
 });
 
 //Manejador del login.html
-
 app.get("/login.html", (request, response) => {	
 	
-		response.status(200);
-        response.render("login", {errorMsg:null});
+    response.status(200);
+    response.render("login", {errorMsg:null});
 	
 });
 
 app.post("/login", (request, response) => {
 	
-	let user = request.body.mail;
-	let pass = request.body.pass;
-	
-	daoU.isUserCorrect(user, pass, (err, callback) => {
-		
-		if(err) {
-			
-			console.log(err);
+    let user = request.body.mail;
+    let pass = request.body.pass;
+
+    daoU.isUserCorrect(user, pass, (err, callback) => {
+
+        if(err) {
+
+            console.log(err);
             response.end();
-			
-			
-		}
-		else {
-			
-			if(!callback){				
-				
-				response.status(400);
-				response.render("login", {errorMsg:"Dirección de correo y/o contraseña no validos"});
-			}
-			else {
-				
-				
-				response.status(200);
-				let currentUser = user;
-				
-				daoT.getAllTasks(currentUser,(err, taskList )=>{
+        }
+        else {
 
-					if(err) {
-						console.log(err);
-						response.end();
-					}else{
-						response.status(200);
-						response.render("tasks" ,{ taskList:taskList, userEmail:currentUser} );
-					}
+            if(!callback){				
 
-				});
-			}		
-			
-			
-		}	
-		
-	});	
+                response.status(400);
+                response.render("login", {errorMsg:"Dirección de correo y/o contraseña no validos"});
+            }
+            else {
+
+                response.status(200);
+                let currentUser = user;
+
+                daoT.getAllTasks(user,(err, taskList )=>{
+
+                    if(err) {
+                        console.log(err);
+                        response.end();
+                    }else{
+                        response.status(200);
+                        response.render("tasks" ,{ taskList:taskList, userEmail:user} );
+                    }
+
+                });
+            }			
+        }	
+    });	
 });
 
-
+//Desconectar usuario
 app.get("/logout", (request, response) => {
 
 	response.status(200);
 	request.session.destroy();
-	response.redirect("login.html");
+	response.redirect("/login.html");
 
 });
