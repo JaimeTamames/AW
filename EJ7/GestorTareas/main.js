@@ -43,6 +43,7 @@ let pool = mysql.createPool({
 let daoT = new daoTasks.DAOTasks(pool);
 let daoU = new daoUsers.DAOUsers(pool);
 
+
 app.listen(config.port, function (err) {
     if (err) {
         console.log("No se ha podido iniciar el servidor.")
@@ -63,9 +64,11 @@ app.set("views", path.join(__dirname, "views"));
 //Obtener tareas de usuario@ucm.es
 app.get("/tasks", (request, response) => {
     
+	
     let user = request.session.currentUser;
+	app.locals.userMail = request.session.currentUser;
 
-    daoT.getAllTasks(user,(err, taskList )=>{
+    daoT.getAllTasks(app.locals.userMail,(err, taskList )=>{
 
 			if(err) {
 				console.log(err);
@@ -73,7 +76,9 @@ app.get("/tasks", (request, response) => {
 			}else{
 				response.status(200);
 				
-				imagenUsuario:daoU.getUserImageName(user, (err, callback) => {						
+				app.locals.taskList = taskList;
+				
+				imagenUsuario:daoU.getUserImageName(app.locals.userMail, (err, callback) => {						
 						if (err){
 							console.log(err);
 							response.end();
@@ -83,7 +88,9 @@ app.get("/tasks", (request, response) => {
 							else
 								callback = "profile_imgs/" + callback;
 							
-							response.render("tasks" ,{ taskList:taskList, userMail:user, imagenUsuario:callback});
+							app.locals.imagenUsuario = callback;
+										
+							response.render("tasks");
 						}
 					})			
 			}
