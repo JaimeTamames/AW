@@ -12,6 +12,7 @@ const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
 
 const MySQLStore = express_mysql_session(express_session);
+const app = express();
 
 const sessionStore = new MySQLStore({
     database: "tareas",
@@ -20,8 +21,7 @@ const sessionStore = new MySQLStore({
     password: "awaw"
 })
 
-const app = express();
-
+//Middleware sesion
 const middlewareSession = express_session({
     saveUninitialized: false,
     secret: "foobar34",
@@ -30,7 +30,6 @@ const middlewareSession = express_session({
 });
 
 app.use(middlewareSession);
-
 
 let pool = mysql.createPool({
     database: config.mysqlConfig.database,
@@ -63,15 +62,17 @@ app.set("views", path.join(__dirname, "views"));
 
 //Obtener tareas de usuario@ucm.es
 app.get("/tasks", (request, response) => {
+    
+    let user = request.session.currentUser;
 
-    daoT.getAllTasks("usuario@ucm.es",(err, taskList )=>{
+    daoT.getAllTasks(user,(err, taskList )=>{
 
         if(err) {
             console.log(err);
             response.end();
         }else{
             response.status(200);
-            response.render("tasks" ,{ taskList:taskList} );
+            response.render("tasks" ,{ taskList:taskList, userMail:user} );
         }
 
     });
@@ -83,13 +84,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //Añadir tareas a usuario@ucm.es
 app.post("/addTask", function(request, response) {
     
+        let user = request.session.currentUser;
+    
         //Para no añadir tareas vacias o con un espacio
 	if (request.body.taskText !== "" && request.body.taskText !== " "){
             
             let task = taskUtils.createTask(request.body.taskText);
             task.done = false;
 
-            daoT.insertTask("usuario@ucm.es", task, (err, callback)=>{
+            daoT.insertTask(user, task, (err, callback)=>{
 
 		if(err) {
                     console.log(err);
@@ -125,8 +128,10 @@ app.post("/finish", function(request, response) {
 
 //Eliminar tareas completadas de usuario@ucm.es
 app.get("/deleteCompleted", (request, response) => {
+    
+    let user = request.session.currentUser;
 
-    daoT.deleteCompleted("usuario@ucm.es", (err, callback)=>{
+    daoT.deleteCompleted(user, (err, callback)=>{
 
         if(err) {
             console.log(err);
@@ -140,26 +145,24 @@ app.get("/deleteCompleted", (request, response) => {
 });
 
 //Manejador del login.html
-
 app.get("/login.html", (request, response) => {	
 	
-		response.status(200);
-        response.render("login", {errorMsg:null});
+    response.status(200);
+    response.render("login", {errorMsg:null});
 	
 });
 
 app.post("/login", (request, response) => {
 	
-	let user = request.body.mail;
-	let pass = request.body.pass;
-	
-	daoU.isUserCorrect(user, pass, (err, callback) => {
-		
-		if(err) {
-			
-			console.log(err);
-            response.end();
-			
+    let user = request.body.mail;
+    let pass = request.body.pass;
+
+    daoU.isUserCorrect(user, pass, (err, callback) => {
+
+        if(err) {
+
+            console.log(err);
+            response.end();		
 			
 		}
 		else {
@@ -192,13 +195,31 @@ app.post("/login", (request, response) => {
 		}	
 		
 	});	
+     /*
+        }
+        else {
+
+            if(!callback){				
+
+                response.status(400);
+                response.render("login", {errorMsg:"Dirección de correo y/o contraseña no validos"});
+            }
+            else {
+
+                response.status(200);
+                request.session.currentUser = user;
+                
+                response.redirect("/tasks");
+            }			
+        }	
+    });	*/
 });
 
-
+//Desconectar usuario
 app.get("/logout", (request, response) => {
 
 	response.status(200);
 	request.session.destroy();
-	response.redirect("login.html");
+	response.redirect("/login.html");
 
 });
