@@ -173,16 +173,16 @@ app.post("/login", (request, response) => {
 				
 				
 				response.status(200);
-				let currentUser = user;
+				request.session.currentUser = user;
 				
-				daoT.getAllTasks(currentUser,(err, taskList )=>{
+				daoT.getAllTasks(user,(err, taskList )=>{
 
 					if(err) {
 						console.log(err);
 						response.end();
 					}else{
 						response.status(200);
-						response.render("tasks" ,{ taskList:taskList, userEmail:currentUser} );
+						response.render("tasks" ,{ taskList:taskList, userEmail:user} );
 					}
 
 				});
