@@ -67,14 +67,26 @@ app.get("/tasks", (request, response) => {
 
     daoT.getAllTasks(user,(err, taskList )=>{
 
-        if(err) {
-            console.log(err);
-            response.end();
-        }else{
-            response.status(200);
-            response.render("tasks" ,{ taskList:taskList, userMail:user} );
-        }
-
+			if(err) {
+				console.log(err);
+				response.end();
+			}else{
+				response.status(200);
+				
+				imagenUsuario:daoU.getUserImageName(user, (err, callback) => {						
+						if (err){
+							console.log(err);
+							response.end();
+						}else {
+							if(callback	=== null)					
+								callback = "img/NoPerfil.png";
+							else
+								callback = "profile_imgs/" + callback;
+							
+							response.render("tasks" ,{ taskList:taskList, userMail:user, imagenUsuario:callback});
+						}
+					})			
+			}
     });
 });
  
@@ -94,7 +106,7 @@ app.post("/addTask", function(request, response) {
 
             daoT.insertTask(user, task, (err, callback)=>{
 
-		if(err) {
+			if(err) {
                     console.log(err);
                     response.end();
                 }else{
@@ -165,38 +177,6 @@ app.post("/login", (request, response) => {
             response.end();		
 			
 		}
-		else {
-			
-			if(!callback){				
-				
-				response.status(400);
-				response.render("login", {errorMsg:"Dirección de correo y/o contraseña no validos"});
-			}
-			else {
-				
-				
-				response.status(200);
-				request.session.currentUser = user;
-				
-				daoT.getAllTasks(user,(err, taskList )=>{
-
-					if(err) {
-						console.log(err);
-						response.end();
-					}else{
-						response.status(200);
-						response.render("tasks" ,{ taskList:taskList, userEmail:user} );
-					}
-
-				});
-			}		
-			
-			
-		}	
-		
-	});	
-     /*
-        }
         else {
 
             if(!callback){				
@@ -212,7 +192,7 @@ app.post("/login", (request, response) => {
                 response.redirect("/tasks");
             }			
         }	
-    });	*/
+    });	
 });
 
 //Desconectar usuario
