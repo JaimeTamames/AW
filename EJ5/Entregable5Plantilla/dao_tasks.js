@@ -51,7 +51,7 @@ class DAOTasks {
                     	callback(null, undefined);
                 	} else {
 						
-						let task, i = 0, aux;
+						let task = [], i = 0, aux;
 						
 						while(i < rows.length){
 							
@@ -66,15 +66,15 @@ class DAOTasks {
 							aux.push(rows[i].tag);
 							
 							if(rows[i].tag === null){
-								task = [rows[i].id, rows[i].text, rows[i].done];
+								task.push([rows[i].id, rows[i].text, rows[i].done]);
 							}else{
-								task = [rows[i].id, rows[i].text, rows[i].done, aux];
+								task.push([rows[i].id, rows[i].text, rows[i].done, aux]);
 							}
 							
-							callback(null, task);
 							i++;			
                 		}
 						
+						callback(null, task);
                 	}
                 }
             );    
@@ -127,10 +127,10 @@ class DAOTasks {
                 				(err, rows) => {
                     				if (err) { callback(err); return; }
 									connection.release();
+									callback(null, undefined);
                 				}
             				);
                 		} 
-						callback(null, undefined);
 					}
                 }
             );    
