@@ -59,8 +59,12 @@
 						<img class="perfilImg" src="<%= imagenUsuario%>"/>	
 						
 					</div>
-					
-					<label class="fuentePropia negrita fuenteMedia blanco espacioIzq">50 pts</label>
+					<% if(UserPoints === null) {%>
+					<label class="fuentePropia negrita fuenteMedia blanco espacioIzq">No Points</label>
+					<% }
+					else {%>
+					<label class="fuentePropia negrita fuenteMedia blanco espacioIzq"><%= UserPoints%> pts</label>
+					<%}%>
 					
 				</div>
 				
@@ -89,9 +93,24 @@
 			
 				<div><label  class="fuenteMedia fuentePropia negrita"><%= userMail %></label></div>
 				<div class="datosPerfilSecundariosBox">
-					<div class="datoSecundario"><label  class="fuenteMedia">33 años</label></div>
-					<div class="datoSecundario"><label  class="fuenteMedia">Hombre</label></div>
-					<div class="datoSecundario"><label  class="fuenteMedia">50 puntos</label></div>
+					<% if(UserAge === null) {%>
+					<div class="datoSecundario"><label  class="fuenteMedia">Edad no especificada</label></div>
+					<%}
+					else {%>					
+						<div class="datoSecundario"><label  class="fuenteMedia"><%= UserAge%> Años</label></div>
+					<% }
+					if(UserSex === null) {%>
+						<div class="datoSecundario"><label  class="fuenteMedia">Sexo no especificado</label></div>
+					<% }
+					else {%>
+						<div class="datoSecundario"><label  class="fuenteMedia"><%= UserSex%></label></div>
+					<%}
+					if(UserPoints === null) {%>
+					<div class="datoSecundario"><label  class="fuenteMedia">No Points</label></div>
+					<% }
+					else {%>
+					<div class="datoSecundario"><label  class="fuenteMedia"><%= UserPoints%> Puntos</label></div>
+					<%}%>
 				</div>
 			</div>
 			

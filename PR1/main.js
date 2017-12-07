@@ -6,7 +6,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const config = require("./config");
 const daoTasks = require("./dao_tasks");
-const daoUsers = require("./dao_users");
+const daoUsers = require("./dao_users_fb");
 const taskUtils = require("./task_utils");
 const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
@@ -211,7 +211,7 @@ app.get("/logout", (request, response) => {
 
 });
 
-//Manejadores PR1
+//Manejadores PR1 <-------------------------------------------------------------- A PARTIR DE AQUI----------
 
 app.get("/index.html", (request, response) => {
 
@@ -253,22 +253,69 @@ app.post("/conectar", (request, response) => {
                 response.status(200);
                 request.session.currentUser = app.locals.userMail;
 				
-				imagenUsuario:daoU.getUserImageName(app.locals.userMail, (err, callback) => {						
+				//Imagen usuario
+				daoU.getUserImageName(app.locals.userMail, (err, callback) => {						
 						if (err){
 							console.log(err);
 							response.end();
 						}else {
 							if(callback	=== null)					
-								callback = "profile_imgs/NoProfile.png";
+								app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
 							else
-								callback = "profile_imgs/" + callback;
+								app.locals.imagenUsuario = "profile_imgs/" + callback;
 							
-							app.locals.imagenUsuario = callback;
-										
-							response.render("My_profile");
+							//Sexo del Usuario
+							daoU.getUserSex(app.locals.userMail, (err, callback) => {						
+								if (err){
+									console.log(err);
+									response.end();
+								}else {
+									if(callback	=== undefined)					
+										app.locals.UserSex = null;							
+									else
+										app.locals.UserSex = callback;
+									
+									
+									//Puntos del usuario
+									UserPoints:daoU.getUserPoints(app.locals.userMail, (err, callback) => {						
+											if (err){
+												console.log(err);
+												response.end();
+											}else {
+												if(callback	=== undefined)					
+													app.locals.UserPoints = null;							
+												else
+													app.locals.UserPoints = callback;
+												
+												
+												//Edad del usuario
+												
+												UserAge:daoU.getUserAge(app.locals.userMail, (err, callback) => {						
+														if (err){
+															console.log(err);
+															response.end();
+														}else {
+															if(callback	=== undefined)					
+																app.locals.UserAge = null;							
+															else
+																app.locals.UserAge = callback;
+															
+														}
+														
+														//Renderizar plantilla
+														response.render("My_profile");
+														
+												})			
+												
+												
+											}
+									})					
+									
+								}
+							})
+																	
 						}
-				})
-                
+				})                
             }			
         }	
     });	
