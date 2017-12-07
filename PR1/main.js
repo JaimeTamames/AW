@@ -252,8 +252,23 @@ app.post("/conectar", (request, response) => {
 
                 response.status(200);
                 request.session.currentUser = app.locals.userMail;
+				
+				imagenUsuario:daoU.getUserImageName(app.locals.userMail, (err, callback) => {						
+						if (err){
+							console.log(err);
+							response.end();
+						}else {
+							if(callback	=== null)					
+								callback = "profile_imgs/NoProfile.png";
+							else
+								callback = "profile_imgs/" + callback;
+							
+							app.locals.imagenUsuario = callback;
+										
+							response.render("My_profile");
+						}
+				})
                 
-                response.render("My_profile");
             }			
         }	
     });	
