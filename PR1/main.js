@@ -15,7 +15,7 @@ const MySQLStore = express_mysql_session(express_session);
 const app = express();
 
 const sessionStore = new MySQLStore({
-    database: "tareas",
+    database: "facebluff",
     host: "localhost",
     user: "root",
     password: "awaw"
