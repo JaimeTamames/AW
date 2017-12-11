@@ -14,7 +14,7 @@
 	
 		<div class="logoBox">
 			
-			<img class="logoImg" src="RecursosGraficosP1/img/Logo.png"/>
+			<img class="logoImg" src="img/Logo.png"/>
 			
 		</div>
 		
@@ -22,28 +22,28 @@
 	
 			<div class="linksMenu">
 			
-				<a href="my_profile.html" class="menu">
+				<a href="/myProfile" class="menu">
 					<p class="fuentePropia negrita fuenteGrande blanco">Perfil</p>
 				</a>
 			
 			</div>
 			<div class="linksMenu"> 
 			
-				<a href="friends.html" class="menu">
+				<a href="/friends" class="menu">
 					<p class="fuentePropia negrita fuenteGrande blanco">Amigos</p>
 				</a>
 			
 			</div>
 			<div class="linksMenu"> 
 			
-				<a href="questions.html" class="menu">
+				<a href="/questions" class="menu">
 					<p class="fuentePropia negrita fuenteGrande blanco">Preguntas</p>
 				</a>
 			
 			</div>
 			<div class="linksMenu"> 
 			
-				<a href="index.html" class="menu">
+				<a href="/logOut" class="menu">
 					<p class="fuentePropia negrita fuenteGrande blanco">Desconectar</p>
 				</a>
 			
@@ -56,11 +56,16 @@
 				
 					<div class="perfilImgMenuBox">
 					
-						<img class="perfilImg" src="RecursosGraficosP1/icons/Casper-01.png"/>	
+						<img class="perfilImg" src="<%= imagenUsuario%>"/>	
 						
 					</div>
 					
-					<label class="fuentePropia negrita fuenteMedia blanco espacioIzq">50 pts</label>
+					<% if(UserPoints === null) {%>
+					<label class="fuentePropia negrita fuenteMedia blanco espacioIzq">No Points</label>
+					<% }
+					else {%>
+					<label class="fuentePropia negrita fuenteMedia blanco espacioIzq"><%= UserPoints%> pts</label>
+					<%}%>
 					
 				</div>
 				

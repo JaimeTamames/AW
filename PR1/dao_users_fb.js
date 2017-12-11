@@ -2,12 +2,12 @@
 
 "use strict";
 
-
 /**
  * Proporciona operaciones para la gestión de usuarios
  * en la base de datos.
  */
 class DAOUsers {
+    
     /**
      * Inicializa el DAO de usuarios.
      * 
@@ -34,27 +34,30 @@ class DAOUsers {
      */
     isUserCorrect(email, password, callback) {
 
-        /* Implementar */
-		this.pool.getConnection((err, connection) => {
-            if (err) { callback (err); return; }
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
             connection.query(
-                "SELECT *" +
-                " FROM user" +
-                " WHERE email = ? AND password = ?", 
-                [email, password],
-                (err, rows) => {
-                    if (err) { callback(err); return; }
-					connection.release();
-                    if (rows.length === 0) {
-                    	callback(null, false);
-                	} else {
-                    	callback(null, true);
-                	}
+                    "SELECT *" +
+                    " FROM user" +
+                    " WHERE email = ? AND password = ?",
+                    [email, password],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
                 }
-            );    
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, false);
+                } else {
+                    callback(null, true);
+                }
+            }
+            );
         });
-		
-        
     }
 
     /**
@@ -70,11 +73,17 @@ class DAOUsers {
      */
     getUserImageName(email, callback) {
         this.pool.getConnection((err, connection) => {
-            if (err) { callback(err); return; }
+            if (err) {
+                callback(err);
+                return;
+            }
             connection.query("SELECT img FROM user WHERE email = ?",
-            [email],
-            (err, rows) => {
-                if (err) { callback(err); return; }
+                    [email],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
                 connection.release();
                 if (rows.length === 0) {
                     callback(null, undefined);
@@ -85,82 +94,141 @@ class DAOUsers {
         });
     }
 
+    getUserSex(email, callback) {
 
-	getUserSex(email, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT sexo" +
+                    " FROM user" +
+                    " WHERE email = ?",
+                    [email],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0].sexo);
+                }
+            }
+            );
+        });
+    }
 
-        /* Implementar */
-		this.pool.getConnection((err, connection) => {
+    getUserAge(email, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT edad" +
+                    " FROM user" +
+                    " WHERE email = ?",
+                    [email],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0].edad);
+                }
+            }
+            );
+        });
+    }
+
+    getUserPoints(email, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT puntuacion" +
+                    " FROM user" +
+                    " WHERE email = ?",
+                    [email],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0].puntuacion);
+                }
+            }
+            );
+        });
+    }
+
+    getUserName(email, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT nombre" +
+                    " FROM user" +
+                    " WHERE email = ?",
+                    [email],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0].nombre);
+                }
+            }
+            );
+        });
+    }
+    
+    //Hay que corregir imagen y edad
+    addUser(user, callback){
+        
+        console.log(user);
+        
+        this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
             connection.query(
-                "SELECT sexo" +
-                " FROM user" +
-                " WHERE email = ?", 
-                [email],
-                (err, rows) => {
+                "INSERT INTO user (email, password, nombre, sexo, puntuacion, edad)" +
+				"VALUES (?, ?, ?, ?, ?, ?)",
+                [user.email, user.pass, user.nombre, user.sexo, 0, 18],
+                (err, result) => {
                     if (err) { callback(err); return; }
-					connection.release();
-                    if (rows.length === 0) {
-                    	callback(null, undefined);
-                	} else {
-                    	callback(null, rows[0].sexo);
-                	}
+                    else {
+			
+                        connection.release();
+                        callback(null, undefined);
+                    }
                 }
             );    
         });
-		
-        
     }
-	
-	getUserAge(email, callback) {
 
-        /* Implementar */
-		this.pool.getConnection((err, connection) => {
-            if (err) { callback (err); return; }
-            connection.query(
-                "SELECT edad" +
-                " FROM user" +
-                " WHERE email = ?", 
-                [email],
-                (err, rows) => {
-                    if (err) { callback(err); return; }
-					connection.release();
-                    if (rows.length === 0) {
-                    	callback(null, undefined);
-                	} else {
-                    	callback(null, rows[0].edad);
-                	}
-                }
-            );    
-        });
-		
-        
-    }
-	
-	getUserPoints(email, callback) {
-
-        /* Implementar */
-		this.pool.getConnection((err, connection) => {
-            if (err) { callback (err); return; }
-            connection.query(
-                "SELECT puntuacion" +
-                " FROM user" +
-                " WHERE email = ?", 
-                [email],
-                (err, rows) => {
-                    if (err) { callback(err); return; }
-					connection.release();
-                    if (rows.length === 0) {
-                    	callback(null, undefined);
-                	} else {
-                    	callback(null, rows[0].puntuacion);
-                	}
-                }
-            );    
-        });
-		
-        
-    }
-	
 }
 
 module.exports = {

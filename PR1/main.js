@@ -5,11 +5,11 @@ const mysql = require("mysql");
 const path = require("path");
 const bodyParser = require("body-parser");
 const config = require("./config");
-const daoTasks = require("./dao_tasks");
 const daoUsers = require("./dao_users_fb");
-const taskUtils = require("./task_utils");
 const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
+
+var expressValidator = require("express-validator");
 
 const MySQLStore = express_mysql_session(express_session);
 const app = express();
@@ -38,12 +38,10 @@ let pool = mysql.createPool({
     password: config.mysqlConfig.password
 });
 
-
 //Pool de conexiones a la BBDD
-let daoT = new daoTasks.DAOTasks(pool);
 let daoU = new daoUsers.DAOUsers(pool);
 
-
+//Estado del servidor
 app.listen(config.port, function (err) {
     if (err) {
         console.log("No se ha podido iniciar el servidor.")
@@ -61,280 +59,212 @@ app.use(express.static(ficherosEstaticos));
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-//Obtener tareas de usuario@ucm.es
-app.get("/tasks", (request, response) => {
-    
-	
-    let user = request.session.currentUser;
-	app.locals.userMail = request.session.currentUser;
-
-    daoT.getAllTasks(app.locals.userMail,(err, taskList )=>{
-
-			if(err) {
-				console.log(err);
-				response.end();
-			}else{
-				response.status(200);
-				
-				app.locals.taskList = taskList;
-				
-				imagenUsuario:daoU.getUserImageName(app.locals.userMail, (err, callback) => {						
-						if (err){
-							console.log(err);
-							response.end();
-						}else {
-							if(callback	=== null)					
-								callback = "img/NoPerfil.png";
-							else
-								callback = "profile_imgs/" + callback;
-							
-							app.locals.imagenUsuario = callback;
-										
-							response.render("tasks");
-						}
-					})			
-			}
-    });
-});
- 
 //Declaracion del middelware bodyParser para obtener el contenido de la peticion post
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(expressValidator());
 
-//Añadir tareas a usuario@ucm.es
-app.post("/addTask", function(request, response) {
+app.get("/", (request, response) => {
+
+    response.status(200);
+    response.redirect("/index");
+});
+
+app.get("/index", (request, response) => {
+
+    response.status(200);
+    response.render("index", {errorMsg: null});
+});
+
+//Login, boton conectar de la pagina index
+app.post("/conectar", (request, response) => {
     
-        let user = request.session.currentUser;
+    let user = request.body.email;
+    let pass = request.body.pass;
+    app.locals.UserMail = user;
+
+    daoU.isUserCorrect(user, pass, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+
+        } else {
+
+            if (!callback) {
+
+                response.status(400);
+                response.render("index", {errorMsg: "Dirección de correo y/o contraseña no validos"});
+            } else {
+
+                response.status(200);
+                request.session.currentUser = user;
+
+                //Imagen usuario
+                daoU.getUserImageName(user, (err, callback) => {
+                    if (err) {
+                        console.log(err);
+                        response.end();
+                    } else {
+                        if (callback === null)
+                            app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
+                        else
+                            app.locals.imagenUsuario = "profile_imgs/" + callback;
+
+                        //Sexo del Usuario
+                        daoU.getUserSex(user, (err, callback) => {
+                            if (err) {
+                                console.log(err);
+                                response.end();
+                            } else {
+                                if (callback === undefined)
+                                    app.locals.UserSex = null;
+                                else
+                                    app.locals.UserSex = callback;
+
+                                //Puntos del usuario
+                                daoU.getUserPoints(user, (err, callback) => {
+                                    if (err) {
+                                        console.log(err);
+                                        response.end();
+                                    } else {
+                                        if (callback === undefined)
+                                            app.locals.UserPoints = null;
+                                        else
+                                            app.locals.UserPoints = callback;
+
+                                        //Edad del usuario
+                                        daoU.getUserAge(user, (err, callback) => {
+                                            if (err) {
+                                                console.log(err);
+                                                response.end();
+                                            } else {
+                                                if (callback === undefined)
+                                                    app.locals.UserAge = null;
+                                                else{
+                                                    app.locals.UserAge = callback;
+                                                
+                                                //Nombre del usuario
+                                                    daoU.getUserName(user, (err, callback) => {
+                                                        if (err) {
+                                                            console.log(err);
+                                                            response.end();
+                                                        } else {
+                                                            if (callback === undefined)
+                                                                app.locals.UserName = null;
+                                                            else{
+                                                                app.locals.UserName = callback;
+                                                                
+                                                                //Renderizar plantilla
+                                                                response.redirect("myProfile");
+                                                            }
+                                                        }
+                                                    })
+                                                }    
+                                            }
+                                        })
+                                    }
+                                })
+
+                            }
+                        })
+                    }
+                })
+            }
+        }
+    });
+});
+
+//Pagina nuevo usuario
+app.get("/nuevoUsuario", (request, response) => {
+
+    response.status(200);
     
-        //Para no añadir tareas vacias o con un espacio
-	if (request.body.taskText !== "" && request.body.taskText !== " "){
+    var values = {
+                sexo: "Masculino",
+                fechaNacimiento: "dd/mm/aaaa"
+            };
+    response.render("newUser", {errores: [], usuario: values});
+});
+
+//Alta usuario, boton crear usuario de la pagina newUser
+app.post("/altaNuevoUsuario", (request, response) => {
+    //response.render("newUser");
+    
+    request.checkBody("email", "Email de usuario vacío").notEmpty();
+    request.checkBody("email", "Dirección de correo no válida").isEmail();
+    request.checkBody("pass", "Contraseña de usuario vacío").notEmpty();
+    request.checkBody("pass", "La contraseña no tiene entre 6 y 20 caracteres").isLength({ min: 6, max: 20 });
+    request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
+    //request.checkBody("nombre", "Nombre de usuario no válido").matches(/^[A-Z0-9]*$/i);
+    request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").isBefore();
+    
+    request.getValidationResult().then((result) => {
+        if (result.isEmpty()) {
             
-            let task = taskUtils.createTask(request.body.taskText);
-            task.done = false;
+            var user = {
+                email: request.body.email,
+                pass: request.body.pass,
+                nombre: request.body.nombre,
+                sexo: request.body.sexo,
+                fechaNacimiento: request.body.fechaNacimiento,
+                img: request.body.imagenPerfil
+            }
+            
+            daoU.addUser(user, (err, callback)=>{
 
-            daoT.insertTask(user, task, (err, callback)=>{
-
-			if(err) {
+		if(err) {
                     console.log(err);
                     response.end();
                 }else{
                     response.status(200);
-                    response.redirect("/tasks");
+                    response.render("newUser", {errores: [], usuario: {} });
+                    console.log("Todo chachi");
                 }
             });
-	}else {
-		
-		response.status(200);
-		response.redirect("/tasks");	
-	}	
-});
-
-//Marcar tareas finalizadas de usuario@ucm.es
-app.post("/finish", function(request, response) {
-    
-    let taskId = request.body.taskId;
-
-    daoT.markTaskDone(taskId, (err, callback)=>{
-
-        if(err) {
-            console.log(err);
-            response.end();
-        }else{
-            response.status(200);
-            response.redirect("/tasks");
+            
+            //Si todo bien insertar en la BBDD y redireccionar a myProfile
+            //response.render("myProfile");
+            
+        } else {
+            //console.log(result.array());
+            //console.log(result.mapped());
+            var usuarioIncorrecto = {
+                email: request.body.email,
+                pass: request.body.pass,
+                nombre: request.body.nombre,
+                sexo: request.body.sexo,
+                fechaNacimiento: request.body.fechaNacimiento,
+                img: request.body.imagenPerfil
+            };
+            response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto });
         }
     });
 });
 
-//Eliminar tareas completadas de usuario@ucm.es
-app.get("/deleteCompleted", (request, response) => {
-    
-    let user = request.session.currentUser;
+app.get("/myProfile", (request, response) => {
 
-    daoT.deleteCompleted(user, (err, callback)=>{
-
-        if(err) {
-            console.log(err);
-            response.end();
-        }else{
-            response.status(200);
-            response.redirect("/tasks");
-        }
-
-    });
-});
-
-//Manejador del login.html
-app.get("/login.html", (request, response) => {	
-	
     response.status(200);
-    response.render("login", {errorMsg:null});
-	
+    response.render("myProfile");
 });
 
-app.post("/login", (request, response) => {
-	
-    let user = request.body.mail;
-    let pass = request.body.pass;
+app.get("/friends", (request, response) => {
 
-    daoU.isUserCorrect(user, pass, (err, callback) => {
+    response.status(200);
+    response.render("friends");
+});
 
-        if(err) {
+app.get("/questions", (request, response) => {
 
-            console.log(err);
-            response.end();		
-			
-		}
-        else {
-
-            if(!callback){				
-
-                response.status(400);
-                response.render("login", {errorMsg:"Dirección de correo y/o contraseña no validos"});
-            }
-            else {
-
-                response.status(200);
-                request.session.currentUser = user;
-                
-                response.redirect("/tasks");
-            }			
-        }	
-    });	
+    response.status(200);
+    response.render("questions");
 });
 
 //Desconectar usuario
-app.get("/logout", (request, response) => {
-
-	response.status(200);
-	request.session.destroy();
-	response.redirect("/login.html");
-
-});
-
-//Manejadores PR1 <-------------------------------------------------------------- A PARTIR DE AQUI----------
-
-app.get("/index.html", (request, response) => {
+app.get("/logOut", (request, response) => {
 
 	response.status(200);
 	request.session.destroy();
 	response.redirect("/index");
 
 });
-
-app.get("/index", (request, response) => {	
-	
-    response.status(200);
-    response.render("index", {errorMsg:null});
-	
-});
-
-app.post("/conectar", (request, response) => {
-	
-	app.locals.userMail = request.body.email;
-    let pass = request.body.pass;
-
-    daoU.isUserCorrect(app.locals.userMail, pass, (err, callback) => {
-
-        if(err) {
-
-            console.log(err);
-            response.end();		
-			
-		}
-        else {
-
-            if(!callback){				
-
-                response.status(400);
-                response.render("index", {errorMsg:"Dirección de correo y/o contraseña no validos"});
-            }
-            else {
-
-                response.status(200);
-                request.session.currentUser = app.locals.userMail;
-				
-				//Imagen usuario
-				daoU.getUserImageName(app.locals.userMail, (err, callback) => {						
-						if (err){
-							console.log(err);
-							response.end();
-						}else {
-							if(callback	=== null)					
-								app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
-							else
-								app.locals.imagenUsuario = "profile_imgs/" + callback;
-							
-							//Sexo del Usuario
-							daoU.getUserSex(app.locals.userMail, (err, callback) => {						
-								if (err){
-									console.log(err);
-									response.end();
-								}else {
-									if(callback	=== undefined)					
-										app.locals.UserSex = null;							
-									else
-										app.locals.UserSex = callback;
-									
-									
-									//Puntos del usuario
-									UserPoints:daoU.getUserPoints(app.locals.userMail, (err, callback) => {						
-											if (err){
-												console.log(err);
-												response.end();
-											}else {
-												if(callback	=== undefined)					
-													app.locals.UserPoints = null;							
-												else
-													app.locals.UserPoints = callback;
-												
-												
-												//Edad del usuario
-												
-												UserAge:daoU.getUserAge(app.locals.userMail, (err, callback) => {						
-														if (err){
-															console.log(err);
-															response.end();
-														}else {
-															if(callback	=== undefined)					
-																app.locals.UserAge = null;							
-															else
-																app.locals.UserAge = callback;
-															
-														}
-														
-														//Renderizar plantilla
-														response.render("My_profile");
-														
-												})			
-												
-												
-											}
-									})					
-									
-								}
-							})
-																	
-						}
-				})                
-            }			
-        }	
-    });	
-	
-});
-
-
-app.get ("/NuevoUsuario", (request, response) => {	
-	
-    response.status(200);
-    response.render("NuevoUsuario");
-	
-});
-
-app.get ("/NuevoUsuario.html", (request, response) => {	
-	
-    response.status(200);
-    response.redirect("NuevoUsuario");
-	
-});
-
-

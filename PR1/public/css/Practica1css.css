@@ -351,9 +351,8 @@ body{
 }
 
 div[class~=error] {
-	justify-content:space-between;
 	color: red;
-	font-size: 30px;
+	font-size: 25px;
 	font-style: bold;
 	font-family: Gloria Hallelujah;
 }
