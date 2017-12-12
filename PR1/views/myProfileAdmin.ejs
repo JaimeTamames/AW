@@ -3,7 +3,7 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Perfil - FaceBluff</title>
+        <title>Preferencias - FaceBluff</title>
     </head>
 
     <body>
@@ -78,7 +78,7 @@
             <div class="cuerpoBox">	
 
                 <div>
-                    <p class="fuentePropia negrita fuenteGrande">Tu perfil</p>
+                    <p class="fuentePropia negrita fuenteGrande">Mis datos</p>
                 </div>
 
                 <div class="perfilBox">
@@ -91,44 +91,63 @@
 
                     <div class="datosPerfil">
 
-                        <div><label class="fuenteMedia fuentePropia negrita"><%= UserName%></label></div>
+                        <span class="fuenteMedia fuentePropia negrita">
+                            <label>Nombre: </label>
+                            <input name="nombre" type="text" value="<%= UserName %>">
+                        </span>
+
                         <div class="datosPerfilSecundariosBox">
-                            <% if(UserAge === null) {%>
-                            <div class="datoSecundario"><label  class="fuenteMedia">Edad no especificada</label></div>
-                            <%}
-                            else {%>					
-                            <div class="datoSecundario"><label  class="fuenteMedia"><%= UserAge%> Años</label></div>
-                            <% }
-                            if(UserSex === null) {%>
-                            <div class="datoSecundario"><label  class="fuenteMedia">Sexo no especificado</label></div>
-                            <% }
-                            else {%>
-                            <div class="datoSecundario"><label  class="fuenteMedia"><%= UserSex%></label></div>
-                            <%}
-                            if(UserPoints === null) {%>
-                            <div class="datoSecundario"><label  class="fuenteMedia">No Points</label></div>
-                            <% }
-                            else {%>
-                            <div class="datoSecundario"><label  class="fuenteMedia"><%= UserPoints%> Puntos</label></div>
-                            <%}%>
+
+                            <span class="datoSecundario fuenteMedia">
+                                <label>Email: </label>
+                                <input name="mail" type="text" value="<%= UserMail %>">
+                            </span>
+                            <span class="datoSecundario fuenteMedia">
+                                <label>Contraseña actual: </label>
+                                <input name="passActual" type="password" value="<%= 111 %>">
+                            </span>
+                            <span class="datoSecundario fuenteMedia">
+                                <label>Contraseña nueva: </label>
+                                <input name="passNueva" type="password" value="<%= 111 %>">
+                            </span>
+                            <span class="datoSecundario fuenteMedia">
+                                <label>Fecha nacimiento: </label>
+                                <input type="datetime" value="<%= UserAge %>">
+                            </span>
+                            <span class="datoSecundario fuenteMedia">
+                                <label>Sexo: </label>
+                                <label class="espacioIzq espacioDer">
+                                    <input type="radio" name="sexo" value="Masculino" <% if(UserSex == "Masculino"){ %> checked <%}%> > Masculino
+                                </label>
+
+                                <label class="espacioIzq espacioDer">
+                                    <input type="radio" name="sexo" value="Femenino" <% if(UserSex == "Femenino"){ %> checked <%}%> > Femenino
+                                </label>
+
+                                <label class="espacioIzq espacioDer">
+                                    <input type="radio" name="sexo" value="Otro" <% if(UserSex == "Otro"){ %> checked <%}%> > Otro
+                                </label>
                         </div>
                     </div>
 
                 </div>
 
-                <div class="botonModificarPerfilBox">
 
-                    <form action="/modificarPerfil" method="GET" class="modificarPerfilPost">
-
-                        <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Modificar Perfil"/>				
-
-                    </form>
-
-                </div>
 
             </div>
 
+            <div class="botonModificarPerfilBox">
+
+                <form action="/modificarPerfil" method="POST" class="modificarPerfilPost">
+
+                    <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aplicar cambios"/>				
+
+                </form>
+
+            </div>
         </div>
 
-    </body>
+    </div>
+
+</body>
 </html>

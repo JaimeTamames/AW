@@ -248,6 +248,20 @@ app.get("/myProfile", (request, response) => {
     response.render("myProfile");
 });
 
+//Pagina modificar perfil
+app.get("/modificarPerfil", (request, response) => {
+
+    response.status(200);
+    response.render("myProfileAdmin");
+});
+
+//Aplicar cambios,boton de la pagina myProfileAdmin
+app.post("/aplicarCambiosPerfil", (request, response) => {
+
+    response.status(200);
+    response.render("myProfileAdmin");
+});
+
 app.get("/friends", (request, response) => {
 
     response.status(200);

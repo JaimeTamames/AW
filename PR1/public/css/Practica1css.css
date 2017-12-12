@@ -84,7 +84,7 @@ body{
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	margin-left: 20%;
+	padding-left: 20%;
 	height: 60px;
 }
 
@@ -160,6 +160,8 @@ body{
 .datosPerfilSecundariosBox {
 
 	padding-top:20px;
+        display: flex;
+	flex-direction: column;
 	
 }
 
