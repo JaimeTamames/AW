@@ -284,8 +284,6 @@ app.get("/friends", (request, response) => {
 app.get("/questions", (request, response) => {
 
     response.status(200);
-	//app.locals.imagenUsuario = null;
-	//app.locals.UserPoints = 0;
     response.render("questions");
 });
 

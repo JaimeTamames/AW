@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-12-2017 a las 12:47:57
+-- Tiempo de generación: 12-12-2017 a las 19:24:49
 -- Versión del servidor: 10.1.28-MariaDB
 -- Versión de PHP: 5.6.32
 
@@ -39,7 +39,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
-('ZA9qXyzQpD3IYUo2bZTDWHKWjr8jwYyp', 1512733553, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"currentUser\":\"usuario@ucm.es\"}');
+('JxH9ywcxNkYRLPTVl9wWOQNgp6eqtLrq', 1513166477, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"currentUser\":\"jmc@telefonica.com\"}');
 
 -- --------------------------------------------------------
 
@@ -50,19 +50,19 @@ INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
 CREATE TABLE `user` (
   `email` varchar(100) NOT NULL,
   `password` varchar(100) NOT NULL,
-  `nombre` varchar(100) NOT NULL,
   `img` varchar(100) DEFAULT NULL,
   `sexo` varchar(50) DEFAULT NULL,
   `puntuacion` int(11) DEFAULT NULL,
-  `edad` int(11) NOT NULL
+  `edad` int(11) DEFAULT NULL,
+  `nombre` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `user`
 --
 
-INSERT INTO `user` (`email`, `password`, `nombre`, `img`, `sexo`, `puntuacion`, `edad`) VALUES
-('usuario@ucm.es', 'mipass', 'Juan Rodriguez', 'img2315.png', 'Hombre', 55, 35);
+INSERT INTO `user` (`email`, `password`, `img`, `sexo`, `puntuacion`, `edad`, `nombre`) VALUES
+('princesa@monica.com', 'monica', 'Stuart-01.png', 'Femenino', 0, 18, 'Monica Moran');
 
 --
 -- Índices para tablas volcadas
