@@ -14,6 +14,7 @@ var expressValidator = require("express-validator");
 const MySQLStore = express_mysql_session(express_session);
 const app = express();
 
+
 const sessionStore = new MySQLStore({
     database: "facebluff",
     host: "localhost",
@@ -283,6 +284,8 @@ app.get("/friends", (request, response) => {
 app.get("/questions", (request, response) => {
 
     response.status(200);
+	//app.locals.imagenUsuario = null;
+	//app.locals.UserPoints = 0;
     response.render("questions");
 });
 

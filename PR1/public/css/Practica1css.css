@@ -124,6 +124,27 @@ body{
 }
 
 
+.pregunta {
+	
+	background-color: #FCF08C;
+	font-family: Arial;
+	font-size: 20px;
+	color: #913AAD;
+	width: 600px;
+	height: 40px;
+	margin-top: 15px;
+	padding-top:15px;
+	
+}
+
+.preguntasBox{
+	
+	display: flex;
+	flex-direction: column;
+	
+}
+
+
 
 .newUserBox {
 	
