@@ -234,12 +234,9 @@ app.post("/altaNuevoUsuario", (request, response) => {
 						app.locals.imagenUsuario = "profile_imgs/" + user.img;
 					
                     response.redirect("myProfile");
-                    console.log("Agregado Correctamente");
                 }
             });
             
-            //Si todo bien insertar en la BBDD y redireccionar a myProfile
-            //response.render("myProfile");
             
         } else {
             //console.log(result.array());

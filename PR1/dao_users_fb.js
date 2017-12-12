@@ -107,17 +107,17 @@ class DAOUsers {
                     " WHERE email = ?",
                     [email],
                     (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                connection.release();
-                if (rows.length === 0) {
-                    callback(null, undefined);
-                } else {
-                    callback(null, rows[0].sexo);
-                }
-            }
+						if (err) {
+							callback(err);
+							return;
+						}
+						connection.release();
+						if (rows.length === 0) {
+							callback(null, undefined);
+						} else {
+							callback(null, rows[0].sexo);
+						}
+					}
             );
         });
     }
@@ -208,9 +208,7 @@ class DAOUsers {
     
     //Hay que corregir imagen y edad
     addUser(user, callback){
-        
-        console.log(user);
-        
+                
         this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
             connection.query(
