@@ -130,7 +130,7 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT edad" +
+                    "SELECT fechaNacimiento" +
                     " FROM user" +
                     " WHERE email = ?",
                     [email],
@@ -143,7 +143,7 @@ class DAOUsers {
                 if (rows.length === 0) {
                     callback(null, undefined);
                 } else {
-                    callback(null, rows[0].edad);
+                    callback(null, rows[0].fechaNacimiento);
                 }
             }
             );
@@ -208,16 +208,16 @@ class DAOUsers {
 
     //Hay que corregir imagen y edad
     addUser(user, callback) {
-
+			
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "INSERT INTO user (email, password, nombre, sexo, puntuacion, edad, img)" +
+                    "INSERT INTO user (email, password, nombre, sexo, puntuacion, fechaNacimiento, img)" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    [user.email, user.pass, user.nombre, user.sexo, 0, 18, user.img],
+                    [user.email, user.pass, user.nombre, user.sexo, 0, user.fechaNacimiento, user.img],
                     (err, result) => {
                 if (err) {
                     callback(err);
@@ -239,22 +239,43 @@ class DAOUsers {
                 callback(err);
                 return;
             }
-            connection.query(
-                    "UPDATE user SET " +
-                    "email = ?, password = ?, nombre = ?, sexo = ?, edad = ?, img = ? " +
-                    "WHERE email = ?;",
-                    [user.email, user.pass, user.nombre, user.sexo, 18, user.img, user.email],
-                    (err, result) => {
-                if (err) {
-                    callback(err);
-                    return;
-                } else {
+			
+			if(user.img === ""){
+				connection.query(
+						"UPDATE user SET " +
+						"email = ?, password = ?, nombre = ?, sexo = ?, fechaNacimiento = ?" +
+						"WHERE email = ?;",
+						[user.email, user.pass, user.nombre, user.sexo, user.fechaNacimiento, user.email],
+						(err, result) => {
+							if (err) {
+								callback(err);
+								return;
+							} else {
 
-                    connection.release();
-                    callback(null, undefined);
-                }
-            }
-            );
+								connection.release();
+								callback(null, undefined);
+							}
+						}
+				);				
+			}
+			else {
+				connection.query(
+						"UPDATE user SET " +
+						"email = ?, password = ?, nombre = ?, sexo = ?, fechaNacimiento = ?, img = ? " +
+						"WHERE email = ?;",
+						[user.email, user.pass, user.nombre, user.sexo, user.fechaNacimiento, user.img, user.email],
+						(err, result) => {
+							if (err) {
+								callback(err);
+								return;
+							} else {
+
+								connection.release();
+								callback(null, undefined);
+							}
+						}
+				);			
+			}
         });
     }
 

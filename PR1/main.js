@@ -145,7 +145,8 @@ app.post("/conectar", (request, response) => {
                                                 if (callback === undefined)
                                                     app.locals.UserAge = null;
                                                 else {
-                                                    app.locals.UserAge = callback;
+													app.locals.UserDate = callback;
+                                                    app.locals.UserAge = getAge(callback);
 
                                                     //Nombre del usuario
                                                     daoU.getUserName(user, (err, callback) => {
@@ -198,7 +199,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
         if (result.isEmpty()) {
 
             //Datos para dar de alta el usuario
-            var user = {
+            let user = {
                 email: request.body.email,
                 pass: request.body.pass,
                 nombre: request.body.nombre,
@@ -206,7 +207,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 fechaNacimiento: request.body.fechaNacimiento,
                 img: request.body.imagenPerfil
             }
-
+			
             daoU.addUser(user, (err, callback) => {
 
                 if (err) {
@@ -218,7 +219,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
 
                     //Variables para cargar el perfil
                     app.locals.UserName = user.nombre;
-                    app.locals.UserAge = user.fechaNacimiento; //Convetir a edad
+                    app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
                     app.locals.UserDate = user.fechaNacimiento;
                     app.locals.UserPoints = 0;
                     app.locals.UserSex = user.sexo;
@@ -236,7 +237,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
         } else {
 
             //Datos introducidos que se devuelven para no escribirlos de nuevo
-            var usuarioIncorrecto = {
+            let usuarioIncorrecto = {
                 email: request.body.email,
                 pass: request.body.pass,
                 nombre: request.body.nombre,
@@ -267,30 +268,26 @@ app.get("/modificarPerfil", (request, response) => {
 //Aplicar cambios,boton de la pagina myProfileAdmin
 app.post("/aplicarCambiosPerfil", (request, response) => {
 
-    request.checkBody("email", "Dirección de correo no válida").notEmpty().isEmail();
-    request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
+    request.checkBody("email", "Dirección de correo no válida").notEmpty().isEmail();    
     request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
     //request.checkBody("nombre", "Nombre de usuario no válido").matches(/^[A-Z0-9]*$/i);
     request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").notEmpty().isBefore();
+	
+	if(request.body.pass !== ""){
+		request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
+	}
 
     request.getValidationResult().then((result) => {
         if (result.isEmpty()) {
 
             //Datos para modificar el usuario
-            var user = {
+            let user = {
                 nombre: request.body.nombre,
                 email: request.body.email,
                 pass: request.body.pass,
                 fechaNacimiento: request.body.fechaNacimiento,
-                sexo: request.body.sexo          
-            }
-
-            //Si se sube una nueva foto...
-            if (request.body.imagenPerfil === undefined) {
-
-            } else {
-
-                user.img = request.body.imagenPerfil;
+                sexo: request.body.sexo,
+				img: request.body.imagenPerfil			
             }
 
             daoU.updateUser(user, (err, callback) => {
@@ -304,17 +301,18 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 
                     //Variables para cargar el perfil
                     app.locals.UserName = user.nombre;
-                    app.locals.UserAge = user.fechaNacimiento; //Convetir a edad
+                    app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
                     app.locals.UserDate = user.fechaNacimiento;
                     app.locals.UserSex = user.sexo;
                     app.locals.UserMail = user.email;
 
-                    if (user.img === undefined) {
-
+                    if (user.img === "") {
+												
                     } else {
                         app.locals.imagenUsuario = "profile_imgs/" + user.img;
                     }
-                    response.render("myProfileAdmin", {errores: []});
+					
+                    response.render("myProfile");
                 }
             });
 
@@ -348,3 +346,37 @@ app.get("/logOut", (request, response) => {
     response.redirect("/index");
 
 });
+
+function getAge(x) {
+   
+    let fecha = x;
+	
+	let valores = fecha.split("/");
+    let dia = valores[1];
+    let mes = valores[0];
+    let ano = valores[2];
+	   
+    let hoy = new Date();
+    let año_actual = hoy.getYear();
+    let mes_actual = hoy.getMonth()+1;
+    let dia_actual = hoy.getDate();
+ 
+    // realizamos el calculo
+    let edadUser = (año_actual + 1900) - ano;
+        if ( mes_actual < mes )
+        {
+            edadUser--;
+        }
+        if ((mes == mes_actual) && (dia_actual < dia))
+        {
+            edadUser--;
+        }
+        if (edadUser > 1900)
+        {
+            edadUser -= 1900;
+        }
+ 
+        
+   return edadUser;
+}
+
