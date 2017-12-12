@@ -214,9 +214,9 @@ class DAOUsers {
         this.pool.getConnection((err, connection) => {
             if (err) { callback (err); return; }
             connection.query(
-                "INSERT INTO user (email, password, nombre, sexo, puntuacion, edad)" +
-				"VALUES (?, ?, ?, ?, ?, ?)",
-                [user.email, user.pass, user.nombre, user.sexo, 0, 18],
+                "INSERT INTO user (email, password, nombre, sexo, puntuacion, edad, img)" +
+				"VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [user.email, user.pass, user.nombre, user.sexo, 0, 18, user.img],
                 (err, result) => {
                     if (err) { callback(err); return; }
                     else {

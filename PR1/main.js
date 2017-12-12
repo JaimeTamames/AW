@@ -213,13 +213,28 @@ app.post("/altaNuevoUsuario", (request, response) => {
             
             daoU.addUser(user, (err, callback)=>{
 
-		if(err) {
+				if(err) {
                     console.log(err);
                     response.end();
                 }else{
                     response.status(200);
-                    response.render("newUser", {errores: [], usuario: {} });
-                    console.log("Todo chachi");
+					
+					//Variables para cargar el perfil
+					
+					app.locals.UserName = user.nombre;
+					app.locals.UserAge = user.fechaNacimiento;   // CALCULAR EDAD
+					app.locals.UserPoints = 0;
+					app.locals.UserSex = user.sexo;					
+					app.locals.UserMail = user.email;
+					
+					
+					if(user.img === "")
+						app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
+					else
+						app.locals.imagenUsuario = "profile_imgs/" + user.img;
+					
+                    response.redirect("myProfile");
+                    console.log("Agregado Correctamente");
                 }
             });
             
