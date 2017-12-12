@@ -7,7 +7,7 @@
  * en la base de datos.
  */
 class DAOUsers {
-    
+
     /**
      * Inicializa el DAO de usuarios.
      * 
@@ -107,17 +107,17 @@ class DAOUsers {
                     " WHERE email = ?",
                     [email],
                     (err, rows) => {
-						if (err) {
-							callback(err);
-							return;
-						}
-						connection.release();
-						if (rows.length === 0) {
-							callback(null, undefined);
-						} else {
-							callback(null, rows[0].sexo);
-						}
-					}
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0].sexo);
+                }
+            }
             );
         });
     }
@@ -205,25 +205,56 @@ class DAOUsers {
             );
         });
     }
-    
+
     //Hay que corregir imagen y edad
-    addUser(user, callback){
-                
+    addUser(user, callback) {
+
         this.pool.getConnection((err, connection) => {
-            if (err) { callback (err); return; }
+            if (err) {
+                callback(err);
+                return;
+            }
             connection.query(
-                "INSERT INTO user (email, password, nombre, sexo, puntuacion, edad, img)" +
-				"VALUES (?, ?, ?, ?, ?, ?, ?)",
-                [user.email, user.pass, user.nombre, user.sexo, 0, 18, user.img],
-                (err, result) => {
-                    if (err) { callback(err); return; }
-                    else {
-			
-                        connection.release();
-                        callback(null, undefined);
-                    }
+                    "INSERT INTO user (email, password, nombre, sexo, puntuacion, edad, img)" +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
+                    [user.email, user.pass, user.nombre, user.sexo, 0, 18, user.img],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+
+                    connection.release();
+                    callback(null, undefined);
                 }
-            );    
+            }
+            );
+        });
+    }
+
+    updateUser(user, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE user SET " +
+                    "email = ?, password = ?, nombre = ?, sexo = ?, edad = ?, img = ? " +
+                    "WHERE email = ?;",
+                    [user.email, user.pass, user.nombre, user.sexo, 18, user.img, user.email],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+
+                    connection.release();
+                    callback(null, undefined);
+                }
+            }
+            );
         });
     }
 

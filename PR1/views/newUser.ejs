@@ -53,7 +53,13 @@
 
                             <div class="formTextBox"><p class="fuenteMedia blanco">Email</p></div>
 
-                            <div class="formInputTextBox2"><input class="anchoTotal altoTotal fuenteMedia" name="email" type="email" value="<%= usuario.email %>"></div>
+                            <div class="formInputTextBox2">
+                                <% if(usuario.email == null || usuario.email == ''){ %>
+                                <input class="anchoTotal altoTotal fuenteMedia" name="email" type="email" placeholder='ejemplo@mail.com'>
+                                <% }else{ %>
+                                <input class="anchoTotal altoTotal fuenteMedia" name="email" type="email" value="<%= usuario.email %>">
+                                <% }%>
+                            </div>
 
                         </div>
 
@@ -61,7 +67,13 @@
 
                             <div class="formTextBox"><p class="fuenteMedia blanco">Contraseña</p></div>
 
-                            <div class="formInputTextBox2"><input class="anchoTotal altoTotal fuenteMedia" name="pass" type="password" value="<%= usuario.pass %>"></div>
+                            <div class="formInputTextBox2">
+                                <% if(usuario.pass == null || usuario.pass == ''){ %>
+                                <input class="anchoTotal altoTotal fuenteMedia" name="pass" type="password" placeholder='Entre 6 y 20 caracteres'>
+                                <% }else{ %>
+                                <input class="anchoTotal altoTotal fuenteMedia" name="pass" type="password" value="<%= usuario.pass %>">
+                                <% }%>
+                            </div>
 
                         </div>
 
@@ -69,7 +81,13 @@
 
                             <div class="formTextBox"><p class="fuenteMedia blanco">Nombre Completo</p></div>
 
-                            <div class="formInputTextBox2"><input class="anchoTotal altoTotal fuenteMedia" name="nombre" type="text" value="<%= usuario.nombre %>"></div>
+                            <div class="formInputTextBox2">
+                                <% if(usuario.nombre == null || usuario.nombre == ''){ %>
+                                <input class="anchoTotal altoTotal fuenteMedia" name="nombre" type="text" placeholder='Nombre y apellidos'>
+                                <% }else{ %>
+                                <input class="anchoTotal altoTotal fuenteMedia" name="nombre" type="text" value="<%= usuario.nombre %>">
+                                <% }%>
+                            </div>
 
                         </div>
 
@@ -80,15 +98,15 @@
                             <div class="formInputTextBox2">
 
                                 <label class="fuenteMedia blanco espacioIzq espacioDer">
-                                    <input type="radio" name="sexo" value="Masculino" <% if (usuario.sexo == "Masculino") { %> checked <% } %>> Masculino
+                                    <input type="radio" name="sexo" value="Masculino" <% if(usuario.sexo == "Masculino") { %> checked <% } %>> Masculino
                                 </label>
 
                                 <label class="fuenteMedia blanco espacioIzq espacioDer">
-                                    <input type="radio" name="sexo" value="Femenino" <% if (usuario.sexo == "Femenino") { %> checked <% } %>> Femenino
+                                    <input type="radio" name="sexo" value="Femenino" <% if(usuario.sexo == "Femenino") { %> checked <% } %>> Femenino
                                 </label>
 
                                 <label class="fuenteMedia blanco espacioIzq espacioDer">
-                                    <input type="radio" name="sexo" value="Otro" <% if (usuario.sexo == "Otro") { %> checked <% } %>> Otro
+                                    <input type="radio" name="sexo" value="Otro" <% if(usuario.sexo == "Otro") { %> checked <% } %>> Otro
                                 </label>
 
                             </div>
@@ -99,7 +117,13 @@
 
                             <div class="formTextBox"><p class="fuenteMedia blanco">Fecha de Nacimiento</p></div>
 
-                            <div class="formInputTextBox2"><input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" value="<%= usuario.fechaNacimiento %>"></div>
+                            <div class="formInputTextBox2">
+                                <% if(usuario.fechaNacimiento == null || usuario.fechaNacimiento == ''){ %>
+                                <input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" placeholder='dd/mm/aaaa'>
+                                <% }else{ %>
+                                <input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" value="<%= usuario.fechaNacimiento %>">
+                                <% }%>
+                            </div>
 
                         </div>
 
@@ -108,8 +132,8 @@
                             <div class="formTextBox"><p class="fuenteMedia blanco">Imagen de Perfil</p></div>
 
                             <div class="formInputTextBox2">
-
-                                <input class="altoTotal fuenteMedia" type="file" name="imagenPerfil" value="<%= usuario.img %>">
+                                
+                                <input name="imagenPerfil" type="file">
 
                             </div>
 
@@ -125,29 +149,29 @@
 
                 </div>
 
-                    <% if (errores.email) { %>
-                    <div class="error">
-                        <%= errores.email.msg %>
-                    </div>
-                    <% } %>
+                <% if (errores.email) { %>
+                <div class="error">
+                    <%= errores.email.msg %>
+                </div>
+                <% } %>
 
-                    <% if (errores.pass) { %>
-                    <div class="error">
-                        <%= errores.pass.msg %>
-                    </div>
-                    <% } %>
+                <% if (errores.pass) { %>
+                <div class="error">
+                    <%= errores.pass.msg %>
+                </div>
+                <% } %>
 
-                    <% if (errores.nombre) { %>
-                    <div class="error">
-                        <%= errores.nombre.msg %>
-                    </div>
-                    <% } %>
+                <% if (errores.nombre) { %>
+                <div class="error">
+                    <%= errores.nombre.msg %>
+                </div>
+                <% } %>
 
-                    <% if (errores.fechaNacimiento) { %>
-                    <div class="error">
-                        <%= errores.fechaNacimiento.msg %>
-                    </div>
-                    <% } %>
+                <% if (errores.fechaNacimiento) { %>
+                <div class="error">
+                    <%= errores.fechaNacimiento.msg %>
+                </div>
+                <% } %>
 
             </div>
 

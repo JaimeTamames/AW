@@ -60,15 +60,17 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 //Declaracion del middelware bodyParser para obtener el contenido de la peticion post
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(expressValidator());
 
+//Pagina principal
 app.get("/", (request, response) => {
 
     response.status(200);
     response.redirect("/index");
 });
 
+//Pagina principal
 app.get("/index", (request, response) => {
 
     response.status(200);
@@ -77,7 +79,7 @@ app.get("/index", (request, response) => {
 
 //Login, boton conectar de la pagina index
 app.post("/conectar", (request, response) => {
-    
+
     let user = request.body.email;
     let pass = request.body.pass;
     app.locals.UserMail = user;
@@ -141,10 +143,10 @@ app.post("/conectar", (request, response) => {
                                             } else {
                                                 if (callback === undefined)
                                                     app.locals.UserAge = null;
-                                                else{
+                                                else {
                                                     app.locals.UserAge = callback;
-                                                
-                                                //Nombre del usuario
+
+                                                    //Nombre del usuario
                                                     daoU.getUserName(user, (err, callback) => {
                                                         if (err) {
                                                             console.log(err);
@@ -152,15 +154,15 @@ app.post("/conectar", (request, response) => {
                                                         } else {
                                                             if (callback === undefined)
                                                                 app.locals.UserName = null;
-                                                            else{
+                                                            else {
                                                                 app.locals.UserName = callback;
-                                                                
+
                                                                 //Renderizar plantilla
                                                                 response.redirect("myProfile");
                                                             }
                                                         }
                                                     })
-                                                }    
+                                                }
                                             }
                                         })
                                     }
@@ -179,29 +181,22 @@ app.post("/conectar", (request, response) => {
 app.get("/nuevoUsuario", (request, response) => {
 
     response.status(200);
-    
-    var values = {
-                sexo: "Masculino",
-                fechaNacimiento: "dd/mm/aaaa"
-            };
-    response.render("newUser", {errores: [], usuario: values});
+    response.render("newUser", {errores: [], usuario: {}});
 });
 
 //Alta usuario, boton crear usuario de la pagina newUser
 app.post("/altaNuevoUsuario", (request, response) => {
-    //response.render("newUser");
-    
-    request.checkBody("email", "Email de usuario vacío").notEmpty();
-    request.checkBody("email", "Dirección de correo no válida").isEmail();
-    request.checkBody("pass", "Contraseña de usuario vacío").notEmpty();
-    request.checkBody("pass", "La contraseña no tiene entre 6 y 20 caracteres").isLength({ min: 6, max: 20 });
+
+    request.checkBody("email", "Dirección de correo no válida").notEmpty().isEmail();
+    request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
     request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
     //request.checkBody("nombre", "Nombre de usuario no válido").matches(/^[A-Z0-9]*$/i);
-    request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").isBefore();
-    
+    request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").notEmpty().isBefore();
+
     request.getValidationResult().then((result) => {
         if (result.isEmpty()) {
-            
+
+            //Datos para dar de alta el usuario
             var user = {
                 email: request.body.email,
                 pass: request.body.pass,
@@ -210,50 +205,51 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 fechaNacimiento: request.body.fechaNacimiento,
                 img: request.body.imagenPerfil
             }
-            
-            daoU.addUser(user, (err, callback)=>{
 
-				if(err) {
+            daoU.addUser(user, (err, callback) => {
+
+                if (err) {
                     console.log(err);
                     response.end();
-                }else{
+                } else {
+
                     response.status(200);
-					
-					//Variables para cargar el perfil
-					
-					app.locals.UserName = user.nombre;
-					app.locals.UserAge = user.fechaNacimiento;   // CALCULAR EDAD
-					app.locals.UserPoints = 0;
-					app.locals.UserSex = user.sexo;					
-					app.locals.UserMail = user.email;
-					
-					
-					if(user.img === "")
-						app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
-					else
-						app.locals.imagenUsuario = "profile_imgs/" + user.img;
-					
+
+                    //Variables para cargar el perfil
+                    app.locals.UserName = user.nombre;
+                    app.locals.UserAge = user.fechaNacimiento; //Convetir a edad
+                    app.locals.UserDate = user.fechaNacimiento;
+                    app.locals.UserPoints = 0;
+                    app.locals.UserSex = user.sexo;
+                    app.locals.UserMail = user.email;
+
+                    if (user.img === undefined)
+                        app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
+                    else
+                        app.locals.imagenUsuario = "profile_imgs/" + user.img;
+
                     response.redirect("myProfile");
                 }
             });
-            
-            
+
         } else {
-            //console.log(result.array());
-            //console.log(result.mapped());
+
+            //Datos introducidos que se devuelven para no escribirlos de nuevo
             var usuarioIncorrecto = {
                 email: request.body.email,
                 pass: request.body.pass,
                 nombre: request.body.nombre,
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
-                img: request.body.imagenPerfil
+                //img: request.body.imagenPerfil
             };
-            response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto });
+
+            response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});
         }
     });
 });
 
+//Pagina mi perfil
 app.get("/myProfile", (request, response) => {
 
     response.status(200);
@@ -264,33 +260,90 @@ app.get("/myProfile", (request, response) => {
 app.get("/modificarPerfil", (request, response) => {
 
     response.status(200);
-    response.render("myProfileAdmin");
+    response.render("myProfileAdmin", {errores: []});
 });
 
 //Aplicar cambios,boton de la pagina myProfileAdmin
 app.post("/aplicarCambiosPerfil", (request, response) => {
 
-    response.status(200);
-    response.render("myProfileAdmin");
+    request.checkBody("email", "Dirección de correo no válida").notEmpty().isEmail();
+    request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
+    request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
+    //request.checkBody("nombre", "Nombre de usuario no válido").matches(/^[A-Z0-9]*$/i);
+    request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").notEmpty().isBefore();
+
+    request.getValidationResult().then((result) => {
+        if (result.isEmpty()) {
+
+            //Datos para modificar el usuario
+            var user = {
+                nombre: request.body.nombre,
+                email: request.body.email,
+                pass: request.body.pass,
+                fechaNacimiento: request.body.fechaNacimiento,
+                sexo: request.body.sexo          
+            }
+
+            //Si se sube una nueva foto...
+            if (request.body.imagenPerfil === undefined) {
+
+            } else {
+
+                user.img = request.body.imagenPerfil;
+            }
+
+            daoU.updateUser(user, (err, callback) => {
+
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
+
+                    response.status(200);
+
+                    //Variables para cargar el perfil
+                    app.locals.UserName = user.nombre;
+                    app.locals.UserAge = user.fechaNacimiento; //Convetir a edad
+                    app.locals.UserDate = user.fechaNacimiento;
+                    app.locals.UserSex = user.sexo;
+                    app.locals.UserMail = user.email;
+
+                    if (user.img === undefined) {
+
+                    } else {
+                        app.locals.imagenUsuario = "profile_imgs/" + user.img;
+                    }
+                    response.render("myProfileAdmin", {errores: []});
+                }
+            });
+
+        } else {
+
+            //No devolvemos datos introducidos previamente, pueden crear confusion de si estan ya cambiados o no, pero si errores       
+            response.render("myProfileAdmin", {errores: result.mapped()});
+        }
+    });
 });
 
+//Pagina de amigos
 app.get("/friends", (request, response) => {
 
     response.status(200);
     response.render("friends");
 });
 
+//Pagina de preguntas
 app.get("/questions", (request, response) => {
 
     response.status(200);
     response.render("questions");
 });
 
-//Desconectar usuario
+//Desconectar usuario, boton desconectar
 app.get("/logOut", (request, response) => {
 
-	response.status(200);
-	request.session.destroy();
-	response.redirect("/index");
+    response.status(200);
+    request.session.destroy();
+    response.redirect("/index");
 
 });

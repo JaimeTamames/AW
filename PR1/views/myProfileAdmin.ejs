@@ -56,15 +56,12 @@
 
                             <div class="perfilImgMenuBox">
 
-                                <img class="perfilImg" src="<%= imagenUsuario%>"/>	
+                                <img class="perfilImg" src="<%= imagenUsuario%>"/>
+
 
                             </div>
-                            <% if(UserPoints === null) {%>
-                            <label class="fuentePropia negrita fuenteMedia blanco espacioIzq">No Points</label>
-                            <% }
-                            else {%>
+
                             <label class="fuentePropia negrita fuenteMedia blanco espacioIzq"><%= UserPoints%> pts</label>
-                            <%}%>
 
                         </div>
 
@@ -85,66 +82,94 @@
 
                     <div class="perfilImgBox">
 
-                        <img class="perfilImg" src="<%= imagenUsuario%>"/>	
+                        <img class="perfilImg" src="<%= imagenUsuario%>"/>
+
 
                     </div>
 
-                    <div class="datosPerfil">
+                    <form action="/aplicarCambiosPerfil" method="POST" class="modificarPerfilPost">
 
-                        <span class="fuenteMedia fuentePropia negrita">
-                            <label>Nombre: </label>
-                            <input name="nombre" type="text" value="<%= UserName %>">
-                        </span>
+                        <div class="datosPerfil">
 
-                        <div class="datosPerfilSecundariosBox">
-
-                            <span class="datoSecundario fuenteMedia">
-                                <label>Email: </label>
-                                <input name="mail" type="text" value="<%= UserMail %>">
+                            <span class="fuenteMedia ">
+                                <label>Nombre: </label>
+                                <input class="fuenteMedia" name="nombre" type="text" value="<%= UserName %>">
                             </span>
-                            <span class="datoSecundario fuenteMedia">
-                                <label>Contraseña actual: </label>
-                                <input name="passActual" type="password" value="<%= 111 %>">
-                            </span>
-                            <span class="datoSecundario fuenteMedia">
-                                <label>Contraseña nueva: </label>
-                                <input name="passNueva" type="password" value="<%= 111 %>">
-                            </span>
-                            <span class="datoSecundario fuenteMedia">
-                                <label>Fecha nacimiento: </label>
-                                <input type="datetime" value="<%= UserAge %>">
-                            </span>
-                            <span class="datoSecundario fuenteMedia">
-                                <label>Sexo: </label>
-                                <label class="espacioIzq espacioDer">
-                                    <input type="radio" name="sexo" value="Masculino" <% if(UserSex == "Masculino"){ %> checked <%}%> > Masculino
-                                </label>
 
-                                <label class="espacioIzq espacioDer">
-                                    <input type="radio" name="sexo" value="Femenino" <% if(UserSex == "Femenino"){ %> checked <%}%> > Femenino
-                                </label>
+                            <div class="datosPerfilSecundariosBox ">
 
-                                <label class="espacioIzq espacioDer">
-                                    <input type="radio" name="sexo" value="Otro" <% if(UserSex == "Otro"){ %> checked <%}%> > Otro
-                                </label>
+                                <span class="datoSecundario  fuenteMedia">
+                                    <label>Email: </label>
+                                    <input class="fuenteMedia" name="email" type="text" value="<%= UserMail %>">
+                                </span>
+                                <span class="datoSecundario fuenteMedia">
+                                    <label>Contraseña: </label>
+                                    <input class="fuenteMedia" name="pass" type="password" placeholder='Necesaria, puede cambiarla...'>
+                                </span>
+                                <span class="datoSecundario fuenteMedia">
+                                    <label>Fecha nacimiento: </label>
+                                    <input class="fuenteMedia" name="fechaNacimiento" type="datetime" value="<%= UserAge %>">
+                                </span>
+                                <span class="datoSecundario fuenteMedia">
+                                    <label>Sexo: </label>
+                                    <label class="espacioIzq espacioDer">
+                                        <input type="radio" name="sexo" value="Masculino" <% if(UserSex == "Masculino"){ %> checked <%}%> > Masculino
+                                    </label>
+
+                                    <label class="espacioIzq espacioDer">
+                                        <input type="radio" name="sexo" value="Femenino" <% if(UserSex == "Femenino"){ %> checked <%}%> > Femenino
+                                    </label>
+
+                                    <label class="espacioIzq espacioDer">
+                                        <input type="radio" name="sexo" value="Otro" <% if(UserSex == "Otro"){ %> checked <%}%> > Otro
+                                    </label>
+                                </span>
+
+                                <div>
+
+                                    <input name="imagenPerfil" type="file">
+
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
+                        <div class="botonModificarPerfilBox">
+
+                            <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aplicar cambios"/>				
+
+                        </div>
+                    </form>
+
 
                 </div>
 
+                <% if (errores.email) { %>
+                <div class="error">
+                    <%= errores.email.msg %>
+                </div>
+                <% } %>
 
+                <% if (errores.pass) { %>
+                <div class="error">
+                    <%= errores.pass.msg %>
+                </div>
+                <% } %>
+
+                <% if (errores.nombre) { %>
+                <div class="error">
+                    <%= errores.nombre.msg %>
+                </div>
+                <% } %>
+
+                <% if (errores.fechaNacimiento) { %>
+                <div class="error">
+                    <%= errores.fechaNacimiento.msg %>
+                </div>
+                <% } %>
 
             </div>
 
-            <div class="botonModificarPerfilBox">
 
-                <form action="/modificarPerfil" method="POST" class="modificarPerfilPost">
-
-                    <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aplicar cambios"/>				
-
-                </form>
-
-            </div>
         </div>
 
     </div>
