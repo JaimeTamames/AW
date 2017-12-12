@@ -14,6 +14,7 @@ var expressValidator = require("express-validator");
 const MySQLStore = express_mysql_session(express_session);
 const app = express();
 
+
 const sessionStore = new MySQLStore({
     database: "facebluff",
     host: "localhost",
