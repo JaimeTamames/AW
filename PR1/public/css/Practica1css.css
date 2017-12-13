@@ -51,7 +51,8 @@ body{
 
 .perfilImgfriendBox {
 	
-	width:10%;
+	width:100px;
+        height: 100px;
 	display: inline;
 	border: solid 2px;
 	
