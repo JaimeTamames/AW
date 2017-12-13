@@ -290,6 +290,8 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 				img: request.body.imagenPerfil			
             }
 			
+			user.imagenPerfil = "/profile_imgs/" + user.img;
+			
 			if(user.nombre !== app.locals.UserName){
 				
 				daoU.setName(user, (err, callback) => {
@@ -302,7 +304,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 						
 					}				
 					
-				})
+				}) ////SOLUCIONAR PROBLEMA PORQUE SE PIERDE EL NOMBRE AL MODIFICAR
 				
 			}
 			
@@ -323,8 +325,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 				
 			}
 			
-			if(user.sexo !== app.locals.UserSex){
-				
+			if(user.sexo !== app.locals.UserSex){				
 				daoU.setDate(user, (err, callback) => {
 					if (err) {
 						console.log(err);
@@ -335,12 +336,10 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 						
 					}				
 					
-				})
-				
+				})				
 			}
 			
-			if(user.imagenPerfil !== app.locals.imagenUsuario){
-				
+			if(user.imagenPerfil !== app.locals.imagenUsuario){				
 				daoU.setImage(user, (err, callback) => {
 					if (err) {
 						console.log(err);
@@ -351,9 +350,8 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 						
 					}				
 					
-				})
-				
-			}
+				})				
+			}   //////SOLUCIONAR TEMA DE RUTAS CON LAS IMAGENES AL ACTUALIZAR
 			
 			if(user.pass !== ""){
 				

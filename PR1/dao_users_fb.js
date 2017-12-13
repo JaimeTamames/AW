@@ -346,7 +346,7 @@ class DAOUsers {
 					"UPDATE user SET " +
 					"nombre = ? " +
 					"WHERE email = ?;",
-					[user.name, user.email],
+					[user.nombre, user.email],
 					(err, result) => {
 						if (err) {
 							callback(err);
@@ -358,7 +358,7 @@ class DAOUsers {
 					}
 				);			
 			});
-		}
+	}
 
 
 
