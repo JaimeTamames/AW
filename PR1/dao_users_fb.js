@@ -232,7 +232,7 @@ class DAOUsers {
         });
     }
 
-    updateUser(user, callback) {
+    /*updateUser(user, callback) {
 
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -277,7 +277,139 @@ class DAOUsers {
 				);			
 			}
         });
-    }
+    }*/
+
+
+	setPassword(user, callback) {
+			this.pool.getConnection((err, connection) => {
+				if (err) {
+					callback(err);
+					return;
+				}
+				connection.query(
+					"UPDATE user SET " +
+					"password = ?" +
+					"WHERE email = ?;",
+					[user.pass, user.email],
+					(err, result) => {
+						if (err) {
+							callback(err);
+							return;
+						} else {
+							connection.release();
+							callback(null, undefined);
+						}
+					}
+				);			
+			});
+	}
+
+	
+
+	setImage(user, callback) {
+			this.pool.getConnection((err, connection) => {
+				if (err) {
+					callback(err);
+					return;
+				}
+				connection.query(
+					"UPDATE user SET " +
+					"img = ?" +
+					"WHERE email = ?;",
+					[user.img, user.email],
+					(err, result) => {
+						if (err) {
+							callback(err);
+							return;
+						} else {
+							connection.release();
+							callback(null, undefined);
+						}
+					}
+				);			
+			});
+	}
+
+
+
+
+	setName(user, callback) {
+		
+		console.log(user);
+		
+			this.pool.getConnection((err, connection) => {
+				if (err) {
+					callback(err);
+					return;
+				}
+				connection.query(
+					"UPDATE user SET " +
+					"nombre = ? " +
+					"WHERE email = ?;",
+					[user.name, user.email],
+					(err, result) => {
+						if (err) {
+							callback(err);
+							return;
+						} else {
+							connection.release();
+							callback(null, undefined);
+						}
+					}
+				);			
+			});
+		}
+
+
+
+	setSex(user, callback) {
+			this.pool.getConnection((err, connection) => {
+				if (err) {
+					callback(err);
+					return;
+				}
+				connection.query(
+					"UPDATE user SET " +
+					"sexo = ?" +
+					"WHERE email = ?;",
+					[user.sexo, user.email],
+					(err, result) => {
+						if (err) {
+							callback(err);
+							return;
+						} else {
+							connection.release();
+							callback(null, undefined);
+						}
+					}
+				);			
+			});
+		}
+
+
+	setDate(user, callback) {
+			this.pool.getConnection((err, connection) => {
+				if (err) {
+					callback(err);
+					return;
+				}
+				connection.query(
+					"UPDATE user SET " +
+					"fechaNacimiento = ?" +
+					"WHERE email = ?;",
+					[user.fechaNacimiento, user.email],
+					(err, result) => {
+						if (err) {
+							callback(err);
+							return;
+						} else {
+							connection.release();
+							callback(null, undefined);
+						}
+					}
+				);			
+			});
+	}
 
 }
 

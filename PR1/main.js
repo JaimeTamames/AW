@@ -283,38 +283,90 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
             //Datos para modificar el usuario
             let user = {
                 nombre: request.body.nombre,
-                email: request.body.email,
+                email: app.locals.UserMail,
                 pass: request.body.pass,
                 fechaNacimiento: request.body.fechaNacimiento,
                 sexo: request.body.sexo,
 				img: request.body.imagenPerfil			
             }
+			
+			if(user.nombre !== app.locals.UserName){
+				
+				daoU.setName(user, (err, callback) => {
+					if (err) {
+						console.log(err);
+						response.end();
+					} else {
 
-            daoU.updateUser(user, (err, callback) => {
-
-                if (err) {
-                    console.log(err);
-                    response.end();
-                } else {
-
-                    response.status(200);
-
-                    //Variables para cargar el perfil
-                    app.locals.UserName = user.nombre;
-                    app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-                    app.locals.UserDate = user.fechaNacimiento;
-                    app.locals.UserSex = user.sexo;
-                    app.locals.UserMail = user.email;
-
-                    if (user.img === "") {
-												
-                    } else {
-                        app.locals.imagenUsuario = "profile_imgs/" + user.img;
-                    }
+						app.locals.UserName = user.nombre;
+						
+					}				
 					
-                    response.render("myProfile");
-                }
-            });
+				})
+				
+			}
+			
+			if(user.fechaNacimiento !== app.locals.UserDate){
+				
+				daoU.setDate(user, (err, callback) => {
+					if (err) {
+						console.log(err);
+						response.end();
+					} else {
+						
+						app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+						app.locals.UserDate = user.fechaNacimiento;
+						
+					}				
+					
+				})
+				
+			}
+			
+			if(user.sexo !== app.locals.UserSex){
+				
+				daoU.setDate(user, (err, callback) => {
+					if (err) {
+						console.log(err);
+						response.end();
+					} else {
+						
+						app.locals.UserSex = user.sexo;
+						
+					}				
+					
+				})
+				
+			}
+			
+			if(user.imagenPerfil !== app.locals.imagenUsuario){
+				
+				daoU.setImage(user, (err, callback) => {
+					if (err) {
+						console.log(err);
+						response.end();
+					} else {
+						
+						app.locals.imagenUsuario = user.imagenPerfil;
+						
+					}				
+					
+				})
+				
+			}
+			
+			if(user.pass !== ""){
+				
+				daoU.setPassword(user, (err, callback) => {
+					if (err) {
+						console.log(err);
+						response.end();
+					} 					
+				})
+				
+			}
+			
+			response.render("myProfile");
 
         } else {
 
