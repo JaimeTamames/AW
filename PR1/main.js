@@ -380,29 +380,50 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 app.get("/friends", (request, response) => {
 
     response.status(200);
-    
+
     let errSol = null;
     let errAmi = null;
-    
-    errSol = "No tienes ninguna solicitud";
-    errAmi = "No tienes ningun amigo";
-    
-    let listaAmigos = null;
-    let listaSolicitudes = null;
-    
-    response.render("friends", {errorsSolicitudes: errSol, errorsAmigos: errAmi, listaAmigos: listaAmigos, listaSolicitudes: listaSolicitudes});
+
+    daoF.getRequests(app.locals.UserMail, (err, listaSolicitudes) => {
+
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+
+            let error = null;
+
+            if (listaSolicitudes === undefined) {
+                errSol = "No tienes ninguna solicitud";
+            }
+
+            daoF.getFriends(app.locals.UserMail, (err, listaAmigos) => {
+
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
+
+                    response.status(200);
+
+                    let error = null;
+
+                    if (listaSolicitudes === undefined) {
+                        errAmi = "No tienes ningun amigo";
+                    }
+
+                    response.render("friends", {errorsSolicitudes: errSol, errorsAmigos: errAmi, listaAmigos: listaAmigos, listaSolicitudes: listaSolicitudes});
+                }
+            });
+        }
+    });
 });
 
 app.post("/aceptarAmistad", (request, response) => {
 
-    //Caracteres que se quieren buscar
-    let busqueda = {
-        UserSearch: request.body.buscar
-    };
-
-    let char = "%" + busqueda.UserSearch + "%";
-
-    daoU.search(char, (err, lista) => {
+    daoF.addFriend(app.locals.UserMail, request.body.aceptaAmigo, (err, lista) => {
 
         if (err) {
             console.log(err);
@@ -411,28 +432,25 @@ app.post("/aceptarAmistad", (request, response) => {
 
             response.status(200);
 
-            let error = null;
+            daoF.rmRequest(request.body.aceptaAmigo, app.locals.UserMail, (err, lista) => {
 
-            if (lista === undefined) {
-                error = "La busqueda no tiene resultados";
-            }
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
 
-            response.render("searchResult", {errors: error, busqueda: busqueda, lista: lista});
+                    response.status(200);
+
+                    response.redirect("friends");
+                }
+            });
         }
     });
-
 });
 
 app.post("/rechazarAmistad", (request, response) => {
 
-    //Caracteres que se quieren buscar
-    let busqueda = {
-        UserSearch: request.body.buscar
-    };
-
-    let char = "%" + busqueda.UserSearch + "%";
-
-    daoU.search(char, (err, lista) => {
+    daoF.rmRequest(request.body.rechazarAmigo, app.locals.UserMail, (err, lista) => {
 
         if (err) {
             console.log(err);
@@ -441,13 +459,7 @@ app.post("/rechazarAmistad", (request, response) => {
 
             response.status(200);
 
-            let error = null;
-
-            if (lista === undefined) {
-                error = "La busqueda no tiene resultados";
-            }
-
-            response.render("searchResult", {errors: error, busqueda: busqueda, lista: lista});
+            response.redirect("friends");
         }
     });
 

@@ -18,61 +18,61 @@ class DAOFriends {
         this.pool = pool;
     }
 
-   /////////// TABLA DE SOLICITUDES //////////////
-    
-	//Añadir solicitud de amistad
-	addRequest(solicitante, solicitado, callback){
+    /////////// TABLA DE SOLICITUDES //////////////
+
+    //Añadir solicitud de amistad
+    addRequest(solicitante, solicitado, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "INSERT INTO requests (emailSolicitante, emailSolicitado) VALUES (?,?)"
-                    [solicitante, solicitado],
+                    "INSERT INTO requests (emailSolicitante, emailSolicitado) VALUES (?,?)",
+            [solicitante, solicitado],
                     (err, rows) => {
-					if (err) {
-						callback(err);
-						return;
-					}
-				}            
+                if (err) {
+                    callback(err);
+                    return;
+                }
+            }
             );
         });
-        
+
     }
-	
-	//Eliminar Solicitud de amistad
-	rmRequest(solicitante, solicitado, callback){
+
+    //Eliminar Solicitud de amistad
+    rmRequest(solicitante, solicitado, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "DELETE FROM requests WHERE emailSolicitante = ? AND emailSolicitado = ?;"
-                    [solicitante, solicitado],
+                    "DELETE FROM requests WHERE emailSolicitante = ? AND emailSolicitado = ?;",
+            [solicitante, solicitado],
                     (err, rows) => {
-					if (err) {
-						callback(err);
-						return;
-					}
-				}            
+                if (err) {
+                    callback(err);
+                    return;
+                }
+            }
             );
         });
-        
+
     }
-	
-	//Coger todas las solicitudes de un usuario, devuelve todas las filas
-	getRequests(solicitado, callback){
-		this.pool.getConnection((err, connection) => {
+
+    //Coger todas las solicitudes de un usuario, devuelve todas las filas
+    getRequests(solicitado, callback) {
+        this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "SELECT *" +
-                    " FROM requests" +
-                    " WHERE emailSolicitado = ?",
+                    "SELECT requests.emailSolicitante AS solicitante, user.nombre AS nombre, user.img AS img " +
+                    "FROM user LEFT JOIN requests ON requests.emailSolicitante = user.email " +
+                    "WHERE requests.emailSolicitado = ?;",
                     [solicitado],
                     (err, rows) => {
                 if (err) {
@@ -87,23 +87,22 @@ class DAOFriends {
                 }
             }
             );
-        });		
-	}
-	
-	
-	/////// TABLA DE AMIGOS ////////////
-	
-	//Coger todas los amigos de un usuario, devuelve todas las filas
-	getFriends(user, callback){
-		this.pool.getConnection((err, connection) => {
+        });
+    }
+
+    /////// TABLA DE AMIGOS ////////////
+
+    //Coger todas los amigos de un usuario, devuelve todas las filas
+    getFriends(user, callback) {
+        this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "SELECT *" +
-                    " FROM friends" +
-                    " WHERE user = ?",
+                    "SELECT user.nombre AS nombre, user.img AS img " +
+                    "FROM user LEFT JOIN friends ON friends.friend = user.email " +
+                    "WHERE friends.user = ?;",
                     [user],
                     (err, rows) => {
                 if (err) {
@@ -118,53 +117,53 @@ class DAOFriends {
                 }
             }
             );
-        });		
-	}
-	
-	//Añadir amistad
-	addFriend(user, friend, callback){
+        });
+    }
+
+    //Añadir amistad
+    addFriend(user, friend, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "INSERT INTO friends (user, friend) VALUES (?,?)"
-                    [user, friend],
+                    "INSERT INTO friends (user, friend) VALUES (?,?)",
+            [user, friend],
                     (err, rows) => {
-					if (err) {
-						callback(err);
-						return;
-					}
-				}            
+                if (err) {
+                    callback(err);
+                    return;
+                }
+            }
             );
         });
-        
+
     }
-	
-	//Eliminar amistad
-	rmFriend(user, friend, callback){
+
+    //Eliminar amistad
+    rmFriend(user, friend, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "DELETE FROM requests WHERE user = ? AND friend = ?;"
-                    [user, friend],
+                    "DELETE FROM friends WHERE user = ? AND friend = ?;",
+            [user, friend],
                     (err, rows) => {
-					if (err) {
-						callback(err);
-						return;
-					}
-				}            
+                if (err) {
+                    callback(err);
+                    return;
+                }
+            }
             );
         });
-        
+
     }
-	
-	//Comprobar si son amigos, devuelve true o false
-	areFriend(user, friend, callback){
+
+    //Comprobar si son amigos, devuelve true o false
+    areFriend(user, friend, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
@@ -189,10 +188,8 @@ class DAOFriends {
             }
             );
         });
-        
+
     }
-	
-	
 
 }
 
