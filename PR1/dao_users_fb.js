@@ -361,8 +361,8 @@ class DAOUsers {
             connection.query(
                     "SELECT nombre, email, img " +
                     "FROM user " +
-                    "WHERE nombre LIKE '%a%';",
-                    //[char],
+                    "WHERE nombre LIKE ?;",
+                    [char],
                     (err, rows) => {
                 if (err) {
                     callback(err);
