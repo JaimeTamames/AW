@@ -77,71 +77,59 @@
                     <p class="fuentePropia negrita fuenteGrande">Solicitudes de amistad</p>
                 </div>
 
-                <div class="solicitudesAmistadBox">
+                <div class="listaBox">
 
-                    <div class="friendsBox">
-                        <div class="perfilImgfriendBox">
+                    <% if(errorsSolicitudes === null){ %>
 
-                            <img class="perfilImg" src="RecursosGraficosP1/icons/Witch-01.png"/>	
+                    <ul>
+                        <% listaSolicitudes.forEach(result => { %>
+                        <li>
+                            <div class="espacioDer">
+                                <img class="perfilImgfriendBox" src="<%= result.img %>"/>
+                            </div>
 
-                        </div>
+                            <div class="flexGrow">
+                                <label class="fuenteMedia negrita"><%= result.nombre %></label>
+                            </div>
 
-                        <div class="nombreFriendBox">
-                            <label class="fuenteMedia negrita">Bruja Piruja</label>
-                        </div>
+                            <div>
 
+                                <form action="/aceptarAmistad" method="POST">
+
+                                    <input value="<%= result.email %>" name="aceptarEmail" type="hidden">
+
+                                    <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aceptar"/>
+
+                                </form>
+
+                            </div>
+                            
+                            <div>
+
+                                <form action="/rechazarAmistad" method="POST">
+
+                                    <input value="<%= result.email %>" name="rechazarEmail" type="hidden">
+
+                                    <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Rechazar"/>
+
+                                </form>
+
+                            </div>
+                        </li>
+                        <% }); %>
+                    </ul>
+
+                    <% }else { %>
+
+                    <div class="error">
+                        <%= errorsSolicitudes %>
                     </div>
 
-                    <div class="botonesSolicitudesBox">
-
-                        <form action="" method="post" class="aceptarAmigoPost">
-
-                            <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aceptar"/>
-
-                        </form>
-
-                        <form action="" method="post" class="rechazarAmigoPost">
-
-                            <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Rechazar"/>
-
-                        </form>
-
-                    </div>
+                    <% } %>
 
                 </div>
 
-                <div class="solicitudesAmistadBox">
-
-                    <div class="friendsBox">
-                        <div class="perfilImgfriendBox">
-
-                            <img class="perfilImg" src="RecursosGraficosP1/icons/Stuart-01.png"/>	
-
-                        </div>
-
-                        <div class="nombreFriendBox">
-                            <label class="fuenteMedia negrita">Stuart Minion</label>
-                        </div>
-
-                    </div>
-
-                    <div class="botonesSolicitudesBox">
-
-                        <form action="" method="post" class="aceptarAmigoPost">
-
-                            <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aceptar"/>
-
-                        </form>
-
-                        <form action="" method="post" class="rechazarAmigoPost">
-
-                            <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Rechazar"/>
-
-                        </form>
-
-                    </div>
-
-                </div>
+                
 
                 <div>
                     <p class="fuentePropia negrita fuenteGrande">Búsqueda de amigos</p>
@@ -166,41 +154,37 @@
                 <div>
                     <p class="fuentePropia negrita fuenteGrande">Mis amigos</p>
                 </div>
+                
+                <div class="listaBox">
 
+                    <% if(errorsAmigos === null){ %>
 
-                <div class="AmigosBox">
+                    <ul>
+                        <% listaAmigos.forEach(result => { %>
+                        <li>
+                            <div class="espacioDer">
+                                <img class="perfilImgfriendBox" src="<%= result.img %>"/>
+                            </div>
 
-                    <div class="friendsBox">
-                        <div class="perfilImgfriendBox">
+                            <div class="flexGrow">
+                                <label class="fuenteMedia negrita"><%= result.nombre %></label>
+                            </div>
 
-                            <img class="perfilImg" src="RecursosGraficosP1/icons/Mike-01.png"/>	
+                        </li>
+                        <% }); %>
+                    </ul>
 
-                        </div>
+                    <% }else { %>
 
-                        <div class="nombreFriendBox">
-                            <label class="fuenteMedia negrita">Mike Wazowski</label>
-                        </div>
-
+                    <div class="error">
+                        <%= errorsAmigos %>
                     </div>
+
+                    <% } %>
 
                 </div>
 
-                <div class="AmigosBox">
 
-                    <div class="friendsBox">
-                        <div class="perfilImgfriendBox">
-
-                            <img class="perfilImg" src="RecursosGraficosP1/icons/Pinhead-01.png"/>	
-
-                        </div>
-
-                        <div class="nombreFriendBox">
-                            <label class="fuenteMedia negrita">Lucia Pinhead</label>
-                        </div>
-
-                    </div>
-
-                </div>
 
 
             </div>

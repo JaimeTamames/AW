@@ -218,24 +218,6 @@ body{
 
 }
 
-.botonesSolicitudesBox {
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-
-}
-
-.solicitudesAmistadBox {
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 50%;
-    justify-content: space-between;
-
-}
-
 .AmigosBox {
 
     display: flex;
@@ -380,6 +362,8 @@ div[class~=error] {
     font-size: 25px;
     font-style: bold;
     font-family: Gloria Hallelujah;
+    align-self: center;
+    text-align: center;
 }
 
 .listaBox{

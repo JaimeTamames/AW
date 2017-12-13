@@ -378,7 +378,77 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 app.get("/friends", (request, response) => {
 
     response.status(200);
-    response.render("friends");
+    
+    let errSol = null;
+    let errAmi = null;
+    
+    errSol = "No tienes ninguna solicitud";
+    errAmi = "No tienes ningun amigo";
+    
+    let listaAmigos = null;
+    let listaSolicitudes = null;
+    
+    response.render("friends", {errorsSolicitudes: errSol, errorsAmigos: errAmi, listaAmigos: listaAmigos, listaSolicitudes: listaSolicitudes});
+});
+
+app.post("/aceptarAmistad", (request, response) => {
+
+    //Caracteres que se quieren buscar
+    let busqueda = {
+        UserSearch: request.body.buscar
+    };
+
+    let char = "%" + busqueda.UserSearch + "%";
+
+    daoU.search(char, (err, lista) => {
+
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+
+            let error = null;
+
+            if (lista === undefined) {
+                error = "La busqueda no tiene resultados";
+            }
+
+            response.render("searchResult", {errors: error, busqueda: busqueda, lista: lista});
+        }
+    });
+
+});
+
+app.post("/rechazarAmistad", (request, response) => {
+
+    //Caracteres que se quieren buscar
+    let busqueda = {
+        UserSearch: request.body.buscar
+    };
+
+    let char = "%" + busqueda.UserSearch + "%";
+
+    daoU.search(char, (err, lista) => {
+
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+
+            let error = null;
+
+            if (lista === undefined) {
+                error = "La busqueda no tiene resultados";
+            }
+
+            response.render("searchResult", {errors: error, busqueda: busqueda, lista: lista});
+        }
+    });
+
 });
 
 app.post("/search", (request, response) => {
@@ -409,7 +479,6 @@ app.post("/search", (request, response) => {
         }
     });
 
-    //response.render("searchResult", {busqueda: busqueda});
 });
 
 //Pagina de preguntas
