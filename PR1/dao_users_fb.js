@@ -288,9 +288,7 @@ class DAOUsers {
 
 
 	setName(user, callback) {
-		
-		console.log(user);
-		
+				
 			this.pool.getConnection((err, connection) => {
 				if (err) {
 					callback(err);
