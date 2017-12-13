@@ -385,14 +385,14 @@ app.get("/friends", (request, response) => {
 
 app.post("/search", (request, response) => {
 
-    console.log(request.body.buscar);
-
     //Caracteres que se quieren buscar
     let busqueda = {
         UserSearch: request.body.buscar
     };
 
-    daoU.search(busqueda.UserSearch, (err, lista) => {
+    let char = "%" + busqueda.UserSearch + "%";
+
+    daoU.search(char, (err, lista) => {
 
         if (err) {
             console.log(err);
@@ -400,13 +400,17 @@ app.post("/search", (request, response) => {
         } else {
 
             response.status(200);
-            
-            console.log(lista);
 
-            response.render("searchResult", {busqueda: busqueda, lista: lista});
+            let error = null;
+
+            if (lista === undefined) {
+                error = "La busqueda no tiene resultados";
+            }
+
+            response.render("searchResult", {errors: error, busqueda: busqueda, lista: lista});
         }
     });
-    
+
     //response.render("searchResult", {busqueda: busqueda});
 });
 

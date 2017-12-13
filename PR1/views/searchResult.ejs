@@ -77,29 +77,43 @@
                     <p class="fuentePropia negrita fuenteGrande">Resultados de búsqueda: '<%= busqueda.UserSearch  %>'</p>
                 </div>
 
-                <div>
+                <div class="listaBox">
+
+                    <% if(errors === null){ %>
 
                     <ul>
                         <% lista.forEach(result => { %>
                         <li>
-                            <div>
+                            <div class="espacioDer">
                                 <img class="perfilImgfriendBox" src="<%= result.img %>"/>
                             </div>
-                            
-                            <span>
+
+                            <div class="flexGrow">
                                 <label class="fuenteMedia negrita"><%= result.nombre %></label>
-                            </span>
+                            </div>
 
-                            <form action="/solicitarAmistad" method="POST">
+                            <div>
 
-                                <input value="<%= result.email %>" name="solicitudEmail" type="hidden">
+                                <form action="/solicitarAmistad" method="POST">
 
-                                <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Solicitar amistad"/>
+                                    <input value="<%= result.email %>" name="solicitudEmail" type="hidden">
 
-                            </form>
+                                    <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Solicitar amistad"/>
+
+                                </form>
+
+                            </div>
                         </li>
                         <% }); %>
                     </ul>
+
+                    <% }else { %>
+
+                    <div class="error">
+                        <%= errors %>
+                    </div>
+
+                    <% } %>
 
                 </div>
 
