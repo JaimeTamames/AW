@@ -18,7 +18,7 @@ class DAOFriends {
         this.pool = pool;
     }
 
-   /////////// FUNCIONES DE AMIGOS //////////////
+   /////////// TABLA DE SOLICITUDES //////////////
     
 	//Añadir solicitud de amistad
 	addRequest(solicitante, solicitado, callback){
@@ -61,6 +61,138 @@ class DAOFriends {
         });
         
     }
+	
+	//Coger todas las solicitudes de un usuario, devuelve todas las filas
+	getRequests(solicitado, callback){
+		this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT *" +
+                    " FROM requests" +
+                    " WHERE emailSolicitado = ?",
+                    [solicitado],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows);
+                }
+            }
+            );
+        });		
+	}
+	
+	
+	/////// TABLA DE AMIGOS ////////////
+	
+	//Coger todas los amigos de un usuario, devuelve todas las filas
+	getFriends(user, callback){
+		this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT *" +
+                    " FROM friends" +
+                    " WHERE user = ?",
+                    [user],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows);
+                }
+            }
+            );
+        });		
+	}
+	
+	//Añadir amistad
+	addFriend(user, friend, callback){
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "INSERT INTO friends (user, friend) VALUES (?,?)"
+                    [user, friend],
+                    (err, rows) => {
+					if (err) {
+						callback(err);
+						return;
+					}
+				}            
+            );
+        });
+        
+    }
+	
+	//Eliminar amistad
+	rmFriend(user, friend, callback){
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "DELETE FROM requests WHERE user = ? AND friend = ?;"
+                    [user, friend],
+                    (err, rows) => {
+					if (err) {
+						callback(err);
+						return;
+					}
+				}            
+            );
+        });
+        
+    }
+	
+	//Comprobar si son amigos, devuelve true o false
+	areFriend(user, friend, callback){
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT *" +
+                    " FROM friends" +
+                    " WHERE user = ? AND friend = ?",
+                    [user, friend],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, false);
+                } else {
+                    callback(null, true);
+                }
+            }
+            );
+        });
+        
+    }
+	
+	
 
 }
 
