@@ -6,6 +6,7 @@ const path = require("path");
 const bodyParser = require("body-parser");
 const config = require("./config");
 const daoUsers = require("./dao_users_fb");
+const daoFriends = require("./dao_friends_fb");
 const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
 
@@ -41,6 +42,7 @@ let pool = mysql.createPool({
 
 //Pool de conexiones a la BBDD
 let daoU = new daoUsers.DAOUsers(pool);
+let daoF = new daoFriends.DAOFriends(pool);
 
 //Estado del servidor
 app.listen(config.port, function (err) {
