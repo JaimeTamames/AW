@@ -20,6 +20,7 @@ class DAOFriends {
 
    /////////// FUNCIONES DE AMIGOS //////////////
     
+	//Añadir solicitud de amistad
 	addRequest(solicitante, solicitado, callback){
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -27,20 +28,35 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "UPDATE requests" +
-                    "SET emailSolicitante = ?, emailSolicitado = ?;"
-                    [char],
+                    "INSERT INTO requests (emailSolicitante, emailSolicitado) VALUES (?,?)"
+                    [solicitante, solicitado],
                     (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                if (rows.length === 0) {
-                    callback(null, undefined);
-                } else {
-                    callback(null, rows);
-                }
+					if (err) {
+						callback(err);
+						return;
+					}
+				}            
+            );
+        });
+        
+    }
+	
+	//Eliminar Solicitud de amistad
+	rmRequest(solicitante, solicitado, callback){
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
             }
+            connection.query(
+                    "DELETE FROM requests WHERE emailSolicitante = ? AND emailSolicitado = ?;"
+                    [solicitante, solicitado],
+                    (err, rows) => {
+					if (err) {
+						callback(err);
+						return;
+					}
+				}            
             );
         });
         
