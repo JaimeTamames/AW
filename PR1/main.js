@@ -379,7 +379,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 //Pagina de amigos
 app.get("/friends", (request, response) => {
 
-    response.status(200);
+    //response.status(200);
 
     let errSol = null;
     let errAmi = null;
@@ -410,7 +410,7 @@ app.get("/friends", (request, response) => {
 
                     let error = null;
 
-                    if (listaSolicitudes === undefined) {
+                    if (listaAmigos === undefined) {
                         errAmi = "No tienes ningun amigo";
                     }
 
@@ -421,18 +421,17 @@ app.get("/friends", (request, response) => {
     });
 });
 
+//Aceptar, boton de la pagina amigos
 app.post("/aceptarAmistad", (request, response) => {
 
-    daoF.addFriend(app.locals.UserMail, request.body.aceptaAmigo, (err, lista) => {
+    daoF.addFriend(app.locals.UserMail, request.body.aceptaAmigo, (err) => {
 
         if (err) {
             console.log(err);
             response.end();
         } else {
 
-            response.status(200);
-
-            daoF.rmRequest(request.body.aceptaAmigo, app.locals.UserMail, (err, lista) => {
+            daoF.rmRequest(request.body.aceptaAmigo, app.locals.UserMail, (err) => {
 
                 if (err) {
                     console.log(err);
@@ -448,9 +447,10 @@ app.post("/aceptarAmistad", (request, response) => {
     });
 });
 
+//Rechazar, boton de la pagina amigos
 app.post("/rechazarAmistad", (request, response) => {
 
-    daoF.rmRequest(request.body.rechazarAmigo, app.locals.UserMail, (err, lista) => {
+    daoF.rmRequest(request.body.rechazarAmigo, app.locals.UserMail, (err) => {
 
         if (err) {
             console.log(err);
@@ -462,9 +462,9 @@ app.post("/rechazarAmistad", (request, response) => {
             response.redirect("friends");
         }
     });
-
 });
 
+//Buscar, boton de la pagina amigos
 app.post("/search", (request, response) => {
 
     //Caracteres que se quieren buscar
@@ -492,6 +492,106 @@ app.post("/search", (request, response) => {
             response.render("searchResult", {errors: error, busqueda: busqueda, lista: lista});
         }
     });
+
+});
+
+//Solicitar, boton solicita amistad de la pagina de resultados de busqueda
+app.post("/solicitarAmistad", (request, response) => {
+
+    daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
+
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+
+            response.redirect("friends");
+        }
+    });
+});
+
+//Ver perfil de solicitantes o amistades
+app.post("/verPerfil", (request, response) => {
+
+    let user = {
+        mail: request.body.perfilSolicitante,
+        nombre: null,
+        edad: null,
+        sexo: null,
+        puntos: null,
+        img: null
+    }
+
+    //Imagen usuario
+    daoU.getUserImageName(user.mail, (err, callback) => {
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+            user.img = callback;
+
+            //Sexo del Usuario
+            daoU.getUserSex(user.mail, (err, callback) => {
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
+                    if (callback === undefined)
+                        user.sexo = null;
+                    else
+                        user.sexo  = callback;
+
+                    //Puntos del usuario
+                    daoU.getUserPoints(user.mail, (err, callback) => {
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        } else {
+                            if (callback === undefined)
+                                user.puntos  = null;
+                            else
+                                user.puntos = callback;
+
+                            //Edad del usuario
+                            daoU.getUserAge(user.mail, (err, callback) => {
+                                if (err) {
+                                    console.log(err);
+                                    response.end();
+                                } else {
+                                    if (callback === undefined)
+                                        user.edad = null;
+                                    else {
+                                        
+                                        user.edad = getAge(callback);
+
+                                        //Nombre del usuario
+                                        daoU.getUserName(user.mail, (err, callback) => {
+                                            if (err) {
+                                                console.log(err);
+                                                response.end();
+                                            } else {
+                                                if (callback === undefined)
+                                                    user.nombre = null;
+                                                else {
+                                                    user.nombre = callback;
+
+                                                    //Renderizar plantilla
+                                                    response.render("otherProfile", {user: user});
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    })
+
+                }
+            })
+        }
+    })
 
 });
 

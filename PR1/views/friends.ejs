@@ -89,7 +89,14 @@
                             </div>
 
                             <div class="flexGrow">
-                                <label class="fuenteMedia negrita"><%= result.nombre %></label>
+                                
+                                <form action="/verPerfil" method="POST">
+                                    
+                                    <input value="<%= result.solicitante %>" name="perfilSolicitante" type="hidden">
+                                
+                                    <input class="fuenteMedia negrita" type="submit"  value="<%= result.nombre %>"/>
+                                
+                                </form>
                             </div>
 
                             <div>
@@ -167,7 +174,14 @@
                             </div>
 
                             <div class="flexGrow">
-                                <label class="fuenteMedia negrita"><%= result.nombre %></label>
+                                
+                                <form action="/verPerfil" method="POST">
+                                    
+                                    <input value="<%= result.solicitante %>" name="perfilSolicitante" type="hidden">
+                                
+                                    <input class="fuenteMedia negrita" type="submit"  value="<%= result.nombre %>"/>
+                                
+                                </form>
                             </div>
 
                         </li>
@@ -181,15 +195,9 @@
                     </div>
 
                     <% } %>
-
+                    
                 </div>
-
-
-
-
             </div>
-
         </div>
-
     </body>
 </html>

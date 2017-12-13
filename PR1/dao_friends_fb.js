@@ -100,7 +100,7 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "SELECT user.nombre AS nombre, user.img AS img " +
+                    "SELECT user.email AS solicitante, user.nombre AS nombre, user.img AS img " +
                     "FROM user LEFT JOIN friends ON friends.friend = user.email " +
                     "WHERE friends.user = ?;",
                     [user],
