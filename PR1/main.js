@@ -383,7 +383,6 @@ app.get("/friends", (request, response) => {
 
 app.post("/search", (request, response) => {
 
-    console.log(request.body.buscar);
     //Caracteres que se quieren buscar
     let busqueda = {
         UserSearch: request.body.buscar
