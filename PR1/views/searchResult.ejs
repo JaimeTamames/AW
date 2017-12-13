@@ -3,7 +3,7 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Perfil - FaceBluff</title>
+        <title>Resultados - FaceBluff</title>
     </head>
 
     <body>
@@ -74,40 +74,32 @@
             <div class="cuerpoBox">	
 
                 <div>
-                    <p class="fuentePropia negrita fuenteGrande">Tu perfil</p>
+                    <p class="fuentePropia negrita fuenteGrande">Resultados de búsqueda: '<%= busqueda.UserSearch  %>'</p>
                 </div>
 
                 <div class="perfilBox">
 
-                    <div class="perfilImgBox">
+                    <ul>
+                        <% lista.forEach(result => { %>
+                        <li>
+                            <div class="perfilImgfriendBox">
+                                <img class="perfilImgBox" src="<%= result.img %>"/>
+                            </div>
+                            
+                            <span>
+                                <label class="fuenteMedia negrita"><%= result.nombre %></label>
+                            </span>
 
-                        <img class="perfilImg" src="<%= UserImg %>"/>	
+                            <form action="/solicitarAmistad" method="POST">
 
-                    </div>
+                                <input value="<%= result.email %>" name="solicitudEmail" type="hidden">
 
-                    <div class="datosPerfil">
+                                <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Solicitar amistad"/>
 
-                        <div><label class="fuenteMedia fuentePropia negrita"><%= UserName%></label></div>
-                        <div class="datosPerfilSecundariosBox">
-				
-                            <div class="datoSecundario"><label  class="fuenteMedia"><%= UserAge%> Años</label></div>
-
-                            <div class="datoSecundario"><label  class="fuenteMedia"><%= UserSex%></label></div>
-
-                            <div class="datoSecundario"><label  class="fuenteMedia"><%= UserPoints%> Puntos</label></div>
-
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="botonModificarPerfilBox">
-
-                    <form action="/modificarPerfil" method="GET" class="modificarPerfilPost">
-
-                        <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Modificar Perfil"/>				
-
-                    </form>
+                            </form>
+                        </li>
+                        <% }); %>
+                    </ul>
 
                 </div>
 

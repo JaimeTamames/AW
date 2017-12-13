@@ -109,8 +109,8 @@ app.post("/conectar", (request, response) => {
                         console.log(err);
                         response.end();
                     } else {
-                        app.locals.imagenUsuario = callback;
-					
+                        app.locals.UserImg = callback;
+
                         //Sexo del Usuario
                         daoU.getUserSex(user, (err, callback) => {
                             if (err) {
@@ -142,7 +142,7 @@ app.post("/conectar", (request, response) => {
                                                 if (callback === undefined)
                                                     app.locals.UserAge = null;
                                                 else {
-													app.locals.UserDate = callback;
+                                                    app.locals.UserDate = callback;
                                                     app.locals.UserAge = getAge(callback);
 
                                                     //Nombre del usuario
@@ -167,9 +167,9 @@ app.post("/conectar", (request, response) => {
                                     }
                                 })
 
-                            }						
-                      })
-                   }
+                            }
+                        })
+                    }
                 })
             }
         }
@@ -202,14 +202,16 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 nombre: request.body.nombre,
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
-                img: request.body.imagenPerfil
+                img: request.body.img
             }
-			
-			if (user.img === undefined)
+
+            //Acotar si se ha añadido la imagen		
+            if (user.img == undefined || user.img == '') {
                 user.img = "profile_imgs/NoProfile.png";
-            else
-                user.img = "profile_imgs/" + user.img;
-			
+            } else {
+                user.img = "/profile_imgs/" + user.img;
+            }
+
             daoU.addUser(user, (err, callback) => {
 
                 if (err) {
@@ -226,7 +228,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
                     app.locals.UserPoints = 0;
                     app.locals.UserSex = user.sexo;
                     app.locals.UserMail = user.email;
-					app.locals.imagenUsuario = user.img;
+                    app.locals.UserImg = user.img;
 
 
                     response.render("myProfile");
@@ -242,7 +244,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 nombre: request.body.nombre,
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
-                //img: request.body.imagenPerfil
+                img: request.body.img
             };
 
             response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});
@@ -266,17 +268,17 @@ app.get("/modificarPerfil", (request, response) => {
 
 //Aplicar cambios,boton de la pagina myProfileAdmin
 app.post("/aplicarCambiosPerfil", (request, response) => {
-  
+
     request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
     request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").notEmpty().isBefore();
-	
-	if(request.body.pass !== ""){
-		request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
-	}
+
+    if (request.body.pass !== "") {
+        request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
+    }
 
     request.getValidationResult().then((result) => {
-        if (result.isEmpty()) {			
-									
+        if (result.isEmpty()) {
+
             //Datos para modificar el usuario
             let user = {
                 nombre: request.body.nombre,
@@ -284,94 +286,91 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                 pass: request.body.pass,
                 fechaNacimiento: request.body.fechaNacimiento,
                 sexo: request.body.sexo,
-				img: request.body.imagenPerfil			
+                img: request.body.img
             }
-			
-			//Acotar si se ha modificado la imagen		
-			if(user.img !== "")
-				user.imagenPerfil = "/profile_imgs/" + user.img;
-			else
-				user.imagenPerfil = app.locals.imagenUsuario;
-			
-			//-------------------------------------//
-			
-			
-				
-				daoU.setName(user, (err, callback) => {
-					if (err) {
-						console.log(err);
-						response.end();
-					} else {
-						app.locals.UserName = user.nombre;
-						
-						daoU.setDate(user, (err, callback) => {
-							if (err) {
-								console.log(err);
-								response.end();
-							} else {
-								
-								app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-								app.locals.UserDate = user.fechaNacimiento;
-								
-								daoU.setSex(user, (err, callback) => {
-									if (err) {
-										console.log(err);
-										response.end();
-									} else {
-										
-										app.locals.UserSex = user.sexo;
-										
-										daoU.setImage(user, (err, callback) => {
-											if (err) {
-												console.log(err);
-												response.end();
-											} else {
-												
-												app.locals.imagenUsuario = user.imagenPerfil;
-												
-												
-												if(user.pass !== ""){
-				
-													daoU.setPassword(user, (err, callback) => {
-														if (err) {
-															console.log(err);
-															response.end();
-														} 
-														else
-															response.render("myProfile");
-													})
-													
-												}
-												// FINAL DE IF DE SETPASS		
-												else {
-													
-													response.render("myProfile");
-												}
-												
-											}				
-											
-										})
-										// FINAL DE SETIMAGE
-										
-									}									
-									
-								})							
-								//FINAL DE SETSEX							
-							}				
-							
-						})				
-						
-						// FINAL DE SETDATE						
-					}				
-					
-				})				
-				//FINAL DE SETNAME				
-			}
-			else {
 
-				//No devolvemos datos introducidos previamente, pueden crear confusion de si estan ya cambiados o no, pero si errores       
-				response.render("myProfileAdmin", {errores: result.mapped()});
-			}
+            //Acotar si se ha modificado la imagen		
+            if (user.img == undefined || user.img == '') {
+                user.img = app.locals.UserImg;
+            } else {
+                user.img = "/profile_imgs/" + user.img;
+            }
+            //-------------------------------------//   SETERS
+
+            daoU.setName(user, (err, callback) => {
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
+
+                    app.locals.UserName = user.nombre;
+
+                    daoU.setDate(user, (err, callback) => {
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        } else {
+
+                            app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+                            app.locals.UserDate = user.fechaNacimiento;
+
+                            daoU.setSex(user, (err, callback) => {
+                                if (err) {
+                                    console.log(err);
+                                    response.end();
+                                } else {
+
+                                    app.locals.UserSex = user.sexo;
+
+                                    daoU.setImage(user, (err, callback) => {
+                                        if (err) {
+                                            console.log(err);
+                                            response.end();
+                                        } else {
+
+                                            app.locals.UserImg = user.img;
+
+
+                                            if (user.pass !== "") {
+
+                                                daoU.setPassword(user, (err, callback) => {
+                                                    if (err) {
+                                                        console.log(err);
+                                                        response.end();
+                                                    } else
+                                                        response.render("myProfile");
+                                                })
+
+                                            }
+                                            // FINAL DE IF DE SETPASS		
+                                            else {
+
+                                                response.render("myProfile");
+                                            }
+
+                                        }
+
+                                    })
+                                    // FINAL DE SETIMAGE
+
+                                }
+
+                            })
+                            //FINAL DE SETSEX							
+                        }
+
+                    })
+
+                    // FINAL DE SETDATE						
+                }
+
+            })
+            //FINAL DE SETNAME				
+        } else {
+
+            //No devolvemos datos introducidos previamente, pueden crear confusion de si estan ya cambiados o no, pero si errores       
+            response.render("myProfileAdmin", {errores: result.mapped()});
+        }
     });
 });
 
@@ -380,6 +379,33 @@ app.get("/friends", (request, response) => {
 
     response.status(200);
     response.render("friends");
+});
+
+app.post("/search", (request, response) => {
+
+    console.log(request.body.buscar);
+
+    //Caracteres que se quieren buscar
+    let busqueda = {
+        UserSearch: request.body.buscar
+    };
+
+    daoU.search(busqueda.UserSearch, (err, lista) => {
+
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+            
+            console.log(lista);
+
+            response.render("searchResult", {busqueda: busqueda, lista: lista});
+        }
+    });
+    
+    //response.render("searchResult", {busqueda: busqueda});
 });
 
 //Pagina de preguntas
@@ -398,36 +424,37 @@ app.get("/logOut", (request, response) => {
 
 });
 
+//Recibe una fecha como parametro y devuelve la edad
 function getAge(x) {
-   
+
     let fecha = x;
-	
-	let valores = fecha.split("/");
+
+    let valores = fecha.split("/");
     let dia = valores[1];
     let mes = valores[0];
     let ano = valores[2];
-	   
+
     let hoy = new Date();
     let año_actual = hoy.getYear();
-    let mes_actual = hoy.getMonth()+1;
+    let mes_actual = hoy.getMonth() + 1;
     let dia_actual = hoy.getDate();
- 
+
     // realizamos el calculo
     let edadUser = (año_actual + 1900) - ano;
-        if ( mes_actual < mes )
-        {
-            edadUser--;
-        }
-        if ((mes == mes_actual) && (dia_actual < dia))
-        {
-            edadUser--;
-        }
-        if (edadUser > 1900)
-        {
-            edadUser -= 1900;
-        }
- 
-        
-   return edadUser;
+    if (mes_actual < mes)
+    {
+        edadUser--;
+    }
+    if ((mes == mes_actual) && (dia_actual < dia))
+    {
+        edadUser--;
+    }
+    if (edadUser > 1900)
+    {
+        edadUser -= 1900;
+    }
+
+
+    return edadUser;
 }
 

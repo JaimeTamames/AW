@@ -56,7 +56,7 @@
 
                             <div class="perfilImgMenuBox">
 
-                                <img class="perfilImg" src="<%= imagenUsuario%>"/>	
+                                <img class="perfilImg" src="<%= UserImg%>"/>	
 
                             </div>
 
@@ -143,9 +143,6 @@
 
                 </div>
 
-
-
-
                 <div>
                     <p class="fuentePropia negrita fuenteGrande">Búsqueda de amigos</p>
                 </div>
@@ -154,16 +151,16 @@
 
                     <div class="formTextbusquedaBox"><p  class="fuenteMedia">Buscar por nombre:</p></div>
 
-                    <div class="formInputbusquedaBox"><input class="anchoTotal altoTotal fuenteMedia" type="email"></div>	
+                    <form action="/search" method="POST">
 
-                    <div>
-                        <form action="" method="post" class="rechazarAmigoPost">
+                        <div class="formInputbusquedaBox">
+                            <input class="anchoTotal altoTotal fuenteMedia" name="buscar" type="text" placeholder="Introduzca su busqueda">
+                        </div>	
 
-                            <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Buscar"/>
-
-                        </form>
-                    </div>
-
+                        <div>
+                            <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit" value="Buscar"/>
+                        </div>
+                    </form>
                 </div>		
 
                 <div>

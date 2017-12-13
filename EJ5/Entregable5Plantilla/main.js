@@ -24,17 +24,9 @@ let daoTask = new daoTasks.DAOTasks(pool);
 
 	
 let newTask = {
-		
-<<<<<<< HEAD
     text: "Terminar ejercicio",
     done: true,
-    tags: ["awaw", "ejercicio"]
-=======
-    text: "Terminar ejercicio entregable 5",
-    done: true,
-    tags: ["aw", "ejercicio"]
->>>>>>> 08795ee49fa39f74c916aea8fabc4593f322ef96
-			
+    tags: ["awaw", "ejercicio"]		
     }
 
 daoUser.isUserCorrect("usuario@ucm.es", "mipass", (err, result) => {

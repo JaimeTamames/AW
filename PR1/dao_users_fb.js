@@ -206,7 +206,6 @@ class DAOUsers {
         });
     }
 
-    //Hay que corregir imagen y edad
     addUser(user, callback) {
 			
         this.pool.getConnection((err, connection) => {
@@ -232,136 +231,153 @@ class DAOUsers {
         });
     }
 
+    setPassword(user, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE user SET " +
+                    "password = ? " +
+                    "WHERE email = ?;",
+                    [user.pass, user.email],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+                    connection.release();
+                    callback(null, undefined);
+                }
+            }
+            );
+        });
+    }
+
+    setImage(user, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE user SET " +
+                    "img = ? " +
+                    "WHERE email = ?;",
+                    [user.img, user.email],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+                    connection.release();
+                    callback(null, undefined);
+                }
+            }
+            );
+        });
+    }
+
+    setName(user, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE user SET " +
+                    "nombre = ? " +
+                    "WHERE email = ?;",
+                    [user.nombre, user.email],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+                    connection.release();
+                    callback(null, undefined);
+                }
+            }
+            );
+        });
+    }
+
+    setSex(user, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE user SET " +
+                    "sexo = ?" +
+                    "WHERE email = ?;",
+                    [user.sexo, user.email],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+                    connection.release();
+                    callback(null, undefined);
+                }
+            }
+            );
+        });
+    }
+
+    setDate(user, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE user SET " +
+                    "fechaNacimiento = ?" +
+                    "WHERE email = ?;",
+                    [user.fechaNacimiento, user.email],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+                    connection.release();
+                    callback(null, undefined);
+                }
+            }
+            );
+        });
+    }
     
-
-	setPassword(user, callback) {
-			this.pool.getConnection((err, connection) => {
-				if (err) {
-					callback(err);
-					return;
-				}
-				connection.query(
-					"UPDATE user SET " +
-					"password = ?" +
-					"WHERE email = ?;",
-					[user.pass, user.email],
-					(err, result) => {
-						if (err) {
-							callback(err);
-							return;
-						} else {
-							connection.release();
-							callback(null, undefined);
-						}
-					}
-				);			
-			});
-	}
-
-	
-
-	setImage(user, callback) {
-			this.pool.getConnection((err, connection) => {
-				if (err) {
-					callback(err);
-					return;
-				}
-				connection.query(
-					"UPDATE user SET " +
-					"img = ?" +
-					"WHERE email = ?;",
-					[user.img, user.email],
-					(err, result) => {
-						if (err) {
-							callback(err);
-							return;
-						} else {
-							connection.release();
-							callback(null, undefined);
-						}
-					}
-				);			
-			});
-	}
-
-
-
-
-	setName(user, callback) {
-				
-			this.pool.getConnection((err, connection) => {
-				if (err) {
-					callback(err);
-					return;
-				}
-				connection.query(
-					"UPDATE user SET " +
-					"nombre = ? " +
-					"WHERE email = ?;",
-					[user.nombre, user.email],
-					(err, result) => {
-						if (err) {
-							callback(err);
-							return;
-						} else {
-							connection.release();
-							callback(null, undefined);
-						}
-					}
-				);			
-			});
-	}
-
-
-
-	setSex(user, callback) {
-			this.pool.getConnection((err, connection) => {
-				if (err) {
-					callback(err);
-					return;
-				}
-				connection.query(
-					"UPDATE user SET " +
-					"sexo = ?" +
-					"WHERE email = ?;",
-					[user.sexo, user.email],
-					(err, result) => {
-						if (err) {
-							callback(err);
-							return;
-						} else {
-							connection.release();
-							callback(null, undefined);
-						}
-					}
-				);			
-			});
-		}
-
-
-	setDate(user, callback) {
-			this.pool.getConnection((err, connection) => {
-				if (err) {
-					callback(err);
-					return;
-				}
-				connection.query(
-					"UPDATE user SET " +
-					"fechaNacimiento = ?" +
-					"WHERE email = ?;",
-					[user.fechaNacimiento, user.email],
-					(err, result) => {
-						if (err) {
-							callback(err);
-							return;
-						} else {
-							connection.release();
-							callback(null, undefined);
-						}
-					}
-				);			
-			});
-	}
+    search(char, callback){
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT nombre, email, img " +
+                    "FROM user " +
+                    "WHERE nombre LIKE '%a%';",
+                    //[char],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows);
+                }
+            }
+            );
+        });
+        
+    }
 
 }
 

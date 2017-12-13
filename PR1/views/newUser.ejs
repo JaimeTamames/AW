@@ -119,7 +119,7 @@
 
                             <div class="formInputTextBox2">
                                 <% if(usuario.fechaNacimiento == null || usuario.fechaNacimiento == ''){ %>
-                                <input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" placeholder='dd/mm/aaaa'>
+                                <input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" placeholder='mm/dd/aaaa'>
                                 <% }else{ %>
                                 <input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" value="<%= usuario.fechaNacimiento %>">
                                 <% }%>
@@ -133,7 +133,7 @@
 
                             <div class="formInputTextBox2">
                                 
-                                <input name="imagenPerfil" type="file">
+                                <input name="img" type="file" value="<%= usuario.img %>">
 
                             </div>
 
