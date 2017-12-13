@@ -232,53 +232,7 @@ class DAOUsers {
         });
     }
 
-    /*updateUser(user, callback) {
-
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-			
-			if(user.img === ""){
-				connection.query(
-						"UPDATE user SET " +
-						"email = ?, password = ?, nombre = ?, sexo = ?, fechaNacimiento = ?" +
-						"WHERE email = ?;",
-						[user.email, user.pass, user.nombre, user.sexo, user.fechaNacimiento, user.email],
-						(err, result) => {
-							if (err) {
-								callback(err);
-								return;
-							} else {
-
-								connection.release();
-								callback(null, undefined);
-							}
-						}
-				);				
-			}
-			else {
-				connection.query(
-						"UPDATE user SET " +
-						"email = ?, password = ?, nombre = ?, sexo = ?, fechaNacimiento = ?, img = ? " +
-						"WHERE email = ?;",
-						[user.email, user.pass, user.nombre, user.sexo, user.fechaNacimiento, user.img, user.email],
-						(err, result) => {
-							if (err) {
-								callback(err);
-								return;
-							} else {
-
-								connection.release();
-								callback(null, undefined);
-							}
-						}
-				);			
-			}
-        });
-    }*/
-
+    
 
 	setPassword(user, callback) {
 			this.pool.getConnection((err, connection) => {

@@ -109,11 +109,8 @@ app.post("/conectar", (request, response) => {
                         console.log(err);
                         response.end();
                     } else {
-                        if (callback === null)
-                            app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
-                        else
-                            app.locals.imagenUsuario = "profile_imgs/" + callback;
-
+                        app.locals.imagenUsuario = callback;
+					
                         //Sexo del Usuario
                         daoU.getUserSex(user, (err, callback) => {
                             if (err) {
@@ -160,7 +157,7 @@ app.post("/conectar", (request, response) => {
                                                                 app.locals.UserName = callback;
 
                                                                 //Renderizar plantilla
-                                                                response.redirect("myProfile");
+                                                                response.render("myProfile");
                                                             }
                                                         }
                                                     })
@@ -170,9 +167,9 @@ app.post("/conectar", (request, response) => {
                                     }
                                 })
 
-                            }
-                        })
-                    }
+                            }						
+                      })
+                   }
                 })
             }
         }
@@ -208,6 +205,11 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 img: request.body.imagenPerfil
             }
 			
+			if (user.img === undefined)
+                user.img = "profile_imgs/NoProfile.png";
+            else
+                user.img = "profile_imgs/" + user.img;
+			
             daoU.addUser(user, (err, callback) => {
 
                 if (err) {
@@ -224,13 +226,10 @@ app.post("/altaNuevoUsuario", (request, response) => {
                     app.locals.UserPoints = 0;
                     app.locals.UserSex = user.sexo;
                     app.locals.UserMail = user.email;
+					app.locals.imagenUsuario = user.img;
 
-                    if (user.img === undefined)
-                        app.locals.imagenUsuario = "profile_imgs/NoProfile.png";
-                    else
-                        app.locals.imagenUsuario = "profile_imgs/" + user.img;
 
-                    response.redirect("myProfile");
+                    response.render("myProfile");
                 }
             });
 
@@ -267,10 +266,8 @@ app.get("/modificarPerfil", (request, response) => {
 
 //Aplicar cambios,boton de la pagina myProfileAdmin
 app.post("/aplicarCambiosPerfil", (request, response) => {
-
-    request.checkBody("email", "Dirección de correo no válida").notEmpty().isEmail();    
+  
     request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
-    //request.checkBody("nombre", "Nombre de usuario no válido").matches(/^[A-Z0-9]*$/i);
     request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").notEmpty().isBefore();
 	
 	if(request.body.pass !== ""){
@@ -278,8 +275,8 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 	}
 
     request.getValidationResult().then((result) => {
-        if (result.isEmpty()) {
-
+        if (result.isEmpty()) {			
+									
             //Datos para modificar el usuario
             let user = {
                 nombre: request.body.nombre,
@@ -290,87 +287,91 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 				img: request.body.imagenPerfil			
             }
 			
-			user.imagenPerfil = "/profile_imgs/" + user.img;
+			//Acotar si se ha modificado la imagen		
+			if(user.img !== "")
+				user.imagenPerfil = "/profile_imgs/" + user.img;
+			else
+				user.imagenPerfil = app.locals.imagenUsuario;
 			
-			if(user.nombre !== app.locals.UserName){
+			//-------------------------------------//
+			
+			
 				
 				daoU.setName(user, (err, callback) => {
 					if (err) {
 						console.log(err);
 						response.end();
 					} else {
-
 						app.locals.UserName = user.nombre;
 						
-					}				
-					
-				}) ////SOLUCIONAR PROBLEMA PORQUE SE PIERDE EL NOMBRE AL MODIFICAR
+						daoU.setDate(user, (err, callback) => {
+							if (err) {
+								console.log(err);
+								response.end();
+							} else {
+								
+								app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+								app.locals.UserDate = user.fechaNacimiento;
+								
+								daoU.setSex(user, (err, callback) => {
+									if (err) {
+										console.log(err);
+										response.end();
+									} else {
+										
+										app.locals.UserSex = user.sexo;
+										
+										daoU.setImage(user, (err, callback) => {
+											if (err) {
+												console.log(err);
+												response.end();
+											} else {
+												
+												app.locals.imagenUsuario = user.imagenPerfil;
+												
+												
+												if(user.pass !== ""){
 				
-			}
-			
-			if(user.fechaNacimiento !== app.locals.UserDate){
-				
-				daoU.setDate(user, (err, callback) => {
-					if (err) {
-						console.log(err);
-						response.end();
-					} else {
+													daoU.setPassword(user, (err, callback) => {
+														if (err) {
+															console.log(err);
+															response.end();
+														} 
+														else
+															response.render("myProfile");
+													})
+													
+												}
+												// FINAL DE IF DE SETPASS		
+												else {
+													
+													response.render("myProfile");
+												}
+												
+											}				
+											
+										})
+										// FINAL DE SETIMAGE
+										
+									}									
+									
+								})							
+								//FINAL DE SETSEX							
+							}				
+							
+						})				
 						
-						app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-						app.locals.UserDate = user.fechaNacimiento;
-						
-					}				
-					
-				})
-				
-			}
-			
-			if(user.sexo !== app.locals.UserSex){				
-				daoU.setDate(user, (err, callback) => {
-					if (err) {
-						console.log(err);
-						response.end();
-					} else {
-						
-						app.locals.UserSex = user.sexo;
-						
+						// FINAL DE SETDATE						
 					}				
 					
 				})				
+				//FINAL DE SETNAME				
 			}
-			
-			if(user.imagenPerfil !== app.locals.imagenUsuario){				
-				daoU.setImage(user, (err, callback) => {
-					if (err) {
-						console.log(err);
-						response.end();
-					} else {
-						
-						app.locals.imagenUsuario = user.imagenPerfil;
-						
-					}				
-					
-				})				
-			}   //////SOLUCIONAR TEMA DE RUTAS CON LAS IMAGENES AL ACTUALIZAR
-			
-			if(user.pass !== ""){
-				
-				daoU.setPassword(user, (err, callback) => {
-					if (err) {
-						console.log(err);
-						response.end();
-					} 					
-				})
-				
+			else {
+
+				//No devolvemos datos introducidos previamente, pueden crear confusion de si estan ya cambiados o no, pero si errores       
+				response.render("myProfileAdmin", {errores: result.mapped()});
 			}
-			
-			response.render("myProfile");
-
-        } else {
-
-            //No devolvemos datos introducidos previamente, pueden crear confusion de si estan ya cambiados o no, pero si errores       
-            response.render("myProfileAdmin", {errores: result.mapped()});
-        }
     });
 });
 
