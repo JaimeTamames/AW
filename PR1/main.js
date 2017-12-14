@@ -426,28 +426,28 @@ app.post("/aceptarAmistad", (request, response) => {
 	
 	let amigo = request.body.aceptaAmigo
 
-    daoF.addFriend(app.locals.UserMail, amigo, (err) => {
+		daoF.addFriend(app.locals.UserMail, amigo, (err) => {
 
-        if (err) {
-            console.log(err);
-            response.end();
-        } else {
+			if (err) {
+				console.log(err);
+				response.end();
+			} else {
 
-            daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
+				daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
 
-                if (err) {
-                    console.log(err);
-                    response.end();
-                } else {
+					if (err) {
+						console.log(err);
+						response.end();
+					} else {
 
-                    response.status(200);
+						response.status(200);
 
-                    response.redirect("friends");
-					
-                }
-            });
-        }
-    });
+						response.redirect("friends");
+						
+					}
+				});
+			}
+		});
 });
 
 //Rechazar, boton de la pagina amigos
@@ -503,7 +503,9 @@ app.post("/search", (request, response) => {
 //Solicitar, boton solicita amistad de la pagina de resultados de busqueda
 app.post("/solicitarAmistad", (request, response) => {
 
-    daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
+    
+	
+	daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
 
         if (err) {
             console.log(err);
@@ -515,6 +517,9 @@ app.post("/solicitarAmistad", (request, response) => {
             response.redirect("friends");
         }
     });
+	
+	
+	
 });
 
 //Ver perfil de solicitantes o amistades
