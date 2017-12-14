@@ -133,7 +133,7 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "UPDATE friends SET state = 'aceptada' WHERE user = ? AND friend = ?;" +
+                    "UPDATE friends SET state = 'aceptada' WHERE user = ? AND friend = ?;",
                     [user, friend],
                     (err, rows) => {
                 if (err) {
