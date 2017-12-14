@@ -423,15 +423,17 @@ app.get("/friends", (request, response) => {
 
 //Aceptar, boton de la pagina amigos
 app.post("/aceptarAmistad", (request, response) => {
+	
+	let amigo = request.body.aceptaAmigo
 
-    daoF.addFriend(app.locals.UserMail, request.body.aceptaAmigo, (err) => {
+    daoF.addFriend(app.locals.UserMail, amigo, (err) => {
 
         if (err) {
             console.log(err);
             response.end();
         } else {
 
-            daoF.rmRequest(request.body.aceptaAmigo, app.locals.UserMail, (err) => {
+            daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
 
                 if (err) {
                     console.log(err);
@@ -449,8 +451,10 @@ app.post("/aceptarAmistad", (request, response) => {
 
 //Rechazar, boton de la pagina amigos
 app.post("/rechazarAmistad", (request, response) => {
+	
+	let amigo = request.body.rechazarAmigo
 
-    daoF.rmRequest(request.body.rechazarAmigo, app.locals.UserMail, (err) => {
+    daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
 
         if (err) {
             console.log(err);

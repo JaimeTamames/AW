@@ -35,6 +35,9 @@ class DAOFriends {
                     callback(err);
                     return;
                 }
+				else{
+					callback(null,undefined);
+				}
             }
             );
         });
@@ -56,6 +59,9 @@ class DAOFriends {
                     callback(err);
                     return;
                 }
+				else{
+					callback(null,undefined);
+				}
             }
             );
         });
@@ -164,6 +170,9 @@ class DAOFriends {
                     callback(err);
                     return;
                 }
+				else{
+					callback(null,undefined);
+				}
             }
             );
         });
@@ -185,6 +194,9 @@ class DAOFriends {
                     callback(err);
                     return;
                 }
+				else{
+					callback(null,undefined);
+				}
             }
             );
         });
