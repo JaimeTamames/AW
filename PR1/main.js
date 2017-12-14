@@ -443,6 +443,7 @@ app.post("/aceptarAmistad", (request, response) => {
                     response.status(200);
 
                     response.redirect("friends");
+					
                 }
             });
         }
