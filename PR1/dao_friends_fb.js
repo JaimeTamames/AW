@@ -89,6 +89,35 @@ class DAOFriends {
             );
         });
     }
+	
+	//Comprobar si se han solicitado amistad, devuelve true o false
+    areRequest(solicitante, solicitado, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT *" +
+                    " FROM requests" +
+                    " WHERE emailSolicitante = ? AND emailSolicitado = ?",
+                    [solicitante, solicitado],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, false);
+                } else {
+                    callback(null, true);
+                }
+            }
+            );
+        });
+
+    }
 
     /////// TABLA DE AMIGOS ////////////
 
