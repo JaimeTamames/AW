@@ -426,28 +426,28 @@ app.post("/aceptarAmistad", (request, response) => {
 
     let amigo = request.body.aceptaAmigo
 
-		daoF.addFriend(app.locals.UserMail, amigo, (err) => {
+    daoF.addFriend(app.locals.UserMail, amigo, (err) => {
 
-			if (err) {
-				console.log(err);
-				response.end();
-			} else {
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
 
-				daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
+            daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
 
-					if (err) {
-						console.log(err);
-						response.end();
-					} else {
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
 
-						response.status(200);
+                    response.status(200);
 
-						response.redirect("friends");
-						
-					}
-				});
-			}
-		});
+                    response.redirect("friends");
+
+                }
+            });
+        }
+    });
 });
 
 //Rechazar, boton de la pagina amigos
@@ -487,7 +487,7 @@ app.post("/search", (request, response) => {
         } else {
 
             response.status(200);
-            
+
             let errors = null;
 
             if (lista === undefined) {
@@ -502,15 +502,9 @@ app.post("/search", (request, response) => {
 
 //Solicitar, boton solicita amistad de la pagina de resultados de busqueda
 app.post("/solicitarAmistad", (request, response) => {
-<<<<<<< HEAD
-    
-    daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
-=======
 
-    
-	
-	daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
->>>>>>> b6d6e460de79e75707cedefa5b8c9974b4cd8b8e
+    daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
+
 
         if (err) {
             console.log(err);
@@ -522,9 +516,6 @@ app.post("/solicitarAmistad", (request, response) => {
             response.redirect("friends");
         }
     });
-	
-	
-	
 });
 
 //Ver perfil de solicitantes o amistades
@@ -659,4 +650,3 @@ function getAge(x) {
 
     return edadUser;
 }
-
