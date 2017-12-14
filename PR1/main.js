@@ -426,26 +426,13 @@ app.post("/aceptarAmistad", (request, response) => {
 
     let amigo = request.body.aceptaAmigo
 
-    daoF.addFriend(app.locals.UserMail, amigo, (err) => {
+    daoF.addFriend(app.locals.UserMail, amigo, (err, callback) => {
 
         if (err) {
             console.log(err);
             response.end();
-        } else {
-
-            daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
-
-                if (err) {
-                    console.log(err);
-                    response.end();
-                } else {
-
-                    response.status(200);
-
-                    response.redirect("friends");
-
-                }
-            });
+        } else {			
+			response.redirect("friends");
         }
     });
 });
@@ -455,7 +442,7 @@ app.post("/rechazarAmistad", (request, response) => {
 
     let amigo = request.body.rechazarAmigo
 
-    daoF.rmRequest(app.locals.UserMail, amigo, (err) => {
+    daoF.rmRequest(app.locals.UserMail, amigo, (err, callback) => {
 
         if (err) {
             console.log(err);
@@ -503,8 +490,7 @@ app.post("/search", (request, response) => {
 //Solicitar, boton solicita amistad de la pagina de resultados de busqueda
 app.post("/solicitarAmistad", (request, response) => {
 
-    daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
-
+    daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err, callback) => {
 
         if (err) {
             console.log(err);

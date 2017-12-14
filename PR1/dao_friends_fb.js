@@ -28,30 +28,7 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "INSERT INTO friends (user, friend) VALUES (?, ?, 'pedida')",
-                    [friend, user],
-                    (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                } else {
-                    callback(null, undefined);
-                }
-            }
-            );
-        });
-
-    }
-
-    //Eliminar Solicitud de amistad
-    rmRequest(user, friend, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "DELETE FROM friends WHERE user = ? AND friend = ? AND state = 'pedida';",
+                    "INSERT INTO friends (user, friend, state) VALUES (?, ?, 'pedida')",
                     [user, friend],
                     (err, rows) => {
                 if (err) {
@@ -66,6 +43,7 @@ class DAOFriends {
 
     }
 
+  
     //Coger todas las solicitudes de un usuario, devuelve todas las filas
     getRequests(user, callback) {
         this.pool.getConnection((err, connection) => {
@@ -74,9 +52,9 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "SELECT friends.friend AS email, user.nombre AS nombre, user.img AS img, friends.state AS state " +
-                    "FROM user LEFT JOIN friends ON friends.friend = user.email " +
-                    "WHERE friends.user = ? AND friends.state = 'pedida';",
+                    "SELECT friends.user AS email, user.nombre AS nombre, user.img AS img, friends.state AS state " +
+                    "FROM user LEFT JOIN friends ON friends.user = user.email " +
+                    "WHERE friends.friend = ? AND friends.state = 'pedida';",
                     [user],
                     (err, rows) => {
                 if (err) {
@@ -127,6 +105,7 @@ class DAOFriends {
 
     //Añadir amistad
     addFriend(user, friend, callback) {
+				
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
@@ -134,19 +113,35 @@ class DAOFriends {
             }
             connection.query(
                     "UPDATE friends SET state = 'aceptada' WHERE user = ? AND friend = ?;",
-                    [user, friend],
+                    [friend, user],
                     (err, rows) => {
                 if (err) {
                     callback(err);
                     return;
-                } else {
-                    callback(null, undefined);
+                } else {					
+					
+					connection.query(
+                    "INSERT INTO friends (user, friend, state) VALUES (?, ?, 'aceptada');",
+                    [user, friend],
+                    (err, rows) => {
+						if (err) {
+							callback(err);
+							return;
+						} else {
+
+							callback(null, undefined);
+						}
+					});
                 }
-            }
-            );
+            });
         });
     }
+	
+	
+	
+	
 }
+
 
 module.exports = {
     DAOFriends: DAOFriends
