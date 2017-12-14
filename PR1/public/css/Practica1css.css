@@ -51,8 +51,8 @@ body{
 
 .perfilImgfriendBox {
 
-    width:100px;
-    height: 100px;
+    width:70px;
+    height: 70px;
     display: inline;
     border: solid 2px;
 
@@ -120,8 +120,8 @@ body{
 
     background-color: #6C3698;
     border-radius: 25px;
-    width: 800px;
-    height: 240px;
+    width: 100%;
+    height: 220px;
 }
 
 
@@ -165,9 +165,14 @@ body{
 
     display: flex;
     flex-direction: row;
-    align-items: center;
-    margin-left: -300px;
+    width: 100%;
 
+}
+
+perfilBox>form{
+    
+    display: flex;
+    flex-direction: row;
 }
 
 .datosPerfil {
@@ -175,8 +180,7 @@ body{
     display: flex;
     flex-direction: column;
     margin-left: 40px;
-    justify-content: flex-start;
-    align-items: flex-start;
+    width: 60%;
 
 }
 
@@ -190,13 +194,17 @@ body{
 
 .datoSecundario {
 
+    display: flex;
+    flex-direction: row;
     padding-bottom:5px;
+    justify-content: space-between;
+    align-items: center;
 
 }
 
 .botonModificarPerfilBox {
 
-    padding-top:20px;
+    padding-top:33px;
 
 }
 
@@ -233,9 +241,15 @@ body{
     display: flex;
     flex-direction: row;
     align-items: center;
-    width: 50%;
-    justify-content: space-between;
+    width: 100%;
 
+}
+
+.FormBusquedabox{
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }
 
 .friendsBox {
@@ -249,12 +263,6 @@ body{
 .formTextBox{
 
     flex-grow: 1;
-
-}
-
-.formInputbusquedaBox {
-
-    width: 60%;
 
 }
 
@@ -355,6 +363,7 @@ body{
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 50%;
 }
 
 div[class~=error] {
@@ -373,6 +382,7 @@ div[class~=error] {
 .listaBox>ul{
 
     width: 100%;
+    padding-left: 0px;
 }
 
 .listaBox>ul>li{
@@ -385,4 +395,25 @@ div[class~=error] {
 .flexGrow{
 
     flex-grow: 1;
+}
+
+.texto{
+    
+    background:none!important;
+     color:inherit;
+     border:none; 
+     padding:0!important;
+     font: inherit;
+     /*border is optional*/
+ 
+     cursor: pointer;
+     
+         font-weight: bold;
+font-size: 20px;
+}
+
+.modificarPerfilPost{
+    
+    display: flex;
+    flex-direction: column;
 }

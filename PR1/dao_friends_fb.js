@@ -96,7 +96,7 @@ class DAOFriends {
         });
     }
 	
-	//Comprobar si se han solicitado amistad, devuelve true o false
+    //Comprobar si se han solicitado amistad, devuelve true o false
     areRequest(solicitante, solicitado, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -211,9 +211,9 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "SELECT *" +
-                    " FROM friends" +
-                    " WHERE user = ? AND friend = ?",
+                    "SELECT user, friend " +
+                    "FROM friends " +
+                    "WHERE user = ? AND friend = ?;",
                     [user, friend],
                     (err, rows) => {
                 if (err) {

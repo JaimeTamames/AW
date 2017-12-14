@@ -84,58 +84,58 @@
 
                         <img class="perfilImg" src="<%= UserImg %>"/>
 
-
                     </div>
+                    
+                    <div class="datosPerfil">
 
-                    <form action="/aplicarCambiosPerfil" method="POST" class="modificarPerfilPost">
+                    <form action="/aplicarCambiosPerfil" method="POST">
 
-                        <div class="datosPerfil">
-
-                            <span class="fuenteMedia ">
+                            <div class="datoSecundario fuenteMedia ">
                                 <label>Nombre: </label>
-                                <input class="fuenteMedia" name="nombre" type="text" value="<%= UserName %>">
-                            </span>
+                                <input class=" fuenteMedia" name="nombre" type="text" value="<%= UserName %>">
+                            </div>
 
-                            <div class="datosPerfilSecundariosBox ">
+                            <div >
 
-                                <span class="datoSecundario fuenteMedia">
+                                <div class="datoSecundario fuenteMedia">
                                     <label>Contraseña: </label>
-                                    <input class="fuenteMedia" name="pass" type="password" placeholder='Necesaria, puede cambiarla...'>
-                                </span>
-                                <span class="datoSecundario fuenteMedia">
+                                    <input class="fuenteMedia" name="pass" type="password" placeholder='Si desea cambiarla...'>
+                                </div>
+                                <div class="datoSecundario fuenteMedia">
                                     <label>Fecha nacimiento: </label>
                                     <input class="fuenteMedia" name="fechaNacimiento" type="datetime" value="<%= UserDate %>">
-                                </span>
-                                <span class="datoSecundario fuenteMedia">
+                                </div>
+                                <div class="datoSecundario fuenteMedia">
                                     <label>Sexo: </label>
-                                    <label class="espacioIzq espacioDer">
+                                    <label>
                                         <input type="radio" name="sexo" value="Masculino" <% if(UserSex == "Masculino"){ %> checked <%}%> > Masculino
                                     </label>
 
-                                    <label class="espacioIzq espacioDer">
+                                    <label>
                                         <input type="radio" name="sexo" value="Femenino" <% if(UserSex == "Femenino"){ %> checked <%}%> > Femenino
                                     </label>
 
-                                    <label class="espacioIzq espacioDer">
+                                    <label>
                                         <input type="radio" name="sexo" value="Otro" <% if(UserSex == "Otro"){ %> checked <%}%> > Otro
                                     </label>
-                                </span>
+                                </div>
 
-                                <div>
-
+                                <div class="datoSecundario fuenteMedia">
+                                    <label>Imagen de perfil: </label>
                                     <input name="img" type="file" value="<%= UserImg %>">
 
                                 </div>
 
                             </div>
-                        </div>
+                        
                         <div class="botonModificarPerfilBox">
 
                             <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aplicar cambios"/>				
 
                         </div>
                     </form>
-
+                        
+                        </div>
 
                 </div>
 

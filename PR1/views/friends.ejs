@@ -89,13 +89,13 @@
                             </div>
 
                             <div class="flexGrow">
-                                
+
                                 <form action="/verPerfil" method="POST">
-                                    
+
                                     <input value="<%= result.solicitante %>" name="perfilSolicitante" type="hidden">
-                                
-                                    <input class="fuenteMedia negrita" type="submit"  value="<%= result.nombre %>"/>
-                                
+
+                                    <input class="texto" type="submit"  value="<%= result.nombre %>"/>
+
                                 </form>
                             </div>
 
@@ -110,7 +110,7 @@
                                 </form>
 
                             </div>
-                            
+
                             <div>
 
                                 <form action="/rechazarAmistad" method="POST">
@@ -136,7 +136,7 @@
 
                 </div>
 
-                
+
 
                 <div>
                     <p class="fuentePropia negrita fuenteGrande">Búsqueda de amigos</p>
@@ -144,24 +144,29 @@
 
                 <div class="PanelBusquedabox">
 
-                    <div class="formTextbusquedaBox"><p  class="fuenteMedia">Buscar por nombre:</p></div>
+                    <div><p  class="fuenteMedia espacioDer espacioIzq">Buscar:</p></div>
 
-                    <form action="/search" method="POST">
 
-                        <div class="formInputbusquedaBox">
-                            <input class="anchoTotal altoTotal fuenteMedia" name="buscar" type="text" placeholder="Introduzca su busqueda">
-                        </div>	
+                    <form class="FormBusquedabox anchoTotal" action="/search" method="POST">
 
+                        <div class="anchoTotal espacioDer">
+                            <input class="anchoTotal altoTotal fuenteMedia" name="buscar" type="text" placeholder="Introduzca nombre...">
+
+                        </div>
                         <div>
                             <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit" value="Buscar"/>
                         </div>
+
+
+
                     </form>
+
                 </div>		
 
                 <div>
                     <p class="fuentePropia negrita fuenteGrande">Mis amigos</p>
                 </div>
-                
+
                 <div class="listaBox">
 
                     <% if(errorsAmigos === null){ %>
@@ -174,13 +179,13 @@
                             </div>
 
                             <div class="flexGrow">
-                                
+
                                 <form action="/verPerfil" method="POST">
-                                    
+
                                     <input value="<%= result.solicitante %>" name="perfilSolicitante" type="hidden">
-                                
-                                    <input class="fuenteMedia negrita" type="submit"  value="<%= result.nombre %>"/>
-                                
+
+                                    <input class="texto" type="submit"  value="<%= result.nombre %>"/>
+
                                 </form>
                             </div>
 
@@ -195,7 +200,7 @@
                     </div>
 
                     <% } %>
-                    
+
                 </div>
             </div>
         </div>

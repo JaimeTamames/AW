@@ -423,36 +423,37 @@ app.get("/friends", (request, response) => {
 
 //Aceptar, boton de la pagina amigos
 app.post("/aceptarAmistad", (request, response) => {
-	
-	let amigo = request.body.aceptaAmigo
 
-    daoF.addFriend(app.locals.UserMail, amigo, (err) => {
+    let amigo = request.body.aceptaAmigo
 
-        if (err) {
-            console.log(err);
-            response.end();
-        } else {
+		daoF.addFriend(app.locals.UserMail, amigo, (err) => {
 
-            daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
+			if (err) {
+				console.log(err);
+				response.end();
+			} else {
 
-                if (err) {
-                    console.log(err);
-                    response.end();
-                } else {
+				daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
 
-                    response.status(200);
+					if (err) {
+						console.log(err);
+						response.end();
+					} else {
 
-                    response.redirect("friends");
-                }
-            });
-        }
-    });
+						response.status(200);
+
+						response.redirect("friends");
+						
+					}
+				});
+			}
+		});
 });
 
 //Rechazar, boton de la pagina amigos
 app.post("/rechazarAmistad", (request, response) => {
-	
-	let amigo = request.body.rechazarAmigo
+
+    let amigo = request.body.rechazarAmigo
 
     daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
 
@@ -486,14 +487,14 @@ app.post("/search", (request, response) => {
         } else {
 
             response.status(200);
-
-            let error = null;
+            
+            let errors = null;
 
             if (lista === undefined) {
-                error = "La busqueda no tiene resultados";
+                errors = "La busqueda no tiene resultados";
             }
 
-            response.render("searchResult", {errors: error, busqueda: busqueda, lista: lista});
+            response.render("searchResult", {errors: errors, busqueda: busqueda, lista: lista});
         }
     });
 
@@ -501,8 +502,15 @@ app.post("/search", (request, response) => {
 
 //Solicitar, boton solicita amistad de la pagina de resultados de busqueda
 app.post("/solicitarAmistad", (request, response) => {
-
+<<<<<<< HEAD
+    
     daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
+=======
+
+    
+	
+	daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
+>>>>>>> b6d6e460de79e75707cedefa5b8c9974b4cd8b8e
 
         if (err) {
             console.log(err);
@@ -514,6 +522,9 @@ app.post("/solicitarAmistad", (request, response) => {
             response.redirect("friends");
         }
     });
+	
+	
+	
 });
 
 //Ver perfil de solicitantes o amistades
@@ -545,7 +556,7 @@ app.post("/verPerfil", (request, response) => {
                     if (callback === undefined)
                         user.sexo = null;
                     else
-                        user.sexo  = callback;
+                        user.sexo = callback;
 
                     //Puntos del usuario
                     daoU.getUserPoints(user.mail, (err, callback) => {
@@ -554,7 +565,7 @@ app.post("/verPerfil", (request, response) => {
                             response.end();
                         } else {
                             if (callback === undefined)
-                                user.puntos  = null;
+                                user.puntos = null;
                             else
                                 user.puntos = callback;
 
@@ -567,7 +578,7 @@ app.post("/verPerfil", (request, response) => {
                                     if (callback === undefined)
                                         user.edad = null;
                                     else {
-                                        
+
                                         user.edad = getAge(callback);
 
                                         //Nombre del usuario
