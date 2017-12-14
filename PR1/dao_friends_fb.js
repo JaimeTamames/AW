@@ -21,23 +21,22 @@ class DAOFriends {
     /////////// TABLA DE SOLICITUDES //////////////
 
     //Añadir solicitud de amistad
-    addRequest(solicitante, solicitado, callback) {
+    addRequest(user, friend, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "INSERT INTO requests (emailSolicitante, emailSolicitado) VALUES (?,?)",
-            [solicitante, solicitado],
+                    "INSERT INTO friends (user, friend) VALUES (?, ?, 'pedida')",
+                    [friend, user],
                     (err, rows) => {
                 if (err) {
                     callback(err);
                     return;
+                } else {
+                    callback(null, undefined);
                 }
-				else{
-					callback(null,undefined);
-				}
             }
             );
         });
@@ -45,23 +44,22 @@ class DAOFriends {
     }
 
     //Eliminar Solicitud de amistad
-    rmRequest(solicitante, solicitado, callback) {
+    rmRequest(user, friend, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "DELETE FROM requests WHERE emailSolicitante = ? AND emailSolicitado = ?;",
-            [solicitante, solicitado],
+                    "DELETE FROM friends WHERE user = ? AND friend = ? AND state = 'pedida';",
+                    [user, friend],
                     (err, rows) => {
                 if (err) {
                     callback(err);
                     return;
+                } else {
+                    callback(null, undefined);
                 }
-				else{
-					callback(null,undefined);
-				}
             }
             );
         });
@@ -69,17 +67,17 @@ class DAOFriends {
     }
 
     //Coger todas las solicitudes de un usuario, devuelve todas las filas
-    getRequests(solicitado, callback) {
+    getRequests(user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "SELECT requests.emailSolicitante AS solicitante, user.nombre AS nombre, user.img AS img " +
-                    "FROM user LEFT JOIN requests ON requests.emailSolicitante = user.email " +
-                    "WHERE requests.emailSolicitado = ?;",
-                    [solicitado],
+                    "SELECT friends.friend AS email, user.nombre AS nombre, user.img AS img, friends.state AS state " +
+                    "FROM user LEFT JOIN friends ON friends.friend = user.email " +
+                    "WHERE friends.user = ? AND friends.state = 'pedida';",
+                    [user],
                     (err, rows) => {
                 if (err) {
                     callback(err);
@@ -95,35 +93,7 @@ class DAOFriends {
             );
         });
     }
-	
-    //Comprobar si se han solicitado amistad, devuelve true o false
-    areRequest(solicitante, solicitado, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "SELECT *" +
-                    " FROM requests" +
-                    " WHERE emailSolicitante = ? AND emailSolicitado = ?",
-                    [solicitante, solicitado],
-                    (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                connection.release();
-                if (rows.length === 0) {
-                    callback(null, false);
-                } else {
-                    callback(null, true);
-                }
-            }
-            );
-        });
 
-    }
 
     /////// TABLA DE AMIGOS ////////////
 
@@ -135,9 +105,9 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "SELECT user.email AS solicitante, user.nombre AS nombre, user.img AS img " +
+                    "SELECT friends.friend AS email, user.nombre AS nombre, user.img AS img " +
                     "FROM user LEFT JOIN friends ON friends.friend = user.email " +
-                    "WHERE friends.user = ?;",
+                    "WHERE friends.user = ? AND friends.state = 'aceptada';",
                     [user],
                     (err, rows) => {
                 if (err) {
@@ -163,75 +133,19 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "INSERT INTO friends (user, friend) VALUES (?,?)",
-            [user, friend],
-                    (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-				else{
-					callback(null,undefined);
-				}
-            }
-            );
-        });
-
-    }
-
-    //Eliminar amistad
-    rmFriend(user, friend, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "DELETE FROM friends WHERE user = ? AND friend = ?;",
-            [user, friend],
-                    (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-				else{
-					callback(null,undefined);
-				}
-            }
-            );
-        });
-
-    }
-
-    //Comprobar si son amigos, devuelve true o false
-    areFriend(user, friend, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "SELECT user, friend " +
-                    "FROM friends " +
-                    "WHERE user = ? AND friend = ?;",
+                    "UPDATE friends SET state = 'aceptada' WHERE user = ? AND friend = ?;" +
                     [user, friend],
                     (err, rows) => {
                 if (err) {
                     callback(err);
                     return;
-                }
-                connection.release();
-                if (rows.length === 0) {
-                    callback(null, false);
                 } else {
-                    callback(null, true);
+                    callback(null, undefined);
                 }
             }
             );
         });
-
     }
-
 }
 
 module.exports = {

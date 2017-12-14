@@ -455,7 +455,7 @@ app.post("/rechazarAmistad", (request, response) => {
 
     let amigo = request.body.rechazarAmigo
 
-    daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
+    daoF.rmRequest(app.locals.UserMail, amigo, (err) => {
 
         if (err) {
             console.log(err);
@@ -479,7 +479,7 @@ app.post("/search", (request, response) => {
 
     let char = "%" + busqueda.UserSearch + "%";
 
-    daoU.search(char, (err, lista) => {
+    daoU.search(app.locals.UserMail, char, (err, lista) => {
 
         if (err) {
             console.log(err);

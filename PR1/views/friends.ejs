@@ -92,7 +92,7 @@
 
                                 <form action="/verPerfil" method="POST">
 
-                                    <input value="<%= result.solicitante %>" name="perfilSolicitante" type="hidden">
+                                    <input value="<%= result.email %>" name="perfilSolicitante" type="hidden">
 
                                     <input class="texto" type="submit"  value="<%= result.nombre %>"/>
 
@@ -103,7 +103,7 @@
 
                                 <form action="/aceptarAmistad" method="POST">
 
-                                    <input value="<%= result.solicitante %>" name="aceptaAmigo" type="hidden">
+                                    <input value="<%= result.email %>" name="aceptaAmigo" type="hidden">
 
                                     <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Aceptar"/>
 
@@ -115,7 +115,7 @@
 
                                 <form action="/rechazarAmistad" method="POST">
 
-                                    <input value="<%= result.solicitante %>" name="rechazarAmigo" type="hidden">
+                                    <input value="<%= result.email %>" name="rechazarAmigo" type="hidden">
 
                                     <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit"  value="Rechazar"/>
 
@@ -182,7 +182,7 @@
 
                                 <form action="/verPerfil" method="POST">
 
-                                    <input value="<%= result.solicitante %>" name="perfilSolicitante" type="hidden">
+                                    <input value="<%= result.email %>" name="perfilSolicitante" type="hidden">
 
                                     <input class="texto" type="submit"  value="<%= result.nombre %>"/>
 

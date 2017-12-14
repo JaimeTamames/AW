@@ -25,28 +25,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `friends`
---
-
-CREATE TABLE `friends` (
-  `user` varchar(100) NOT NULL,
-  `friend` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `requests`
---
-
-CREATE TABLE `requests` (
-  `emailSolicitante` varchar(100) NOT NULL,
-  `emailSolicitado` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `sessions`
 --
 
@@ -55,15 +33,32 @@ CREATE TABLE `sessions` (
   `expires` int(11) UNSIGNED NOT NULL,
   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+-- --------------------------------------------------------
+
+ALTER TABLE `sessions` ADD PRIMARY KEY (`session_id`);
 
 --
--- Volcado de datos para la tabla `sessions`
+-- Estructura de tabla para la tabla `friends`
 --
 
-INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
-('V3-ebzSkjd13yVPdFnF2pXRlP22VLESq', 1513249480, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"currentUser\":\"ruben@r.com\"}'),
-('VMMtmpKKNwevDXjHrvCDkPvEaFkedK1j', 1513206822, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"currentUser\":\"usuario@ucm.es\"}'),
-('ylTTBOx-6YOnGM1Wk--arUbV_dDpAODw', 1513182841, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"currentUser\":\"ruben@r.com\"}');
+CREATE TABLE `friends` (
+  `user` varchar(100) REFERENCES user(email),
+  `friend` varchar(100) REFERENCES user(email),
+  PRIMARY KEY(user, friend)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `requests`
+--
+
+CREATE TABLE `requests` (
+  `emailSolicitante` varchar(100) REFERENCES user(email),
+  `emailSolicitado` varchar(100) REFERENCES user(email),
+  PRIMARY KEY(emailSolicitante, emailSolicitado)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -72,7 +67,7 @@ INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
 --
 
 CREATE TABLE `user` (
-  `email` varchar(100) NOT NULL,
+  `email` varchar(100) PRIMARY KEY,
   `password` varchar(100) NOT NULL,
   `img` varchar(100) DEFAULT NULL,
   `sexo` varchar(50) DEFAULT NULL,
@@ -87,13 +82,42 @@ CREATE TABLE `user` (
 
 INSERT INTO `user` (`email`, `password`, `img`, `sexo`, `puntuacion`, `fechaNacimiento`, `nombre`) VALUES
 ('usuario@ucm.es', 'mipass', '', 'Masculino', 55, '10/11/1963', 'UCM1'),
-('ruben@r.com', 'qwerty', '', 'Masculino', 0, '05/15/1996', 'Ruben Barrado González'),
-('monica@m.com', 'qwerty', 'Dave-01.png', 'Femenino', 0, '0000-00-00', 'Monica moran'),
-('rbg@r.com', 'qwerty', 'Bat-01.png', 'Masculino', 0, '0000-00-00', 'prueba edad'),
-('rubern@ruben.com', 'qwerty', 'Harley-01.png', 'Masculino', 0, '02/12/1993', 'ruben edad'),
-('rubeern@ruben.com', 'wertyrt', 'Harley-01.png', 'Masculino', 0, '02/12/1993', 'ruben edad'),
-('usuario2@ucm.es', 'qwerty', 'img2315.png', 'Masculino', 0, '02/12/1993', 'qwrty qrty'),
-('rubenbarrado@r.com', 'qwerty', 'Fatso-01.png', 'Masculino', 0, '02/12/1993', 'ruben barrado g');
+('ruben@ucm.es', 'mipass', '', 'Masculino', 0, '05/15/1996', 'Ruben Barrado González'),
+('monica@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Femenino', 10, '05/15/1996', 'Monica Moran'),
+('jaime@ucm.es', 'mipass', 'Bat-01.png', 'Masculino', 31, '05/15/1996', 'Jaime Tamames'),
+('alberto@ucm.es', 'mipass', '/profile_imgs/Marshmallow Man-01.png', 'Masculino', 24, '02/12/1995', 'Alberto Camino'),
+('julian@ucm.es', 'mipass', 'Harley-01.png', 'Masculino', 45, '02/12/1997', 'Julian Rodriguez'),
+('rosario@ucm.es', 'mipass', '/profile_imgs/Vampire Bat-01.png', 'Femenino', 53, '02/12/1986', 'Rosario Cabanas'),
+('paula@ucm.es', 'mipass', 'Fatso-01.png', 'Femenino', 30, '02/12/2003', 'Paula Lopez');
+
+--
+-- Volcado de datos para la tabla `fiends`
+--
+
+INSERT INTO `friends` (`user`, `friend`) VALUES
+('usuario@ucm.es', 'ruben@ucm.es'),
+('usuario@ucm.es', 'monica@ucm.es'),
+('monica@ucm.es', 'usuario@ucm.es'),
+('monica@ucm.es', 'jaime@ucm.es'),
+('ruben@ucm.es', 'jaime@ucm.es'),
+('jaime@ucm.es', 'ruben@ucm.es'),
+('paula@ucm.es', 'rosario@ucm.es'),
+('alberto@ucm.es', 'rosario@ucm.es'),
+('alberto@ucm.es', 'julian@ucm.es'),
+('julian@ucm.es', 'alberto@ucm.es');
+
+--
+-- Volcado de datos para la tabla `requests`
+--
+
+INSERT INTO `requests` (`emailSolicitante`, `emailSolicitado`) VALUES
+('julian@ucm.es', 'usuario@ucm.es'),
+('julian@ucm.es', 'jaime@ucm.es'),
+('paula@ucm.es', 'jaime@ucm.es'),
+('paula@ucm.es', 'alberto@ucm.es'),
+('monica@ucm.es', 'ruben@ucm.es'),
+('monica@ucm.es', 'julian@ucm.es');
+
 
 --
 -- Índices para tablas volcadas
@@ -102,8 +126,7 @@ INSERT INTO `user` (`email`, `password`, `img`, `sexo`, `puntuacion`, `fechaNaci
 --
 -- Indices de la tabla `sessions`
 --
-ALTER TABLE `sessions`
-  ADD PRIMARY KEY (`session_id`);
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

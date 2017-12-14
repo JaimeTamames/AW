@@ -207,7 +207,7 @@ class DAOUsers {
     }
 
     addUser(user, callback) {
-			
+
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
@@ -351,18 +351,18 @@ class DAOUsers {
             );
         });
     }
-    
-    search(char, callback){
+
+    search(user, char, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "SELECT nombre, email, img " +
-                    "FROM user " +
-                    "WHERE nombre LIKE ?;",
-                    [char],
+                    "SELECT DISTINCT  user.email AS mail, user.nombre AS nombre, user.img AS img,  friends.state AS state " +
+                    "FROM user left JOIN friends ON user.email = friends.friend AND friends.user = ? " +
+                    "WHERE user.nombre LIKE ?;",
+                    [user, char],
                     (err, rows) => {
                 if (err) {
                     callback(err);
@@ -376,7 +376,7 @@ class DAOUsers {
             }
             );
         });
-        
+
     }
 
 }
