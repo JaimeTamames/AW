@@ -424,6 +424,7 @@ app.get("/friends", (request, response) => {
 //Aceptar, boton de la pagina amigos
 app.post("/aceptarAmistad", (request, response) => {
 
+<<<<<<< HEAD
     let amigo = request.body.aceptaAmigo
 
 		daoF.addFriend(app.locals.UserMail, amigo, (err) => {
@@ -442,6 +443,24 @@ app.post("/aceptarAmistad", (request, response) => {
 
 						response.status(200);
 
+=======
+		daoF.addFriend(app.locals.UserMail, amigo, (err) => {
+
+			if (err) {
+				console.log(err);
+				response.end();
+			} else {
+
+				daoF.rmRequest(amigo, app.locals.UserMail, (err) => {
+
+					if (err) {
+						console.log(err);
+						response.end();
+					} else {
+
+						response.status(200);
+
+>>>>>>> b6d6e460de79e75707cedefa5b8c9974b4cd8b8e
 						response.redirect("friends");
 						
 					}
@@ -503,13 +522,19 @@ app.post("/search", (request, response) => {
 //Solicitar, boton solicita amistad de la pagina de resultados de busqueda
 app.post("/solicitarAmistad", (request, response) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
 =======
+=======
+>>>>>>> b6d6e460de79e75707cedefa5b8c9974b4cd8b8e
 
     
 	
 	daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err) => {
+<<<<<<< HEAD
+>>>>>>> b6d6e460de79e75707cedefa5b8c9974b4cd8b8e
+=======
 >>>>>>> b6d6e460de79e75707cedefa5b8c9974b4cd8b8e
 
         if (err) {
