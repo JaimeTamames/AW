@@ -18,6 +18,7 @@ class DAOQuestions {
         this.pool = pool;
     }
 
+    //Devuelve una lista aleatoria de preguntas no contestadas para el usuario, si hay menos de 5 preguntas mete algunas que pueden estar contestadas
     getUserNoAnsweredQuestions(email, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -47,6 +48,7 @@ class DAOQuestions {
         });
     }
 
+    //Dado un id_pregunta devuelve su texto
     getQuestion(id_pregunta, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -72,6 +74,7 @@ class DAOQuestions {
         });
     }
 
+    //Dado un id_pregunta devuelve el texto de la misma y sus posibles respuestas
     getQuestionWAnswers(id_pregunta, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -97,6 +100,7 @@ class DAOQuestions {
         });
     }
 
+    //Dado un id_pregunta devuelve la contestacion de ese usuario
     getMyAnswer(id_pregunta, user, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -127,6 +131,7 @@ class DAOQuestions {
         });
     }
 
+    //Inserta la respuesta de un usuario a una pregunta
     addUserAnswer(id_pregunta, id_respuesta, user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -150,6 +155,7 @@ class DAOQuestions {
         });
     }
 
+    //Inserta la respuesta de un usuario a una pregunta y ademas añade esta nueva respuesta a la pregunta
     addProperUserAnswer(id_pregunta, respuesta, user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
