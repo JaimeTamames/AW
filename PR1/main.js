@@ -624,15 +624,11 @@ app.post("/verPregunta", (request, response) => {
             response.end();
         } else {
 
-            response.status(200);
-
             daoQ.getMyAnswer(id_pregunta, user, (err, respuesta) => {
                 if (err) {
                     console.log(err);
                     response.end();
                 } else {
-
-                    response.status(200);
 
                     if (respuesta === undefined) {
 
@@ -640,7 +636,7 @@ app.post("/verPregunta", (request, response) => {
                     }
 
                     //Renderizar plantilla
-                    response.render("questionView", {pregunta: pregunta[0], respuesta: respuesta[0]});
+                    response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
 
                 }
             });
@@ -687,7 +683,7 @@ app.post("/confirmarRespuesta", (request, response) => {
     //Si el usuario a introducido una nueva respuesta
     if (id_respuesta === "otra") {
 
-        let respuesta = respuesta;
+        let respuesta = request.body.respuesta;
 
         daoQ.addProperUserAnswer(id_pregunta, respuesta, user, (err, callback) => {
             if (err) {

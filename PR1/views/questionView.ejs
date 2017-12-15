@@ -74,10 +74,10 @@
             <div class="vistaPreguntaBox">	
 
                 <div>
-                    <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.pregunta %></p>
+                    <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.preguntas %></p>
                 </div>
 
-                <% console.log(respuesta); if (respuesta == null){ %>
+                <% if (respuesta == null){ %>
                 
                 <p class="fuenteMedia"> No has contestado a esta pregunta.</p>
                 
@@ -92,7 +92,7 @@
 
                 <% }else{ %>
                 
-                <p class="fuenteMedia">Tu respuesta es: <%= respuesta %></p>
+                <p class="fuenteMedia">Tu respuesta es: <%= respuesta.respuesta %></p>
                 
                 <% } %>
 

@@ -157,17 +157,28 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "INSERT INTO answers VALUES (?, ?), " +
-                    "INSERT INTO answersforme (id_user, id_pregunta, id_respuesta) " +
-                    "VALUES (?, ?, ?);",
-                    [id_pregunta, respuesta, user, id_pregunta, LAST_INSERT_ID()],
+                    "INSERT INTO answers (id_pregunta, respuesta) VALUES (?, ?);",
+                    [id_pregunta, respuesta],
                     (err, result) => {
                 if (err) {
                     callback(err);
                     return;
                 } else {
-                    connection.release();
-                    callback(null, undefined);
+                    
+                    connection.query(
+                            "INSERT INTO answersforme (id_user, id_pregunta, id_respuesta) " +
+                            "VALUES (?, ?, ?);",
+                            [user, id_pregunta, result.insertId],
+                            (err, result) => {
+                        if (err) {
+                            callback(err);
+                            return;
+                        } else {
+                            connection.release();
+                            callback(null, undefined);
+                        }
+                    }
+                    );
                 }
             }
             );
