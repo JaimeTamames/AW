@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-12-2017 a las 16:51:50
+-- Tiempo de generación: 15-12-2017 a las 19:21:00
 -- Versión del servidor: 10.1.28-MariaDB
 -- Versión de PHP: 5.6.32
 
@@ -42,7 +42,7 @@ CREATE TABLE `answers` (
 
 CREATE TABLE `answersforme` (
   `id_userAnswer` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
+  `id_user` varchar(50) NOT NULL,
   `id_pregunta` int(11) NOT NULL,
   `id_respuesta` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -55,8 +55,8 @@ CREATE TABLE `answersforme` (
 
 CREATE TABLE `answersforothers` (
   `id_answer` int(11) NOT NULL,
-  `id_user` int(11) NOT NULL,
-  `id_friend` int(11) NOT NULL,
+  `id_user` varchar(50) NOT NULL,
+  `id_friend` varchar(50) NOT NULL,
   `id_pregunta` int(11) NOT NULL,
   `id_respuesta` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -95,8 +95,8 @@ INSERT INTO `friends` (`user`, `friend`, `state`) VALUES
 ('ruben@ucm.es', 'jaime@ucm.es', 'aceptada'),
 ('ruben@ucm.es', 'usuario@ucm.es', 'aceptada'),
 ('usuario@ucm.es', 'monica@ucm.es', 'aceptada'),
-('usuario@ucm.es', 'ruben@ucm.es', 'aceptada');
-
+('usuario@ucm.es', 'ruben@ucm.es', 'aceptada'),
+('usuario@ucm.es', 'monica@m.com', 'pedida');
 
 -- --------------------------------------------------------
 
@@ -109,7 +109,14 @@ CREATE TABLE `questions` (
   `preguntas` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+--
+-- Volcado de datos para la tabla `questions`
+--
 
+INSERT INTO `questions` (`id_pregunta`, `preguntas`) VALUES
+(0, '¿Cual es la peor pelicula de la historia?'),
+(1, '¿Nintendo Switch, Ps4 o Xbox One?'),
+(2, '¿Cual es tu plato favorito?');
 
 -- --------------------------------------------------------
 
@@ -122,6 +129,13 @@ CREATE TABLE `sessions` (
   `expires` int(11) UNSIGNED NOT NULL,
   `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `sessions`
+--
+
+INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
+('nRwNaWL9GA7BzpspzIS9zZxANrQ1j4NY', 1513444945, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"currentUser\":\"jaime@ucm.es\"}');
 
 -- --------------------------------------------------------
 
@@ -142,6 +156,7 @@ CREATE TABLE `user` (
 --
 -- Volcado de datos para la tabla `user`
 --
+
 INSERT INTO `user` (`email`, `password`, `img`, `sexo`, `puntuacion`, `fechaNacimiento`, `nombre`) VALUES
 ('alberto@ucm.es', 'mipass', '/profile_imgs/Marshmallow Man-01.png', 'Masculino', 24, '02/12/1995', 'Alberto Camino'),
 ('jaime@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 31, '05/15/1996', 'Jaime Tamames'),
@@ -200,7 +215,7 @@ ALTER TABLE `answersforme`
 -- AUTO_INCREMENT de la tabla `questions`
 --
 ALTER TABLE `questions`
-  MODIFY `id_pregunta` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pregunta` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
