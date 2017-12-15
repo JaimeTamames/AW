@@ -69,8 +69,34 @@ CREATE TABLE `answersforothers` (
 
 CREATE TABLE `friends` (
   `user` varchar(100) NOT NULL,
-  `friend` varchar(100) NOT NULL
+  `friend` varchar(100) NOT NULL,
+  `state` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `friends`
+--
+
+INSERT INTO `friends` (`user`, `friend`, `state`) VALUES
+('alberto@ucm.es', 'julian@ucm.es', 'aceptada'),
+('alberto@ucm.es', 'monica@ucm.es', 'aceptada'),
+('alberto@ucm.es', 'rosario@ucm.es', 'aceptada'),
+('jaime@ucm.es', 'julian@ucm.es', 'aceptada'),
+('jaime@ucm.es', 'rosario@ucm.es', 'aceptada'),
+('jaime@ucm.es', 'ruben@ucm.es', 'aceptada'),
+('julian@ucm.es', 'alberto@ucm.es', 'aceptada'),
+('julian@ucm.es', 'jaime@ucm.es', 'aceptada'),
+('julian@ucm.es', 'monica@ucm.es', 'aceptada'),
+('monica@ucm.es', 'alberto@ucm.es', 'aceptada'),
+('monica@ucm.es', 'jaime@ucm.es', 'aceptada'),
+('monica@ucm.es', 'julian@ucm.es', 'aceptada'),
+('monica@ucm.es', 'usuario@ucm.es', 'aceptada'),
+('rosario@ucm.es', 'alberto@ucm.es', 'aceptada'),
+('ruben@ucm.es', 'jaime@ucm.es', 'aceptada'),
+('ruben@ucm.es', 'usuario@ucm.es', 'aceptada'),
+('usuario@ucm.es', 'monica@ucm.es', 'aceptada'),
+('usuario@ucm.es', 'ruben@ucm.es', 'aceptada');
+
 
 -- --------------------------------------------------------
 
@@ -83,16 +109,7 @@ CREATE TABLE `questions` (
   `preguntas` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
--- --------------------------------------------------------
 
---
--- Estructura de tabla para la tabla `requests`
---
-
-CREATE TABLE `requests` (
-  `emailSolicitante` varchar(100) NOT NULL,
-  `emailSolicitado` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
