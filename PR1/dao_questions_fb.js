@@ -107,7 +107,7 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT id_pregunta, preguntas " + 
+                    "SELECT id_pregunta, preguntas " +
                     "FROM questions " +
                     "WHERE id_pregunta = ?;",
                     [idQuestion],
@@ -132,9 +132,9 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT fechaNacimiento" +
-                    " FROM user" +
-                    " WHERE email = ?",
+                    "SELECT id_respuesta, repuesta " +
+                    "FROM answers " +
+                    "WHERE id_pregunta = ?;",
                     [idQuestion],
                     (err, rows) => {
                 if (err) {
@@ -143,7 +143,7 @@ class DAOQuestions {
                 }
                 connection.release();
 
-                callback(null, rows[0]);              
+                callback(null, rows);
             }
             );
         });

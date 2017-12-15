@@ -3,7 +3,7 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Pregunta - FaceBluff</title>
+        <title>Responde - FaceBluff</title>
     </head>
 
     <body>
@@ -74,18 +74,37 @@
             <div class="vistaPreguntaBox">	
 
                 <div>
-                    <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.pregunta %></p>
+                    <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.preguntas %></p>
                 </div>
 
-                <p class="fuenteMedia"> No has contestado a esta pregunta.</p>
+                <form action="/confirmarRespuesta" method="POST">
 
+                    <ul>
+                        <% console.log(respuestas); respuestas.forEach(result => { %>
+                        <li>
 
-                <form action="/responderPregunta" method="POST">
+                            <label class="fuenteMedia espacioIzq espacioDer">
+                                    <input type="radio" name="id_respuesta" value="<%= result.id_respuesta %>"> <%= result.respuesta %>
+                            </label>
 
+                        </li>
+                        <% }); %>
+                        
+                         <li>
 
+                            <label class="fuenteMedia espacioIzq espacioDer">
+                                    <input type="radio" name="id_respuesta" value="Hola"> Hola
+                            </label>
+
+                        </li>
+                        
                     <input value="<%= pregunta.id_pregunta %>" name="id_pregunta" type="hidden">
 
-                    <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Responder pregunta"/>
+                    <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Responder"/>
+
+                
+                        
+                    </ul>
 
                 </form>
 

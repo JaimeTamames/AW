@@ -636,7 +636,7 @@ app.post("/responderPregunta", (request, response) => {
 
     let id_pregunta = request.body.id_pregunta;
 
-    daoQ.getQuestionWAnswers(id_pregunta, (err, pregunta) => {
+    daoQ.getQuestionWAnswers(id_pregunta, (err, respuestas) => {
         if (err) {
             console.log(err);
             response.end();
@@ -644,9 +644,19 @@ app.post("/responderPregunta", (request, response) => {
 
             response.status(200);
 
-            //Renderizar plantilla
-            response.render("questionView", {pregunta: pregunta});
+            daoQ.getQuestion(id_pregunta, (err, pregunta) => {
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
 
+                    response.status(200);
+
+                    //Renderizar plantilla
+                    response.render("answerQuestion", {pregunta: pregunta, respuestas: respuestas});
+
+                }
+            });
         }
     });
 });
