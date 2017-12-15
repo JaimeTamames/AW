@@ -615,9 +615,9 @@ app.get("/questions", (request, response) => {
 
 app.post("/verPregunta", (request, response) => {
 
-    let idQuestion = request.body.idQuestions;
+    let id_pregunta = request.body.id_pregunta;
 
-    daoQ.getQuestion(idQuestion, (err, pregunta) => {
+    daoQ.getQuestion(id_pregunta, (err, pregunta) => {
         if (err) {
             console.log(err);
             response.end();
@@ -634,9 +634,9 @@ app.post("/verPregunta", (request, response) => {
 
 app.post("/responderPregunta", (request, response) => {
 
-    let idQuestion = request.body.idQuestions;
+    let id_pregunta = request.body.id_pregunta;
 
-    daoQ.getQuestionWAnswers(idQuestion, (err, pregunta) => {
+    daoQ.getQuestionWAnswers(id_pregunta, (err, pregunta) => {
         if (err) {
             console.log(err);
             response.end();

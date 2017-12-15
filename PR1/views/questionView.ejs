@@ -74,7 +74,7 @@
             <div class="vistaPreguntaBox">	
 
                 <div>
-                    <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.pregunta %></p>
+                    <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.preguntas %></p>
                 </div>
 
                 <p class="fuenteMedia"> No has contestado a esta pregunta.</p>
@@ -83,7 +83,7 @@
                 <form action="/responderPregunta" method="POST">
 
 
-                    <input value="<%= pregunta.idQuestions %>" name="idQuestions" type="hidden">
+                    <input value="<%= pregunta.id_pregunta %>" name="id_pregunta" type="hidden">
 
                     <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Responder pregunta"/>
 

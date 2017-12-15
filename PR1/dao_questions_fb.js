@@ -78,11 +78,11 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT idQuestions, pregunta " +
+                    "SELECT id_pregunta, preguntas " +
                     "FROM questions " +
-                    "WHERE questions.idQuestions NOT IN (SELECT questions.idQuestions " +
-                    "FROM questions left join answers ON questions.idQuestions = answers.idQuestion " +
-                    "WHERE answers.user = ?);",
+                    "WHERE questions.id_pregunta NOT IN (SELECT questions.id_pregunta " +
+                    "FROM questions left join answersforme ON questions.id_pregunta = answersforme.id_userAnswer " +
+                    "WHERE answersforme.id_user = ?);",
                     [email],
                     (err, rows) => {
                 if (err) {
@@ -107,9 +107,9 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT idQuestions, pregunta " +
+                    "SELECT id_pregunta, preguntas " + 
                     "FROM questions " +
-                    "WHERE idQuestions = ?;",
+                    "WHERE id_pregunta = ?;",
                     [idQuestion],
                     (err, rows) => {
                 if (err) {
