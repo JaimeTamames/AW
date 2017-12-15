@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const config = require("./config");
 const daoUsers = require("./dao_users_fb");
 const daoFriends = require("./dao_friends_fb");
+const daoQuestions = require("./dao_questions_fb");
 const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
 
@@ -43,6 +44,7 @@ let pool = mysql.createPool({
 //Pool de conexiones a la BBDD
 let daoU = new daoUsers.DAOUsers(pool);
 let daoF = new daoFriends.DAOFriends(pool);
+let daoQ = new daoQuestions.DAOQuestions(pool);
 
 //Estado del servidor
 app.listen(config.port, function (err) {
@@ -408,8 +410,6 @@ app.get("/friends", (request, response) => {
 
                     response.status(200);
 
-                    let error = null;
-
                     if (listaAmigos === undefined) {
                         errAmi = "No tienes ningun amigo";
                     }
@@ -431,8 +431,8 @@ app.post("/aceptarAmistad", (request, response) => {
         if (err) {
             console.log(err);
             response.end();
-        } else {			
-			response.redirect("friends");
+        } else {
+            response.redirect("friends");
         }
     });
 });
@@ -590,8 +590,48 @@ app.post("/verPerfil", (request, response) => {
 //Pagina de preguntas
 app.get("/questions", (request, response) => {
 
-    response.status(200);
-    response.render("questions");
+    let user = app.locals.UserMail;
+
+    daoQ.getUserNoAnsweredQuestions(user, (err, listaPreguntas) => {
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+
+            let errors = null;
+
+            if (listaPreguntas === undefined) {
+                errors = "No tienes preguntas sin contestar";
+            } else {
+
+                //Renderizar plantilla
+                response.render("questions", {errors: errors, listaPreguntas: listaPreguntas});
+            }
+        }
+    });
+});
+
+app.post("/verPregunta", (request, response) => {
+
+    let idQuestion = request.body.idQuestions;
+
+    daoQ.getQuestion(idQuestion, (err, pregunta) => {
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+            
+            console.log(pregunta);
+
+            //Renderizar plantilla
+            response.render("questionView", {pregunta: pregunta});
+
+        }
+    });
 });
 
 //Desconectar usuario, boton desconectar

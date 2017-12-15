@@ -34,29 +34,7 @@ CREATE TABLE `friends` (
   `state` varchar(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Volcado de datos para la tabla `friends`
---
 
-INSERT INTO `friends` (`user`, `friend`, `state`) VALUES
-('alberto@ucm.es', 'julian@ucm.es', 'aceptada'),
-('alberto@ucm.es', 'monica@ucm.es', 'aceptada'),
-('alberto@ucm.es', 'rosario@ucm.es', 'aceptada'),
-('jaime@ucm.es', 'julian@ucm.es', 'aceptada'),
-('jaime@ucm.es', 'rosario@ucm.es', 'aceptada'),
-('jaime@ucm.es', 'ruben@ucm.es', 'aceptada'),
-('julian@ucm.es', 'alberto@ucm.es', 'aceptada'),
-('julian@ucm.es', 'jaime@ucm.es', 'aceptada'),
-('julian@ucm.es', 'monica@ucm.es', 'aceptada'),
-('monica@ucm.es', 'alberto@ucm.es', 'aceptada'),
-('monica@ucm.es', 'jaime@ucm.es', 'aceptada'),
-('monica@ucm.es', 'julian@ucm.es', 'aceptada'),
-('monica@ucm.es', 'usuario@ucm.es', 'aceptada'),
-('rosario@ucm.es', 'alberto@ucm.es', 'aceptada'),
-('ruben@ucm.es', 'jaime@ucm.es', 'aceptada'),
-('ruben@ucm.es', 'usuario@ucm.es', 'aceptada'),
-('usuario@ucm.es', 'monica@ucm.es', 'aceptada'),
-('usuario@ucm.es', 'ruben@ucm.es', 'aceptada');
 
 -- --------------------------------------------------------
 
@@ -64,23 +42,39 @@ INSERT INTO `friends` (`user`, `friend`, `state`) VALUES
 -- Estructura de tabla para la tabla `questions`
 --
 
-CREATE TABLE `questions` (
-  `pregunta` varchar(500) NOT NULL,
-  `respuesta1` varchar(50) NOT NULL,
-  `respuesta2` varchar(50) NOT NULL,
-  `respuesta3` varchar(50) NOT NULL,
-  `respuesta4` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
+CREATE TABLE `facebluff`.`questions` (
+  `idQuestions` INT NOT NULL AUTO_INCREMENT,
+  `pregunta` VARCHAR(100) NOT NULL,
+  `respuesta1` VARCHAR(45) NOT NULL,
+  `respuesta2` VARCHAR(45) NOT NULL,
+  `respuesta3` VARCHAR(45) NOT NULL,
+  `respuesta4` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idQuestions`, `pregunta`));
+  
+  --
+-- Estructura de tabla para la tabla `answers`
 --
--- Volcado de datos para la tabla `questions`
---
+  
+  CREATE TABLE `facebluff`.`answers` (
+  `idAnswers` INT NOT NULL AUTO_INCREMENT,
+  `user` VARCHAR(45) NOT NULL,
+  `idQuestion` INT NOT NULL,
+  `respuesta` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idAnswers`),
+  INDEX `user_idx` (`user` ASC),
+  INDEX `idQuestions_idx` (`idQuestion` ASC),
+  CONSTRAINT `user`
+    FOREIGN KEY (`user`)
+    REFERENCES `facebluff`.`user` (`email`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `idQuestions`
+    FOREIGN KEY (`idQuestion`)
+    REFERENCES `facebluff`.`questions` (`idQuestions`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION);
 
-INSERT INTO `questions` (`pregunta`, `respuesta1`, `respuesta2`, `respuesta3`, `respuesta4`) VALUES
-('¿Cual es la peor pelicula de la historia?', 'El exorcista II: El hereje (1977)', 'Una chica de Jersey (2004)', 'Epic Movie', 'Godzilla (1998)'),
-('¿Nintendo Switch, PS4 o XBOX One', 'Nintendo Switch', 'PS4', 'Xbox One', 'Prefiero el PC...');
 
--- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `sessions`
@@ -123,8 +117,41 @@ INSERT INTO `user` (`email`, `password`, `img`, `sexo`, `puntuacion`, `fechaNaci
 ('usuario@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 55, '10/11/1963', 'Usuario');
 
 --
--- Índices para tablas volcadas
+-- Volcado de datos para la tabla `friends`
 --
+
+INSERT INTO `friends` (`user`, `friend`, `state`) VALUES
+('alberto@ucm.es', 'julian@ucm.es', 'aceptada'),
+('alberto@ucm.es', 'monica@ucm.es', 'aceptada'),
+('alberto@ucm.es', 'rosario@ucm.es', 'aceptada'),
+('jaime@ucm.es', 'julian@ucm.es', 'aceptada'),
+('jaime@ucm.es', 'rosario@ucm.es', 'aceptada'),
+('jaime@ucm.es', 'ruben@ucm.es', 'aceptada'),
+('julian@ucm.es', 'alberto@ucm.es', 'aceptada'),
+('julian@ucm.es', 'jaime@ucm.es', 'aceptada'),
+('julian@ucm.es', 'monica@ucm.es', 'aceptada'),
+('monica@ucm.es', 'alberto@ucm.es', 'aceptada'),
+('monica@ucm.es', 'jaime@ucm.es', 'aceptada'),
+('monica@ucm.es', 'julian@ucm.es', 'aceptada'),
+('monica@ucm.es', 'usuario@ucm.es', 'aceptada'),
+('rosario@ucm.es', 'alberto@ucm.es', 'aceptada'),
+('ruben@ucm.es', 'jaime@ucm.es', 'aceptada'),
+('ruben@ucm.es', 'usuario@ucm.es', 'aceptada'),
+('usuario@ucm.es', 'monica@ucm.es', 'aceptada'),
+('usuario@ucm.es', 'ruben@ucm.es', 'aceptada');
+
+--
+-- Volcado de datos para la tabla `questions`
+--
+
+INSERT INTO `questions` (`pregunta`, `respuesta1`, `respuesta2`, `respuesta3`, `respuesta4`) VALUES
+('¿Cual es la peor pelicula de la historia?', 'El exorcista II: El hereje (1977)', 'Una chica de Jersey (2004)', 'Epic Movie', 'Godzilla (1998)'),
+('¿Nintendo Switch, PS4 o XBOX One', 'Nintendo Switch', 'PS4', 'Xbox One', 'No me interesan los videojuegos'),
+('¿Cual es tu plato favorito?', 'Macarrones', 'Albondigas', 'Lenguado', 'Chuleton'),
+('¿Cual es el personaje mas irritante de Juego de Tronos?', 'Daenerys Targaryen', 'Jon Nieve', 'Gregor Clegane', 'Cersei Lannister'),
+('¿Que tipo de cine te gusta mas?', 'Comedia', 'Terror', 'Ciencia Fición', 'Acción');
+
+-- --------------------------------------------------------
 
 --
 -- Indices de la tabla `friends`
