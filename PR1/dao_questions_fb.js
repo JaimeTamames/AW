@@ -82,7 +82,8 @@ class DAOQuestions {
                     "FROM questions " +
                     "WHERE questions.id_pregunta NOT IN (SELECT questions.id_pregunta " +
                     "FROM questions left join answersforme ON questions.id_pregunta = answersforme.id_userAnswer " +
-                    "WHERE answersforme.id_user = ?);",
+                    "WHERE answersforme.id_user = ?) " +
+                    "ORDER BY RAND() LIMIT 5;",
                     [email],
                     (err, rows) => {
                 if (err) {
@@ -99,7 +100,7 @@ class DAOQuestions {
         });
     }
 
-    getQuestion(idQuestion, callback) {
+    getQuestion(id_pregunta, callback) {
 
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -110,7 +111,7 @@ class DAOQuestions {
                     "SELECT id_pregunta, preguntas " +
                     "FROM questions " +
                     "WHERE id_pregunta = ?;",
-                    [idQuestion],
+                    [id_pregunta],
                     (err, rows) => {
                 if (err) {
                     callback(err);
@@ -124,7 +125,7 @@ class DAOQuestions {
         });
     }
 
-    getQuestionWAnswers(idQuestion, callback) {
+    getQuestionWAnswers(id_pregunta, callback) {
 
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -132,10 +133,10 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT id_respuesta, repuesta " +
+                    "SELECT id_respuesta, respuesta " +
                     "FROM answers " +
                     "WHERE id_pregunta = ?;",
-                    [idQuestion],
+                    [id_pregunta],
                     (err, rows) => {
                 if (err) {
                     callback(err);
@@ -149,7 +150,7 @@ class DAOQuestions {
         });
     }
 
-    getUserPoints(email, callback) {
+    getMyAnswer(id_pregunta, user, callback) {
 
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -157,10 +158,12 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT puntuacion" +
-                    " FROM user" +
-                    " WHERE email = ?",
-                    [email],
+                    "SELECT respuesta " +
+                    "FROM answers, answersforme " +
+                    "WHERE answersforme.id_user = ? " +
+                    "AND answersforme.id_pregunta = ? " +
+                    "AND answersforme.id_respuesta = answers.id_respuesta;",
+                    [user, id_pregunta],
                     (err, rows) => {
                 if (err) {
                     callback(err);
@@ -170,77 +173,23 @@ class DAOQuestions {
                 if (rows.length === 0) {
                     callback(null, undefined);
                 } else {
-                    callback(null, rows[0].puntuacion);
+                    callback(null, rows[0]);
                 }
             }
             );
         });
     }
 
-    getUserName(email, callback) {
-
+    addUserAnswer(id_pregunta, id_respuesta, user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "SELECT nombre" +
-                    " FROM user" +
-                    " WHERE email = ?",
-                    [email],
-                    (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                connection.release();
-                if (rows.length === 0) {
-                    callback(null, undefined);
-                } else {
-                    callback(null, rows[0].nombre);
-                }
-            }
-            );
-        });
-    }
-
-    addUser(user, callback) {
-
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "INSERT INTO user (email, password, nombre, sexo, puntuacion, fechaNacimiento, img)" +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    [user.email, user.pass, user.nombre, user.sexo, 0, user.fechaNacimiento, user.img],
-                    (err, result) => {
-                if (err) {
-                    callback(err);
-                    return;
-                } else {
-
-                    connection.release();
-                    callback(null, undefined);
-                }
-            }
-            );
-        });
-    }
-
-    setPassword(user, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "UPDATE user SET " +
-                    "password = ? " +
-                    "WHERE email = ?;",
-                    [user.pass, user.email],
+                    "INSERT INTO answersforme (id_user, id_pregunta, id_respuesta) " +
+                    "VALUES (?, ?, ?);",
+                    [user, id_pregunta, id_respuesta],
                     (err, result) => {
                 if (err) {
                     callback(err);
@@ -254,17 +203,17 @@ class DAOQuestions {
         });
     }
 
-    setImage(user, callback) {
+    addProperUserAnswer(id_pregunta, respuesta, user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "UPDATE user SET " +
-                    "img = ? " +
-                    "WHERE email = ?;",
-                    [user.img, user.email],
+                    "INSERT INTO answers VALUES (?, ?), " +
+                    "INSERT INTO answersforme (id_user, id_pregunta, id_respuesta) " +
+                    "VALUES (?, ?, ?);",
+                    [id_pregunta, respuesta, user, id_pregunta, LAST_INSERT_ID()],
                     (err, result) => {
                 if (err) {
                     callback(err);
@@ -278,106 +227,6 @@ class DAOQuestions {
         });
     }
 
-    setName(user, callback) {
-
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "UPDATE user SET " +
-                    "nombre = ? " +
-                    "WHERE email = ?;",
-                    [user.nombre, user.email],
-                    (err, result) => {
-                if (err) {
-                    callback(err);
-                    return;
-                } else {
-                    connection.release();
-                    callback(null, undefined);
-                }
-            }
-            );
-        });
-    }
-
-    setSex(user, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "UPDATE user SET " +
-                    "sexo = ?" +
-                    "WHERE email = ?;",
-                    [user.sexo, user.email],
-                    (err, result) => {
-                if (err) {
-                    callback(err);
-                    return;
-                } else {
-                    connection.release();
-                    callback(null, undefined);
-                }
-            }
-            );
-        });
-    }
-
-    setDate(user, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "UPDATE user SET " +
-                    "fechaNacimiento = ?" +
-                    "WHERE email = ?;",
-                    [user.fechaNacimiento, user.email],
-                    (err, result) => {
-                if (err) {
-                    callback(err);
-                    return;
-                } else {
-                    connection.release();
-                    callback(null, undefined);
-                }
-            }
-            );
-        });
-    }
-
-    search(user, char, callback) {
-        this.pool.getConnection((err, connection) => {
-            if (err) {
-                callback(err);
-                return;
-            }
-            connection.query(
-                    "SELECT DISTINCT  user.email AS email, user.nombre AS nombre, user.img AS img,  friends.state AS state " +
-                    "FROM user left JOIN friends ON user.email = friends.friend AND friends.user = ? " +
-                    "WHERE user.nombre LIKE ?;",
-                    [user, char],
-                    (err, rows) => {
-                if (err) {
-                    callback(err);
-                    return;
-                }
-                connection.release();
-                if (rows.length === 0) {
-                    callback(null, undefined);
-                } else {
-                    callback(null, rows);
-                }
-            }
-            );
-        });
-
-    }
 }
 
 module.exports = {

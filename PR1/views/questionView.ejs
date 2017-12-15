@@ -77,9 +77,10 @@
                     <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.pregunta %></p>
                 </div>
 
+                <% console.log(respuesta); if (respuesta == null){ %>
+                
                 <p class="fuenteMedia"> No has contestado a esta pregunta.</p>
-
-
+                
                 <form action="/responderPregunta" method="POST">
 
 
@@ -88,6 +89,12 @@
                     <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Responder pregunta"/>
 
                 </form>
+
+                <% }else{ %>
+                
+                <p class="fuenteMedia">Tu respuesta es: <%= respuesta %></p>
+                
+                <% } %>
 
             </div>
         </div>

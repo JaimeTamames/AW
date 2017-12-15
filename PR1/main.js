@@ -616,6 +616,7 @@ app.get("/questions", (request, response) => {
 app.post("/verPregunta", (request, response) => {
 
     let id_pregunta = request.body.id_pregunta;
+    let user = app.locals.UserMail;
 
     daoQ.getQuestion(id_pregunta, (err, pregunta) => {
         if (err) {
@@ -625,8 +626,24 @@ app.post("/verPregunta", (request, response) => {
 
             response.status(200);
 
-            //Renderizar plantilla
-            response.render("questionView", {pregunta: pregunta});
+            daoQ.getMyAnswer(id_pregunta, user, (err, respuesta) => {
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
+
+                    response.status(200);
+
+                    if (respuesta === undefined) {
+
+                        respuesta = null;
+                    }
+
+                    //Renderizar plantilla
+                    response.render("questionView", {pregunta: pregunta[0], respuesta: respuesta[0]});
+
+                }
+            });
 
         }
     });
@@ -659,6 +676,79 @@ app.post("/responderPregunta", (request, response) => {
             });
         }
     });
+});
+
+app.post("/confirmarRespuesta", (request, response) => {
+
+    let id_pregunta = request.body.id_pregunta;
+    let id_respuesta = request.body.id_respuesta;
+    let user = app.locals.UserMail;
+
+    //Si el usuario a introducido una nueva respuesta
+    if (id_respuesta === "otra") {
+
+        let respuesta = respuesta;
+
+        daoQ.addProperUserAnswer(id_pregunta, respuesta, user, (err, callback) => {
+            if (err) {
+                console.log(err);
+                response.end();
+            } else {
+
+                response.status(200);
+
+                daoQ.getQuestion(id_pregunta, (err, pregunta) => {
+                    if (err) {
+                        console.log(err);
+                        response.end();
+                    } else {
+
+                        response.status(200);
+
+                        //Renderizar plantilla
+                        response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
+
+                    }
+                });
+            }
+        });
+
+    } else {
+
+        daoQ.addUserAnswer(id_pregunta, id_respuesta, user, (err, callback) => {
+            if (err) {
+                console.log(err);
+                response.end();
+            } else {
+
+                daoQ.getQuestion(id_pregunta, (err, pregunta) => {
+                    if (err) {
+                        console.log(err);
+                        response.end();
+                    } else {
+
+                        response.status(200);
+
+                        daoQ.getMyAnswer(id_pregunta, user, (err, respuesta) => {
+                            if (err) {
+                                console.log(err);
+                                response.end();
+                            } else {
+
+                                response.status(200);
+
+
+                                //Renderizar plantilla
+                                response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
+
+                            }
+                        });
+
+                    }
+                });
+            }
+        });
+    }
 });
 
 

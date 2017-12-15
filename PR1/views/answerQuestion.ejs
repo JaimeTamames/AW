@@ -80,7 +80,7 @@
                 <form action="/confirmarRespuesta" method="POST">
 
                     <ul>
-                        <% console.log(respuestas); respuestas.forEach(result => { %>
+                        <% respuestas.forEach(result => { %>
                         <li>
 
                             <label class="fuenteMedia espacioIzq espacioDer">
@@ -92,9 +92,11 @@
                         
                          <li>
 
-                            <label class="fuenteMedia espacioIzq espacioDer">
-                                    <input type="radio" name="id_respuesta" value="Hola"> Hola
-                            </label>
+                            
+                            <input type="radio" name="id_respuesta" value="otra">
+                            
+                            <input class="anchoTotal altoTotal fuenteMedia" name="respuesta" type="text" placeholder='Introduce otra respuesta...'>
+                         
 
                         </li>
                         
