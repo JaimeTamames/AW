@@ -124,7 +124,7 @@ class DAOQuestions {
         });
     }
 
-    getUserAge(email, callback) {
+    getQuestionWAnswers(idQuestion, callback) {
 
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -135,18 +135,15 @@ class DAOQuestions {
                     "SELECT fechaNacimiento" +
                     " FROM user" +
                     " WHERE email = ?",
-                    [email],
+                    [idQuestion],
                     (err, rows) => {
                 if (err) {
                     callback(err);
                     return;
                 }
                 connection.release();
-                if (rows.length === 0) {
-                    callback(null, undefined);
-                } else {
-                    callback(null, rows[0].fechaNacimiento);
-                }
+
+                callback(null, rows[0]);              
             }
             );
         });

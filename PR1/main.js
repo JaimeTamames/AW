@@ -632,6 +632,27 @@ app.post("/verPregunta", (request, response) => {
     });
 });
 
+app.post("/responderPregunta", (request, response) => {
+
+    let idQuestion = request.body.idQuestions;
+
+    daoQ.getQuestionWAnswers(idQuestion, (err, pregunta) => {
+        if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.status(200);
+
+            //Renderizar plantilla
+            response.render("questionView", {pregunta: pregunta});
+
+        }
+    });
+});
+
+
+
 //Desconectar usuario, boton desconectar
 app.get("/logOut", (request, response) => {
 
