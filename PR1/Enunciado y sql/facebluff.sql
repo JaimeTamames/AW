@@ -142,16 +142,15 @@ CREATE TABLE `user` (
 --
 -- Volcado de datos para la tabla `user`
 --
-
 INSERT INTO `user` (`email`, `password`, `img`, `sexo`, `puntuacion`, `fechaNacimiento`, `nombre`) VALUES
-('usuario@ucm.es', 'mipass', '/profile_imgs/Dracula-01.png', 'Masculino', 55, '10/11/1963', 'UCM'),
-('ruben@r.com', 'qwerty', '/profile_imgs/Extraterrestrial-01.png', 'Masculino', 0, '05/15/1996', 'Ruben Barrado González'),
-('monica@m.com', 'qwerty', '/profile_imgs/Dave-01.png', 'Femenino', 0, '02/23/1994', 'Monica moran'),
-('rbg@r.com', 'qwerty', '/profile_imgs/Grim Reaper-01.png', 'Masculino', 0, '02/02/2006', 'prueba edad'),
-('rubern@ruben.com', 'qwerty', 'Harley-01.png', 'Masculino', 0, '02/12/1993', 'ruben edad'),
-('rubeern@ruben.com', 'wertyrt', 'Harley-01.png', 'Masculino', 0, '02/12/1993', 'ruben edad'),
-('usuario2@ucm.es', 'qwerty', 'img2315.png', 'Masculino', 0, '02/12/1993', 'qwrty qrty'),
-('rubenbarrado@r.com', 'qwerty', 'Fatso-01.png', 'Masculino', 0, '02/12/1993', 'ruben barrado g');
+('alberto@ucm.es', 'mipass', '/profile_imgs/Marshmallow Man-01.png', 'Masculino', 24, '02/12/1995', 'Alberto Camino'),
+('jaime@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 31, '05/15/1996', 'Jaime Tamames'),
+('julian@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 45, '02/12/1997', 'Julian Rodriguez'),
+('monica@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Femenino', 10, '05/15/1996', 'Monica Moran'),
+('paula@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Femenino', 30, '02/12/2003', 'Paula Lopez'),
+('rosario@ucm.es', 'mipass', '/profile_imgs/Vampire Bat-01.png', 'Femenino', 53, '02/12/1986', 'Rosario Cabanas'),
+('ruben@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 0, '05/15/1996', 'Ruben Barrado González'),
+('usuario@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 55, '10/11/1963', 'Usuario');
 
 --
 -- Índices para tablas volcadas
