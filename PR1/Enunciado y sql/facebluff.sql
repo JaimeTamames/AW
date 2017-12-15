@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-12-2017 a las 00:17:11
+-- Tiempo de generación: 15-12-2017 a las 16:51:50
 -- Versión del servidor: 10.1.28-MariaDB
 -- Versión de PHP: 5.6.32
 
@@ -25,16 +25,52 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `answers`
+--
+
+CREATE TABLE `answers` (
+  `id_respuesta` int(11) NOT NULL,
+  `id_pregunta` int(11) NOT NULL,
+  `repuesta` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `answersforme`
+--
+
+CREATE TABLE `answersforme` (
+  `id_userAnswer` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_pregunta` int(11) NOT NULL,
+  `id_respuesta` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `answersforothers`
+--
+
+CREATE TABLE `answersforothers` (
+  `id_answer` int(11) NOT NULL,
+  `id_user` int(11) NOT NULL,
+  `id_friend` int(11) NOT NULL,
+  `id_pregunta` int(11) NOT NULL,
+  `id_respuesta` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `friends`
 --
 
 CREATE TABLE `friends` (
   `user` varchar(100) NOT NULL,
-  `friend` varchar(100) NOT NULL,
-  `state` varchar(20) NOT NULL
+  `friend` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-
 
 -- --------------------------------------------------------
 
@@ -42,39 +78,23 @@ CREATE TABLE `friends` (
 -- Estructura de tabla para la tabla `questions`
 --
 
-CREATE TABLE `facebluff`.`questions` (
-  `idQuestions` INT NOT NULL AUTO_INCREMENT,
-  `pregunta` VARCHAR(100) NOT NULL,
-  `respuesta1` VARCHAR(45) NOT NULL,
-  `respuesta2` VARCHAR(45) NOT NULL,
-  `respuesta3` VARCHAR(45) NOT NULL,
-  `respuesta4` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idQuestions`, `pregunta`));
-  
-  --
--- Estructura de tabla para la tabla `answers`
+CREATE TABLE `questions` (
+  `id_pregunta` int(11) NOT NULL,
+  `preguntas` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
 --
-  
-  CREATE TABLE `facebluff`.`answers` (
-  `idAnswers` INT NOT NULL AUTO_INCREMENT,
-  `user` VARCHAR(45) NOT NULL,
-  `idQuestion` INT NOT NULL,
-  `respuesta` VARCHAR(45) NOT NULL,
-  PRIMARY KEY (`idAnswers`),
-  INDEX `user_idx` (`user` ASC),
-  INDEX `idQuestions_idx` (`idQuestion` ASC),
-  CONSTRAINT `user`
-    FOREIGN KEY (`user`)
-    REFERENCES `facebluff`.`user` (`email`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `idQuestions`
-    FOREIGN KEY (`idQuestion`)
-    REFERENCES `facebluff`.`questions` (`idQuestions`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+-- Estructura de tabla para la tabla `requests`
+--
 
+CREATE TABLE `requests` (
+  `emailSolicitante` varchar(100) NOT NULL,
+  `emailSolicitado` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+-- --------------------------------------------------------
 
 --
 -- Estructura de tabla para la tabla `sessions`
@@ -107,57 +127,36 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`email`, `password`, `img`, `sexo`, `puntuacion`, `fechaNacimiento`, `nombre`) VALUES
-('alberto@ucm.es', 'mipass', '/profile_imgs/Marshmallow Man-01.png', 'Masculino', 24, '02/12/1995', 'Alberto Camino'),
-('jaime@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 31, '05/15/1996', 'Jaime Tamames'),
-('julian@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 45, '02/12/1997', 'Julian Rodriguez'),
-('monica@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Femenino', 10, '05/15/1996', 'Monica Moran'),
-('paula@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Femenino', 30, '02/12/2003', 'Paula Lopez'),
-('rosario@ucm.es', 'mipass', '/profile_imgs/Vampire Bat-01.png', 'Femenino', 53, '02/12/1986', 'Rosario Cabanas'),
-('ruben@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 0, '05/15/1996', 'Ruben Barrado González'),
-('usuario@ucm.es', 'mipass', '/profile_imgs/Jack-o-lantern-01.png', 'Masculino', 55, '10/11/1963', 'Usuario');
+('usuario@ucm.es', 'mipass', '/profile_imgs/Dracula-01.png', 'Masculino', 55, '10/11/1963', 'UCM'),
+('ruben@r.com', 'qwerty', '/profile_imgs/Extraterrestrial-01.png', 'Masculino', 0, '05/15/1996', 'Ruben Barrado González'),
+('monica@m.com', 'qwerty', '/profile_imgs/Dave-01.png', 'Femenino', 0, '02/23/1994', 'Monica moran'),
+('rbg@r.com', 'qwerty', '/profile_imgs/Grim Reaper-01.png', 'Masculino', 0, '02/02/2006', 'prueba edad'),
+('rubern@ruben.com', 'qwerty', 'Harley-01.png', 'Masculino', 0, '02/12/1993', 'ruben edad'),
+('rubeern@ruben.com', 'wertyrt', 'Harley-01.png', 'Masculino', 0, '02/12/1993', 'ruben edad'),
+('usuario2@ucm.es', 'qwerty', 'img2315.png', 'Masculino', 0, '02/12/1993', 'qwrty qrty'),
+('rubenbarrado@r.com', 'qwerty', 'Fatso-01.png', 'Masculino', 0, '02/12/1993', 'ruben barrado g');
 
 --
--- Volcado de datos para la tabla `friends`
+-- Índices para tablas volcadas
 --
 
-INSERT INTO `friends` (`user`, `friend`, `state`) VALUES
-('alberto@ucm.es', 'julian@ucm.es', 'aceptada'),
-('alberto@ucm.es', 'monica@ucm.es', 'aceptada'),
-('alberto@ucm.es', 'rosario@ucm.es', 'aceptada'),
-('jaime@ucm.es', 'julian@ucm.es', 'aceptada'),
-('jaime@ucm.es', 'rosario@ucm.es', 'aceptada'),
-('jaime@ucm.es', 'ruben@ucm.es', 'aceptada'),
-('julian@ucm.es', 'alberto@ucm.es', 'aceptada'),
-('julian@ucm.es', 'jaime@ucm.es', 'aceptada'),
-('julian@ucm.es', 'monica@ucm.es', 'aceptada'),
-('monica@ucm.es', 'alberto@ucm.es', 'aceptada'),
-('monica@ucm.es', 'jaime@ucm.es', 'aceptada'),
-('monica@ucm.es', 'julian@ucm.es', 'aceptada'),
-('monica@ucm.es', 'usuario@ucm.es', 'aceptada'),
-('rosario@ucm.es', 'alberto@ucm.es', 'aceptada'),
-('ruben@ucm.es', 'jaime@ucm.es', 'aceptada'),
-('ruben@ucm.es', 'usuario@ucm.es', 'aceptada'),
-('usuario@ucm.es', 'monica@ucm.es', 'aceptada'),
-('usuario@ucm.es', 'ruben@ucm.es', 'aceptada');
+--
+-- Indices de la tabla `answers`
+--
+ALTER TABLE `answers`
+  ADD PRIMARY KEY (`id_respuesta`);
 
 --
--- Volcado de datos para la tabla `questions`
+-- Indices de la tabla `answersforme`
 --
-
-INSERT INTO `questions` (`pregunta`, `respuesta1`, `respuesta2`, `respuesta3`, `respuesta4`) VALUES
-('¿Cual es la peor pelicula de la historia?', 'El exorcista II: El hereje (1977)', 'Una chica de Jersey (2004)', 'Epic Movie', 'Godzilla (1998)'),
-('¿Nintendo Switch, PS4 o XBOX One', 'Nintendo Switch', 'PS4', 'Xbox One', 'No me interesan los videojuegos'),
-('¿Cual es tu plato favorito?', 'Macarrones', 'Albondigas', 'Lenguado', 'Chuleton'),
-('¿Cual es el personaje mas irritante de Juego de Tronos?', 'Daenerys Targaryen', 'Jon Nieve', 'Gregor Clegane', 'Cersei Lannister'),
-('¿Que tipo de cine te gusta mas?', 'Comedia', 'Terror', 'Ciencia Fición', 'Acción');
-
--- --------------------------------------------------------
+ALTER TABLE `answersforme`
+  ADD PRIMARY KEY (`id_userAnswer`);
 
 --
--- Indices de la tabla `friends`
+-- Indices de la tabla `questions`
 --
-ALTER TABLE `friends`
-  ADD PRIMARY KEY (`user`,`friend`);
+ALTER TABLE `questions`
+  ADD PRIMARY KEY (`id_pregunta`);
 
 --
 -- Indices de la tabla `sessions`
@@ -166,10 +165,26 @@ ALTER TABLE `sessions`
   ADD PRIMARY KEY (`session_id`);
 
 --
--- Indices de la tabla `user`
+-- AUTO_INCREMENT de las tablas volcadas
 --
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`email`);
+
+--
+-- AUTO_INCREMENT de la tabla `answers`
+--
+ALTER TABLE `answers`
+  MODIFY `id_respuesta` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `answersforme`
+--
+ALTER TABLE `answersforme`
+  MODIFY `id_userAnswer` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `questions`
+--
+ALTER TABLE `questions`
+  MODIFY `id_pregunta` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
