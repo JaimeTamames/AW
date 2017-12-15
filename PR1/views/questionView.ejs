@@ -60,7 +60,7 @@
 
                             </div>
 
-                            <label class="fuentePropia negrita fuenteMedia blanco espacioIzq"><%= UserPoints%> pts</label>
+                            <label class="fuentePropia negrita fuenteMedia blanco espacioIzq"><%= UserPoints %> pts</label>
 
                         </div>
 
@@ -71,48 +71,25 @@
 
             </div>
 
-            <div class="cuerpoBox">	
+            <div class="vistaPreguntaBox">	
 
                 <div>
-                    <p class="fuentePropia negrita fuenteGrande"><%= pregunta.pregunta %></p>
+                    <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.pregunta %></p>
                 </div>
 
-                <div class="preguntasBox">
+                <p class="fuenteMedia"> No has contestado a esta pregunta.</p>
 
-                    <form action="/contestarPregunta" method="POST">
 
-                        <label class="fuenteMedia espacioIzq espacioDer">
-                            <input type="radio" name="respuesta" value="<%= pregunta.respuesta1 %>"> <%= pregunta.respuesta1 %>
-                        </label>
-                        
-                        <label class="fuenteMedia espacioIzq espacioDer">
-                            <input type="radio" name="respuesta" value="<%= pregunta.respuesta2 %>"> <%= pregunta.respuesta2 %>
-                        </label>
-                        
-                        <label class="fuenteMedia espacioIzq espacioDer">
-                            <input type="radio" name="respuesta" value="<%= pregunta.respuesta3 %>"> <%= pregunta.respuesta3 %>
-                        </label>
-                        
-                        <label class="fuenteMedia espacioIzq espacioDer">
-                            <input type="radio" name="respuesta" value="<%= pregunta.respuesta4 %>"> <%= pregunta.respuesta4 %>
-                        </label>
-                    
-                        <input value="<%= pregunta.idQuestions %>" name="idQuestions" type="hidden">
+                <form action="/contestarPregunta" method="POST">
 
-                        <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Responder"/>
 
-                    </form>
+                    <input value="<%= pregunta.idQuestions %>" name="idQuestions" type="hidden">
 
-                </div>
+                    <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Responder pregunta"/>
+
+                </form>
 
             </div>
-
-            <div class="cuerpoBox">	
-
-
-            </div>
-
         </div>
-
     </body>
 </html>

@@ -107,7 +107,7 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT idQuestions, pregunta, respuesta1, respuesta2, respuesta3, respuesta4 " +
+                    "SELECT idQuestions, pregunta " +
                     "FROM questions " +
                     "WHERE idQuestions = ?;",
                     [idQuestion],
@@ -118,7 +118,7 @@ class DAOQuestions {
                 }
                 connection.release();
 
-                callback(null, rows);
+                callback(null, rows[0]);
             }
             );
         });
