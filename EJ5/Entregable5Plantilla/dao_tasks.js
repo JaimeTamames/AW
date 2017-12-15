@@ -36,52 +36,58 @@ class DAOTasks {
     getAllTasks(email, callback) {
 
         /* Implementar */
-		this.pool.getConnection((err, connection) => {
-            if (err) { callback (err); return; }
-            connection.query(                
-				"SELECT task.id AS id, task.text AS text, task.done AS done, tag.tag AS tag" +
-                " FROM task" +
-				" LEFT JOIN tag ON task.id = tag.taskId" +
-                " WHERE task.user = ?", 
-                [email],				
-                (err, rows) => {
-                    if (err) { callback(err); return; }
-					connection.release();
-                    if (rows.length === 0) {
-                    	callback(null, undefined);
-                	} else {
-						
-						let task = [], i = 0, aux;
-						
-						while(i < rows.length){
-							
-							aux = [];
-								
-							while(i + 1 < rows.length && rows[i].id === rows[i + 1].id){
-									
-								aux.push(rows[i].tag);
-								i++;
-							}
-							
-							aux.push(rows[i].tag);
-							
-							if(rows[i].tag === null){
-								task.push([rows[i].id, rows[i].text, rows[i].done]);
-							}else{
-								task.push([rows[i].id, rows[i].text, rows[i].done, aux]);
-							}
-							
-							i++;			
-                		}
-						
-						callback(null, task);
-                	}
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT task.id AS id, task.text AS text, task.done AS done, tag.tag AS tag" +
+                    " FROM task" +
+                    " LEFT JOIN tag ON task.id = tag.taskId" +
+                    " WHERE task.user = ?",
+                    [email],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
                 }
-            );    
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+
+                    let task = [], i = 0, aux;
+
+                    while (i < rows.length) {
+
+                        aux = [];
+
+                        while (i + 1 < rows.length && rows[i].id === rows[i + 1].id) {
+
+                            aux.push(rows[i].tag);
+                            i++;
+                        }
+
+                        aux.push(rows[i].tag);
+
+                        if (rows[i].tag === null) {
+                            task.push([rows[i].id, rows[i].text, rows[i].done]);
+                        } else {
+                            task.push([rows[i].id, rows[i].text, rows[i].done, aux]);
+                        }
+
+                        i++;
+                    }
+
+                    callback(null, task);
+                }
+            }
+            );
         });
 
     }
-	
+
     /**
      * Inserta una tarea asociada a un usuario.
      * 
@@ -99,41 +105,49 @@ class DAOTasks {
     insertTask(email, task, callback) {
 
         //Implementar 
-		this.pool.getConnection((err, connection) => {
-            if (err) { callback (err); return; }
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
             connection.query(
-                "INSERT INTO task (user, text, done)" +
-				"VALUES (?, ?, ?)",
-                [email, task.text, task.done],
-                (err, result) => {
-                    if (err) { callback(err); return; }
-                    else {
-						
-						connection.release();
-				
-						if(task.tags.length > 0){
-							
-							let i;
-							let sql = "INSERT INTO tag (taskId, tag) VALUES ?";
-							let sqlValues = [];
-						
-							for(i = 0; i < task.tags.length; i++){
-							
-								sqlValues.push([result.insertId, task.tags[i]]);
-							}
+                    "INSERT INTO task (user, text, done)" +
+                    "VALUES (?, ?, ?)",
+                    [email, task.text, task.done],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
 
-							connection.query(
-                				sql, [sqlValues],
-                				(err, rows) => {
-                    				if (err) { callback(err); return; }
-									connection.release();
-									callback(null, undefined);
-                				}
-            				);
-                		} 
-					}
+                    connection.release();
+
+                    if (task.tags.length > 0) {
+
+                        let i;
+                        let sql = "INSERT INTO tag (taskId, tag) VALUES ?";
+                        let sqlValues = [];
+
+                        for (i = 0; i < task.tags.length; i++) {
+
+                            sqlValues.push([result.insertId, task.tags[i]]);
+                        }
+
+                        connection.query(
+                                sql, [sqlValues],
+                                (err, rows) => {
+                            if (err) {
+                                callback(err);
+                                return;
+                            }
+                            connection.release();
+                            callback(null, undefined);
+                        }
+                        );
+                    }
                 }
-            );    
+            }
+            );
         });
     }
 
@@ -149,14 +163,17 @@ class DAOTasks {
      */
     markTaskDone(idTask, callback) {
         this.pool.getConnection((err, connection) => {
-            if (err) { callback(err); return; }
+            if (err) {
+                callback(err);
+                return;
+            }
             connection.query(
-                "UPDATE task SET done = 1 WHERE id = ?",
-                [idTask],
-                (err) => {
-                    connection.release();
-                    callback(err);
-                }
+                    "UPDATE task SET done = 1 WHERE id = ?",
+                    [idTask],
+                    (err) => {
+                connection.release();
+                callback(err);
+            }
             );
         });
     }
@@ -173,14 +190,17 @@ class DAOTasks {
      */
     deleteCompleted(email, callback) {
         this.pool.getConnection((err, connection) => {
-            if (err) { callback(err); return; }
+            if (err) {
+                callback(err);
+                return;
+            }
             connection.query(
-                "DELETE FROM task WHERE user = ? AND done = 1",
-                [email],
-                (err) => {
-                    connection.release();
-                    callback(err);
-                }
+                    "DELETE FROM task WHERE user = ? AND done = 1",
+                    [email],
+                    (err) => {
+                connection.release();
+                callback(err);
+            }
             );
         });
     }

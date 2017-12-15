@@ -359,7 +359,7 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT DISTINCT  user.email AS mail, user.nombre AS nombre, user.img AS img,  friends.state AS state " +
+                    "SELECT DISTINCT  user.email AS email, user.nombre AS nombre, user.img AS img,  friends.state AS state " +
                     "FROM user left JOIN friends ON user.email = friends.friend AND friends.user = ? " +
                     "WHERE user.nombre LIKE ?;",
                     [user, char],
@@ -368,6 +368,7 @@ class DAOUsers {
                     callback(err);
                     return;
                 }
+                connection.release();
                 if (rows.length === 0) {
                     callback(null, undefined);
                 } else {
@@ -383,4 +384,4 @@ class DAOUsers {
 
 module.exports = {
     DAOUsers: DAOUsers
-}
+};

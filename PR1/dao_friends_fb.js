@@ -34,16 +34,17 @@ class DAOFriends {
                 if (err) {
                     callback(err);
                     return;
-                } else {
-                    callback(null, undefined);
                 }
+                connection.release();
+
+                callback(null, undefined);
+
             }
             );
         });
 
     }
 
-  
     //Coger todas las solicitudes de un usuario, devuelve todas las filas
     getRequests(user, callback) {
         this.pool.getConnection((err, connection) => {
@@ -67,11 +68,11 @@ class DAOFriends {
                 } else {
                     callback(null, rows);
                 }
+
             }
             );
         });
     }
-
 
     /////// TABLA DE AMIGOS ////////////
 
@@ -98,6 +99,7 @@ class DAOFriends {
                 } else {
                     callback(null, rows);
                 }
+
             }
             );
         });
@@ -105,7 +107,7 @@ class DAOFriends {
 
     //Añadir amistad
     addFriend(user, friend, callback) {
-				
+
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
@@ -118,31 +120,28 @@ class DAOFriends {
                 if (err) {
                     callback(err);
                     return;
-                } else {					
-					
-					connection.query(
-                    "INSERT INTO friends (user, friend, state) VALUES (?, ?, 'aceptada');",
-                    [user, friend],
-                    (err, rows) => {
-						if (err) {
-							callback(err);
-							return;
-						} else {
-
-							callback(null, undefined);
-						}
-					});
                 }
+                connection.release();
+                connection.query(
+                        "INSERT INTO friends (user, friend, state) VALUES (?, ?, 'aceptada');",
+                        [user, friend],
+                        (err, rows) => {
+                    if (err) {
+                        callback(err);
+                        return;
+                    } else {
+
+                        callback(null, undefined);
+                    }
+                });
+
             });
         });
     }
-	
-	
-	
-	
+
 }
 
 
 module.exports = {
     DAOFriends: DAOFriends
-}
+};

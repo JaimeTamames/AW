@@ -21,7 +21,7 @@ const sessionStore = new MySQLStore({
     host: "localhost",
     user: "root",
     password: "awaw"
-})
+});
 
 //Middleware sesion
 const middlewareSession = express_session({
@@ -47,7 +47,7 @@ let daoF = new daoFriends.DAOFriends(pool);
 //Estado del servidor
 app.listen(config.port, function (err) {
     if (err) {
-        console.log("No se ha podido iniciar el servidor.")
+        console.log("No se ha podido iniciar el servidor.");
         console.log(err);
     } else {
         console.log(`Servidor escuchando en puerto ${config.port}.`);
@@ -162,17 +162,17 @@ app.post("/conectar", (request, response) => {
                                                                 response.render("myProfile");
                                                             }
                                                         }
-                                                    })
+                                                    });
                                                 }
                                             }
-                                        })
+                                        });
                                     }
-                                })
+                                });
 
                             }
-                        })
+                        });
                     }
-                })
+                });
             }
         }
     });
@@ -205,10 +205,10 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
                 img: request.body.img
-            }
+            };
 
             //Acotar si se ha añadido la imagen		
-            if (user.img == undefined || user.img == '') {
+            if (user.img === undefined || user.img === '') {
                 user.img = "profile_imgs/NoProfile.png";
             } else {
                 user.img = "/profile_imgs/" + user.img;
@@ -289,10 +289,10 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                 fechaNacimiento: request.body.fechaNacimiento,
                 sexo: request.body.sexo,
                 img: request.body.img
-            }
+            };
 
             //Acotar si se ha modificado la imagen		
-            if (user.img == undefined || user.img == '') {
+            if (user.img === undefined || user.img === '') {
                 user.img = app.locals.UserImg;
             } else {
                 user.img = "/profile_imgs/" + user.img;
@@ -341,7 +341,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                                                         response.end();
                                                     } else
                                                         response.render("myProfile");
-                                                })
+                                                });
 
                                             }
                                             // FINAL DE IF DE SETPASS		
@@ -352,21 +352,21 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 
                                         }
 
-                                    })
+                                    });
                                     // FINAL DE SETIMAGE
 
                                 }
 
-                            })
+                            });
                             //FINAL DE SETSEX							
                         }
 
-                    })
+                    });
 
                     // FINAL DE SETDATE						
                 }
 
-            })
+            });
             //FINAL DE SETNAME				
         } else {
 
@@ -424,7 +424,7 @@ app.get("/friends", (request, response) => {
 //Aceptar, boton de la pagina amigos
 app.post("/aceptarAmistad", (request, response) => {
 
-    let amigo = request.body.aceptaAmigo
+    let amigo = request.body.aceptaAmigo;
 
     daoF.addFriend(app.locals.UserMail, amigo, (err, callback) => {
 
@@ -440,7 +440,7 @@ app.post("/aceptarAmistad", (request, response) => {
 //Rechazar, boton de la pagina amigos
 app.post("/rechazarAmistad", (request, response) => {
 
-    let amigo = request.body.rechazarAmigo
+    let amigo = request.body.rechazarAmigo;
 
     daoF.rmRequest(app.locals.UserMail, amigo, (err, callback) => {
 
@@ -508,13 +508,13 @@ app.post("/solicitarAmistad", (request, response) => {
 app.post("/verPerfil", (request, response) => {
 
     let user = {
-        mail: request.body.perfilSolicitante,
+        mail: request.body.perfil,
         nombre: null,
         edad: null,
         sexo: null,
         puntos: null,
         img: null
-    }
+    };
 
     //Imagen usuario
     daoU.getUserImageName(user.mail, (err, callback) => {
@@ -573,17 +573,17 @@ app.post("/verPerfil", (request, response) => {
                                                     response.render("otherProfile", {user: user});
                                                 }
                                             }
-                                        })
+                                        });
                                     }
                                 }
-                            })
+                            });
                         }
-                    })
+                    });
 
                 }
-            })
+            });
         }
-    })
+    });
 
 });
 
@@ -624,7 +624,7 @@ function getAge(x) {
     {
         edadUser--;
     }
-    if ((mes == mes_actual) && (dia_actual < dia))
+    if ((mes === mes_actual) && (dia_actual < dia))
     {
         edadUser--;
     }
