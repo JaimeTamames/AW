@@ -3,7 +3,7 @@
 <html lang="es">
     <head>
         <meta charset="UTF-8">
-        <title>Preguntas - FaceBluff</title>
+        <title>Añade tus Preguntas - FaceBluff</title>
     </head>
 
     <body>
@@ -74,24 +74,45 @@
             <div class="cuerpoBox">	
 
                 <div>
-                    <p class="fuentePropia negrita fuenteGrande">Preguntas seleccionadas aleatoriamente</p>
+                    <p class="fuentePropia negrita fuenteGrande">Añade tu pregunta <%= UserName %></p>
                 </div>
 
                 <div class="preguntasBox">
 
                     <% if(errors === null){ %>
 
-                    <% listaPreguntas.forEach(result => { %>
+                    <form action="/addNewQuestion" method="POST">
 
-                    <form action="/verPregunta" method="POST">
+                        <div class="datoSecundario fuenteMedia ">
+                                <label>Tu pregunta: </label>
+                                <input class=" fuenteMedia" name="pregunta" type="text"/>
+                        </div>
+						<div class="datoSecundario fuenteMedia ">
+                                <label>Tu posible respuesta: </label>
+                                <input class=" fuenteMedia" name="respuesta1" type="text"/>
+                        </div>
+						<div class="datoSecundario fuenteMedia ">
+                                <label>Tu posible respuesta: </label>
+                                <input class=" fuenteMedia" name="respuesta2" type="text"/>
+                        </div>
+						<div class="datoSecundario fuenteMedia ">
+                                <label>Tu posible respuesta: </label>
+                                <input class=" fuenteMedia" name="respuesta3" type="text"/>
+                        </div>
+						<div class="datoSecundario fuenteMedia ">
+                                <label>Tu posible respuesta: </label>
+                                <input class=" fuenteMedia" name="respuesta4" type="text"/>
+                        </div>
 
-                        <input value="<%= result.id_pregunta %>" name="id_pregunta" type="hidden">
+                        <div>
 
-                        <input class="pregunta" type="submit"  value="<%= result.preguntas %>"/>
+							<input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Crear nueva pregunta"/>
+
+						</div>
 
                     </form>
 
-                    <% }); %>
+                    
                     <% }else{ %>
 
                     <div class="error">
@@ -102,27 +123,11 @@
 
                 </div>
 
-                <div>
-                    <p class="fuentePropia negrita fuenteGrande">¡Añade tus preguntas!</p>
-                </div>
-
-                <form action="/addQuestion" method="GET" class="registroPost">
-
-                    <div>
-
-                        <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Crear nueva pregunta"/>
-
-                    </div>
-
-                </form>
+               
+           
 
             </div>
-
-            <div class="cuerpoBox">	
-
-
-            </div>
-
+           
         </div>
 
     </body>

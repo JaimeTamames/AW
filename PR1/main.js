@@ -758,6 +758,16 @@ app.get("/logOut", (request, response) => {
 
 });
 
+
+//Añadir pregunta interfaz
+app.get("/addQuestion", (request, response) => {
+
+    response.status(200);
+    response.render("addQuestion", {errors: null});
+
+});
+
+
 //Recibe una fecha como parametro y devuelve la edad
 function getAge(x) {
 

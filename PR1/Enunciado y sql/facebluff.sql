@@ -118,24 +118,6 @@ INSERT INTO `questions` (`id_pregunta`, `preguntas`) VALUES
 (1, '¿Nintendo Switch, Ps4 o Xbox One?'),
 (2, '¿Cual es tu plato favorito?');
 
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `sessions`
---
-
-CREATE TABLE `sessions` (
-  `session_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
-  `expires` int(11) UNSIGNED NOT NULL,
-  `data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_bin
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Volcado de datos para la tabla `sessions`
---
-
-INSERT INTO `sessions` (`session_id`, `expires`, `data`) VALUES
-('nRwNaWL9GA7BzpspzIS9zZxANrQ1j4NY', 1513444945, '{\"cookie\":{\"originalMaxAge\":null,\"expires\":null,\"httpOnly\":true,\"path\":\"/\"},\"currentUser\":\"jaime@ucm.es\"}');
 
 -- --------------------------------------------------------
 
