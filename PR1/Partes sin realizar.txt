@@ -1,0 +1,3 @@
+Hola Manuel,
+
+De la parte Opcional de preguntas, nos ha restado por implementar el funcionamiento de adivinar respuesta de amigo.
