@@ -130,6 +130,35 @@ class DAOQuestions {
             );
         });
     }
+    
+        //Dado un id_pregunta y un user devuelve una lista con los usuarios que la han constestado y su respuesta, excluyendo al usuario actual
+    getUsersAnswers(id_pregunta, user, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT user.email, user.img, user.nombre, answers.respuesta " +
+                    "FROM user, answersforme, answers " +
+                    "WHERE user.email = answersforme.id_user AND answersforme.id_respuesta = answers.id_respuesta AND answersforme.id_pregunta = ? AND user.email <> ? ;",
+                    [id_pregunta, user],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0]);
+                }
+            }
+            );
+        });
+    }
 
     //Inserta la respuesta de un usuario a una pregunta
     addUserAnswer(id_pregunta, id_respuesta, user, callback) {

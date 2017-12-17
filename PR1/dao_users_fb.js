@@ -388,10 +388,10 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT email" +
-                    "FROM user" +
-                    "WHERE email = ?",
-                    [user.email, char],
+                    "SELECT email " +
+                    "FROM user " +
+                    "WHERE email = ? ;",
+                    [user.email],
                     (err, rows) => {
                 if (err) {
                     callback(err);
