@@ -15,10 +15,10 @@ const MySQLStore = express_mysql_session(express_session);
 const app = express();
 const sessionStore = new MySQLStore({
 
-    database: config.mysqlConfig.database,
-    host: config.mysqlConfig.host,
-    user: config.mysqlConfig.user,
-    password: config.mysqlConfig.password
+    database: config.mysqlConfig.dbDatabase,
+    host: config.mysqlConfig.dbHost,
+    user: config.mysqlConfig.dbUser,
+    password: config.mysqlConfig.dbPassword
 
 });
 //Middleware sesion
