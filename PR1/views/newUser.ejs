@@ -54,7 +54,7 @@
                             <div class="formTextBox"><p class="fuenteMedia blanco">Email</p></div>
 
                             <div class="formInputTextBox2">
-                                <% if(usuario.email === null || usuario.email === ""){ %>
+                                <% if(usuario.email === null || usuario.email === undefined){ %>
                                 <input class="anchoTotal altoTotal fuenteMedia" name="email" type="email" placeholder='ejemplo@mail.com'>
                                 <% }else{ %>
                                 <input class="anchoTotal altoTotal fuenteMedia" name="email" type="email" value="<%= usuario.email %>">
@@ -68,7 +68,7 @@
                             <div class="formTextBox"><p class="fuenteMedia blanco">Contraseña</p></div>
 
                             <div class="formInputTextBox2">
-                                <% if(usuario.pass == null || usuario.pass === ""){ %>
+                                <% if(usuario.pass == null || usuario.pass === undefined){ %>
                                 <input class="anchoTotal altoTotal fuenteMedia" name="pass" type="password" placeholder='Entre 6 y 20 caracteres'>
                                 <% }else{ %>
                                 <input class="anchoTotal altoTotal fuenteMedia" name="pass" type="password" value="<%= usuario.pass %>">
@@ -82,7 +82,7 @@
                             <div class="formTextBox"><p class="fuenteMedia blanco">Nombre Completo</p></div>
 
                             <div class="formInputTextBox2">
-                                <% if(usuario.nombre === null || usuario.nombre === ""){ %>
+                                <% if(usuario.nombre === null || usuario.nombre === undefined){ %>
                                 <input class="anchoTotal altoTotal fuenteMedia" name="nombre" type="text" placeholder='Nombre y apellidos'>
                                 <% }else{ %>
                                 <input class="anchoTotal altoTotal fuenteMedia" name="nombre" type="text" value="<%= usuario.nombre %>">
@@ -118,7 +118,7 @@
                             <div class="formTextBox"><p class="fuenteMedia blanco">Fecha de Nacimiento</p></div>
 
                             <div class="formInputTextBox2">
-                                <% if(usuario.fechaNacimiento === null || usuario.fechaNacimiento === ""){ %>
+                                <% if(usuario.fechaNacimiento === null || usuario.fechaNacimiento === undefined){ %>
                                 <input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" placeholder='mm/dd/aaaa'>
                                 <% }else{ %>
                                 <input class="altoTotal fuenteMedia" name="fechaNacimiento" type="datetime" value="<%= usuario.fechaNacimiento %>">
