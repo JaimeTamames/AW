@@ -379,6 +379,34 @@ class DAOUsers {
         });
 
     }
+	
+	
+	existUser(user, callback) {
+		 this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT email" +
+                    "FROM user" +
+                    "WHERE email = ?",
+                    [user.email, char],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, false);
+                } else {
+                    callback(null, true);
+                }
+            }
+            );
+        });		
+	}
 
 }
 

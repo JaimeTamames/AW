@@ -102,6 +102,7 @@ app.post("/conectar", (request, response) => {
 
                 response.status(400);
                 response.render("index", {errorMsg: "Dirección de correo y/o contraseña no validos"});
+				
             } else {
 
                 response.status(200);
@@ -193,7 +194,6 @@ app.post("/altaNuevoUsuario", (request, response) => {
     request.checkBody("email", "Dirección de correo no válida").notEmpty().isEmail();
     request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
     request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
-    //request.checkBody("nombre", "Nombre de usuario no válido").matches(/^[A-Z0-9]*$/i);
     request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").notEmpty().isBefore();
 
     request.getValidationResult().then((result) => {
@@ -206,7 +206,8 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 nombre: request.body.nombre,
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
-                img: request.body.img
+                img: request.body.img,
+				exist: null
             };
 
             //Acotar si se ha añadido la imagen		
@@ -216,28 +217,62 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 user.img = "/profile_imgs/" + user.img;
             }
 
-            daoU.addUser(user, (err, callback) => {
+			daoU.existUser(user, (err, callback) => {
+				
+				if (err) {
+					console.log(err);
+					response.end();
+				}
+				else {
 
-                if (err) {
-                    console.log(err);
-                    response.end();
-                } else {
+					if(!callback) {	
+					
+						daoU.addUser(user, (err, callback) => {
 
-                    response.status(200);
+							if (err) {
+								console.log(err);
+								response.end();
+							} else {
 
-                    //Variables para cargar el perfil
-                    app.locals.UserName = user.nombre;
-                    app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-                    app.locals.UserDate = user.fechaNacimiento;
-                    app.locals.UserPoints = 0;
-                    app.locals.UserSex = user.sexo;
-                    app.locals.UserMail = user.email;
-                    app.locals.UserImg = user.img;
+								response.status(200);
 
+								//Variables para cargar el perfil
+								app.locals.UserName = user.nombre;
+								app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+								app.locals.UserDate = user.fechaNacimiento;
+								app.locals.UserPoints = 0;
+								app.locals.UserSex = user.sexo;
+								app.locals.UserMail = user.email;
+								app.locals.UserImg = user.img;
+								//request.session.currentUser = user;
 
-                    response.render("myProfile");
-                }
-            });
+								response.render("myProfile");
+							}
+						});
+						
+					}
+					else {
+						
+						let error1 = "El usuario ya esta dado de alta";
+						
+						 //Datos introducidos que se devuelven para no escribirlos de nuevo
+						let usuarioIncorrecto = {
+							email: request.body.email,
+							pass: request.body.pass,
+							nombre: request.body.nombre,
+							sexo: request.body.sexo,
+							fechaNacimiento: request.body.fechaNacimiento,
+							img: request.body.img,
+							exist: error1
+						};
+						
+						
+
+						response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});						
+						
+					}			
+				}
+			});
 
         } else {
 
@@ -248,7 +283,8 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 nombre: request.body.nombre,
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
-                img: request.body.img
+                img: request.body.img,
+				exist: null
             };
 
             response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});
