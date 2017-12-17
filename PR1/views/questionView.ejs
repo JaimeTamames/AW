@@ -77,10 +77,10 @@
                     <p class="fuentePropia negrita fuenteGrande"> <%= pregunta.preguntas %></p>
                 </div>
 
-                <% if (respuesta == null){ %>
-                
+                <% if (respuesta === null){ %>
+
                 <p class="fuenteMedia"> No has contestado a esta pregunta.</p>
-                
+
                 <form action="/responderPregunta" method="POST">
 
 
@@ -91,10 +91,71 @@
                 </form>
 
                 <% }else{ %>
-                
+
                 <p class="fuenteMedia">Tu respuesta es: <%= respuesta.respuesta %></p>
-                
+
                 <% } %>
+
+                <div>
+
+                    <% if (listaRespuestasAmigos === null){ %>
+
+                    <p class="fuenteMedia"> Ninguno de tus amigos ha contestado a esta pregunta</p>
+                    
+                    <% }else{ %>
+                    
+                    <p class="fuenteMedia"> Los siguientes amigos han contestado a esta pregunta:</p>
+                    
+                    <% listaRespuestasAmigos.forEach(result => { %>
+                    
+                        <li>
+                            <div class="espacioDer">
+                                <img class="perfilImgfriendBox" src="<%= result.img %>"/>
+                            </div>
+
+                            <div class="flexGrow">
+
+                                <form action="/verPerfil" method="POST">
+
+                                    <input value="<%= result.email %>" name="perfil" type="hidden">
+
+                                    <input class="texto" type="submit"  value="<%= result.nombre %>"/>
+
+                                </form>
+
+                            </div>
+
+                            <div>
+                                <% if(result.suRespuesta === result.miRespuesta){ %>
+
+                                <p class="fuenteMedia"> Has acertado</p>
+
+                                <% }else if(result.suRespuesta !== result.miRespuesta && result.miRespuesta !== null){ %>
+                                
+                                <p class="fuenteMedia"> Has fallado</p>
+                                
+                                <% }else{ %>
+                                
+                                <form action="/verAdivinar" method="POST">
+                                    
+                                    <input value="<%= pregunta.id_pregunta %>" name="id_pregunta" type="hidden">
+
+                                    <input value="<%= result.email %>" name="email" type="hidden">
+                                    
+                                    <input value="<%= result.suRespuesta %>" name="suRespuesta" type="hidden">
+
+                                    <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Adivinar"/>
+
+                                </form>
+                                
+                                 <% }%>
+
+                            </div>
+                        </li>
+                        <% }); %>
+
+                    <% } %>
+                </div>
 
             </div>
         </div>

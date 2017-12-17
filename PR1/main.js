@@ -18,7 +18,7 @@ const app = express();
 
 
 const sessionStore = new MySQLStore({
-    database: "facebluff",
+    database: "faceblufff",
     host: "localhost",
     user: "root",
     password: "awaw"
@@ -102,7 +102,7 @@ app.post("/conectar", (request, response) => {
 
                 response.status(400);
                 response.render("index", {errorMsg: "Dirección de correo y/o contraseña no validos"});
-				
+
             } else {
 
                 response.status(200);
@@ -207,7 +207,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
                 img: request.body.img,
-				exist: null
+                exist: null
             };
 
             //Acotar si se ha añadido la imagen		
@@ -217,62 +217,60 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 user.img = "/profile_imgs/" + user.img;
             }
 
-			daoU.existUser(user, (err, callback) => {
-				
-				if (err) {
-					console.log(err);
-					response.end();
-				}
-				else {
+            daoU.existUser(user, (err, callback) => {
 
-					if(!callback) {	
-					
-						daoU.addUser(user, (err, callback) => {
+                if (err) {
+                    console.log(err);
+                    response.end();
+                } else {
 
-							if (err) {
-								console.log(err);
-								response.end();
-							} else {
+                    if (!callback) {
 
-								response.status(200);
+                        daoU.addUser(user, (err, callback) => {
 
-								//Variables para cargar el perfil
-								app.locals.UserName = user.nombre;
-								app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-								app.locals.UserDate = user.fechaNacimiento;
-								app.locals.UserPoints = 0;
-								app.locals.UserSex = user.sexo;
-								app.locals.UserMail = user.email;
-								app.locals.UserImg = user.img;
-								//request.session.currentUser = user;
+                            if (err) {
+                                console.log(err);
+                                response.end();
+                            } else {
 
-								response.render("myProfile");
-							}
-						});
-						
-					}
-					else {
-						
-						let error1 = "El usuario ya esta dado de alta";
-						
-						 //Datos introducidos que se devuelven para no escribirlos de nuevo
-						let usuarioIncorrecto = {
-							email: request.body.email,
-							pass: request.body.pass,
-							nombre: request.body.nombre,
-							sexo: request.body.sexo,
-							fechaNacimiento: request.body.fechaNacimiento,
-							img: request.body.img,
-							exist: error1
-						};
-						
-						
+                                response.status(200);
 
-						response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});						
-						
-					}			
-				}
-			});
+                                //Variables para cargar el perfil
+                                app.locals.UserName = user.nombre;
+                                app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+                                app.locals.UserDate = user.fechaNacimiento;
+                                app.locals.UserPoints = 0;
+                                app.locals.UserSex = user.sexo;
+                                app.locals.UserMail = user.email;
+                                app.locals.UserImg = user.img;
+                                //request.session.currentUser = user;
+
+                                response.render("myProfile");
+                            }
+                        });
+
+                    } else {
+
+                        let error1 = "El usuario ya esta dado de alta";
+
+                        //Datos introducidos que se devuelven para no escribirlos de nuevo
+                        let usuarioIncorrecto = {
+                            email: request.body.email,
+                            pass: request.body.pass,
+                            nombre: request.body.nombre,
+                            sexo: request.body.sexo,
+                            fechaNacimiento: request.body.fechaNacimiento,
+                            img: request.body.img,
+                            exist: error1
+                        };
+
+
+
+                        response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});
+
+                    }
+                }
+            });
 
         } else {
 
@@ -284,7 +282,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 sexo: request.body.sexo,
                 fechaNacimiento: request.body.fechaNacimiento,
                 img: request.body.img,
-				exist: null
+                exist: null
             };
 
             response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});
@@ -693,8 +691,22 @@ app.post("/verPregunta", (request, response) => {
                         respuesta = null;
                     }
 
-                    //Renderizar plantilla
-                    response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
+                    daoQ.getUsersAnswers(id_pregunta, user, (err, listaRespuestasAmigos) => {
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        } else {
+
+                            if (listaRespuestasAmigos === undefined) {
+
+                                listaRespuestasAmigos = null;
+                            }
+
+                            //Renderizar plantilla
+                            response.render("questionView", {pregunta: pregunta, respuesta: respuesta, listaRespuestasAmigos: listaRespuestasAmigos});
+
+                        }
+                    });
 
                 }
             });
@@ -761,8 +773,22 @@ app.post("/confirmarRespuesta", (request, response) => {
 
                         response.status(200);
 
-                        //Renderizar plantilla
-                        response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
+                        daoQ.getUsersAnswers(id_pregunta, user, (err, listaRespuestasAmigos) => {
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        } else {
+
+                            if (listaRespuestasAmigos === undefined) {
+
+                                listaRespuestasAmigos = null;
+                            }
+
+                            //Renderizar plantilla
+                            response.render("questionView", {pregunta: pregunta, respuesta: respuesta, listaRespuestasAmigos: listaRespuestasAmigos});
+
+                        }
+                    });
 
                     }
                 });
@@ -794,8 +820,22 @@ app.post("/confirmarRespuesta", (request, response) => {
                                 response.status(200);
 
 
-                                //Renderizar plantilla
-                                response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
+                                daoQ.getUsersAnswers(id_pregunta, user, (err, listaRespuestasAmigos) => {
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        } else {
+
+                            if (listaRespuestasAmigos === undefined) {
+
+                                listaRespuestasAmigos = null;
+                            }
+
+                            //Renderizar plantilla
+                            response.render("questionView", {pregunta: pregunta, respuesta: respuesta, listaRespuestasAmigos: listaRespuestasAmigos});
+
+                        }
+                    });
 
                             }
                         });

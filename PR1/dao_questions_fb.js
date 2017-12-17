@@ -130,8 +130,8 @@ class DAOQuestions {
             );
         });
     }
-    
-        //Dado un id_pregunta y un user devuelve una lista con los usuarios que la han constestado y su respuesta, excluyendo al usuario actual
+
+    //Dado un id_pregunta y un user devuelve una lista con los usuarios que la han constestado y su respuesta, excluyendo al usuario actual
     getUsersAnswers(id_pregunta, user, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -140,9 +140,11 @@ class DAOQuestions {
                 return;
             }
             connection.query(
-                    "SELECT user.email, user.img, user.nombre, answers.respuesta " +
-                    "FROM user, answersforme, answers " +
-                    "WHERE user.email = answersforme.id_user AND answersforme.id_respuesta = answers.id_respuesta AND answersforme.id_pregunta = ? AND user.email <> ? ;",
+                    "SELECT user.email, user.img, user.nombre, answersforme.id_respuesta AS suRespuesta, answersforothers.id_respuesta AS miRespuesta " +
+                    "FROM user JOIN friends ON user.email = friends.friend " +
+                    "RIGHT JOIN answersforme ON friends.friend = answersforme.id_user AND answersforme.id_pregunta = ? " +
+                    "LEFT JOIN answersforothers ON answersforme.id_user = answersforothers.id_friend AND answersforme.id_pregunta = answersforothers.id_pregunta " +
+                    "WHERE friends.user = ? ;",
                     [id_pregunta, user],
                     (err, rows) => {
                 if (err) {
@@ -153,7 +155,7 @@ class DAOQuestions {
                 if (rows.length === 0) {
                     callback(null, undefined);
                 } else {
-                    callback(null, rows[0]);
+                    callback(null, rows);
                 }
             }
             );
@@ -199,7 +201,7 @@ class DAOQuestions {
                     callback(err);
                     return;
                 } else {
-                    
+
                     connection.query(
                             "INSERT INTO answersforme (id_user, id_pregunta, id_respuesta) " +
                             "VALUES (?, ?, ?);",
@@ -219,8 +221,8 @@ class DAOQuestions {
             );
         });
     }
-	
-	addQuestion(pregunta, callback) {
+
+    addQuestion(pregunta, callback) {
 
         //Implementar 
         this.pool.getConnection((err, connection) => {
@@ -243,7 +245,7 @@ class DAOQuestions {
                         let i;
                         let sql = "INSERT INTO answers (id_pregunta, respuesta) VALUES ?";
                         let sqlValues = [];
-						
+
 
                         for (i = 0; i < pregunta.respuestas.length; i++) {
 
@@ -267,8 +269,6 @@ class DAOQuestions {
             );
         });
     }
-	
-	
 
 }
 
