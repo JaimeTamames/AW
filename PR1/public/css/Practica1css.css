@@ -139,6 +139,20 @@ body{
 
 }
 
+.textareaRespuestas {
+	
+	width: 600px;
+    height: 200px;
+	
+	
+}
+
+.addquestion {
+	
+	width: 450px;
+	
+}
+
 .preguntasBox{
 
     display: flex;

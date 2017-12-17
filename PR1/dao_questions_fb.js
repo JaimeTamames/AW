@@ -190,6 +190,58 @@ class DAOQuestions {
             );
         });
     }
+	
+	addQuestion(pregunta, callback) {
+
+        //Implementar 
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "INSERT INTO questions (preguntas) VALUES (?);",
+                    [pregunta.pregunta],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+
+                    connection.release();
+
+                    if (pregunta.respuestas.length > 0) {
+
+                        let i;
+                        let sql = "INSERT INTO answers (id_pregunta, respuesta) VALUES ?,?";
+                        let sqlValues = [];
+						
+
+                        for (i = 0; i < pregunta.respuestas.length; i++) {
+
+                            sqlValues.push([result.insertId, pregunta.respuestas[i]]);
+                        }
+						
+						console.log(sqlValues);
+
+                        connection.query(
+                                sql, [sqlValues],
+                                (err, rows) => {
+                            if (err) {
+                                callback(err);
+                                return;
+                            }
+                            connection.release();
+                            callback(null, undefined);
+                        }
+                        );
+                    }
+                }
+            }
+            );
+        });
+    }
+	
 
 }
 

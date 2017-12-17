@@ -613,6 +613,29 @@ app.get("/questions", (request, response) => {
     });
 });
 
+app.post("/addNewQuestion", (request, response) => {
+	
+	let textRespuestas = request.body.respuestas;
+	
+	let pregunta = {
+		pregunta:request.body.pregunta,
+		respuestas:textRespuestas.split(",")	
+	};
+	
+	daoQ.addQuestion(pregunta, (err, callback) => {
+		
+		if (err) {
+            console.log(err);
+            response.end();
+        } else {
+
+            response.redirect("questions");
+		}
+		
+	});	
+	
+});
+
 app.post("/verPregunta", (request, response) => {
 
     let id_pregunta = request.body.id_pregunta;

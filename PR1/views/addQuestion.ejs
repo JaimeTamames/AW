@@ -81,36 +81,25 @@
 
                     <% if(errors === null){ %>
 
-                    <form action="/addNewQuestion" method="POST">
+                    <form action="/addNewQuestion" method="POST" id="addquestion">
 
                         <div class="datoSecundario fuenteMedia ">
                                 <label>Tu pregunta: </label>
-                                <input class=" fuenteMedia" name="pregunta" type="text"/>
+                                <input class="addquestion fuenteMedia" name="pregunta" type="text"/>
                         </div>
 						<div class="datoSecundario fuenteMedia ">
-                                <label>Tu posible respuesta: </label>
-                                <input class=" fuenteMedia" name="respuesta1" type="text"/>
-                        </div>
-						<div class="datoSecundario fuenteMedia ">
-                                <label>Tu posible respuesta: </label>
-                                <input class=" fuenteMedia" name="respuesta2" type="text"/>
-                        </div>
-						<div class="datoSecundario fuenteMedia ">
-                                <label>Tu posible respuesta: </label>
-                                <input class=" fuenteMedia" name="respuesta3" type="text"/>
-                        </div>
-						<div class="datoSecundario fuenteMedia ">
-                                <label>Tu posible respuesta: </label>
-                                <input class=" fuenteMedia" name="respuesta4" type="text"/>
-                        </div>
-
-                        <div>
+                                <label>Tus posibles respuestas: </label>
+						</div>
+						<textarea class="textareaRespuestas" name="respuestas" form="addquestion">respuesta1,respuesta2,respuesta3,respuesta4,...</textarea>
+						<div>
 
 							<input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Crear nueva pregunta"/>
 
 						</div>
 
                     </form>
+					
+					
 
                     
                     <% }else{ %>
