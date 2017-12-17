@@ -18,10 +18,10 @@ const app = express();
 
 
 const sessionStore = new MySQLStore({
-    database: "facebluff",
-    host: "localhost",
-    user: "root",
-    password: "awaw"
+    database: config.mysqlConfig.database,
+    host: config.mysqlConfig.host,
+    user: config.mysqlConfig.user,
+    password: config.mysqlConfig.password
 });
 
 //Middleware sesion
