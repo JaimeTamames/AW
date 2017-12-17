@@ -614,26 +614,25 @@ app.get("/questions", (request, response) => {
 });
 
 app.post("/addNewQuestion", (request, response) => {
-	
-	let textRespuestas = request.body.respuestas;
-	
-	let pregunta = {
-		pregunta:request.body.pregunta,
-		respuestas:textRespuestas.split(",")	
-	};
-	
-	daoQ.addQuestion(pregunta, (err, callback) => {
-		
-		if (err) {
+
+    let textRespuestas = request.body.respuestas;
+
+    let pregunta = {
+        pregunta: request.body.pregunta,
+        respuestas: textRespuestas.split(",")
+    };
+
+    daoQ.addQuestion(pregunta, (err, callback) => {
+
+        if (err) {
             console.log(err);
             response.end();
         } else {
 
             response.redirect("questions");
-		}
-		
-	});	
-	
+        }
+    });
+
 });
 
 app.post("/verPregunta", (request, response) => {
@@ -706,9 +705,11 @@ app.post("/confirmarRespuesta", (request, response) => {
     //Si el usuario a introducido una nueva respuesta
     if (id_respuesta === "otra") {
 
-        let respuesta = request.body.respuesta;
+        let respuesta = {
+            respuesta: request.body.respuesta
+        };
 
-        daoQ.addProperUserAnswer(id_pregunta, respuesta, user, (err, callback) => {
+        daoQ.addProperUserAnswer(id_pregunta, respuesta.respuesta, user, (err, callback) => {
             if (err) {
                 console.log(err);
                 response.end();
