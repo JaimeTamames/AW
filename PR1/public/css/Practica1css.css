@@ -85,7 +85,6 @@ body{
     display: flex;
     flex-direction: row;
     align-items: center;
-    padding-left: 20%;
     height: 60px;
 }
 
