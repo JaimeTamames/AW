@@ -6,7 +6,7 @@ module.exports = {
         dbName: "BDPractica1",
         dbHost: "localhost",
         dbUser: "root",
-        dbPassword: "",
+        dbPassword: "awaw",
         /* Puerto de escucha */
         port: 3000
     }

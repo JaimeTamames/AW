@@ -15,7 +15,7 @@ const MySQLStore = express_mysql_session(express_session);
 const app = express();
 const sessionStore = new MySQLStore({
 
-    database: config.mysqlConfig.dbDatabase,
+    database: config.mysqlConfig.dbName,
     host: config.mysqlConfig.dbHost,
     user: config.mysqlConfig.dbUser,
     password: config.mysqlConfig.dbPassword
@@ -30,22 +30,23 @@ const middlewareSession = express_session({
 });
 app.use(middlewareSession);
 let pool = mysql.createPool({
-    database: config.mysqlConfig.database,
-    host: config.mysqlConfig.host,
-    user: config.mysqlConfig.user,
-    password: config.mysqlConfig.password
+    database: config.mysqlConfig.dbName,
+    host: config.mysqlConfig.dbHost,
+    user: config.mysqlConfig.dbUser,
+    password: config.mysqlConfig.dbPassword
 });
 //Pool de conexiones a la BBDD
 let daoU = new daoUsers.DAOUsers(pool);
 let daoF = new daoFriends.DAOFriends(pool);
 let daoQ = new daoQuestions.DAOQuestions(pool);
+
 //Estado del servidor
-app.listen(config.port, function (err) {
+app.listen(config.mysqlConfig.port, function (err) {
     if (err) {
         console.log("No se ha podido iniciar el servidor.");
         console.log(err);
     } else {
-        console.log(`Servidor escuchando en puerto ${config.port}.`);
+        console.log(`Servidor escuchando en puerto ${config.mysqlConfig.port}.`);
     }
 });
 //Ficheros estaticos

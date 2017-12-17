@@ -1,5 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `facebluff` /*!40100 DEFAULT CHARACTER SET latin1 */;
-USE `faceblufff`;
+
 -- MySQL dump 10.13  Distrib 5.7.17, for macos10.12 (x86_64)
 --
 -- Host: localhost    Database: facebluff
