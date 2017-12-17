@@ -244,7 +244,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
 								app.locals.UserSex = user.sexo;
 								app.locals.UserMail = user.email;
 								app.locals.UserImg = user.img;
-								//request.session.currentUser = user;
+								request.session.currentUser = user;
 
 								response.render("myProfile");
 							}
