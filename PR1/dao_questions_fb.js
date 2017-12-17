@@ -212,7 +212,7 @@ class DAOQuestions {
                     if (pregunta.respuestas.length > 0) {
 
                         let i;
-                        let sql = "INSERT INTO answers (id_pregunta, respuesta) VALUES (?)";
+                        let sql = "INSERT INTO answers (id_pregunta, respuesta) VALUES ?,?";
                         let sqlValues = [];
 						
 
@@ -222,7 +222,7 @@ class DAOQuestions {
                         }
 
                         connection.query(
-                                sql, [sqlValues],
+                                sql, [sqlValues[0],sqlValues[1]],
                                 (err, rows) => {
                             if (err) {
                                 callback(err);
