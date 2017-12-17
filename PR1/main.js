@@ -51,12 +51,15 @@ app.listen(config.port, function (err) {
 //Ficheros estaticos
 const ficherosEstaticos = path.join(__dirname, "public");
 app.use(express.static(ficherosEstaticos));
+
 //Plantillas
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+
 //Declaracion del middelware bodyParser para obtener el contenido de la peticion post
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(expressValidator());
+
 //Pagina principal
 app.get("/", (request, response) => {
 
