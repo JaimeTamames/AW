@@ -82,12 +82,19 @@ app.get("/index", (request, response) => {
     response.render("index", {errorMsg: null});
 });
 
+//Pagina principal
+app.get("/index.html", (request, response) => {
+
+    response.status(200);
+    response.render("index", {errorMsg: null});
+});
+
 //Login, boton conectar de la pagina index
 app.post("/conectar", (request, response) => {
 
     let user = request.body.email;
     let pass = request.body.pass;
-    app.locals.UserMail = user;
+    request.session.UserMail = user;
 
     daoU.isUserCorrect(user, pass, (err, callback) => {
 
@@ -106,7 +113,6 @@ app.post("/conectar", (request, response) => {
             } else {
 
                 response.status(200);
-                request.session.currentUser = user;
 
                 //Imagen usuario
                 daoU.getUserImageName(user, (err, callback) => {
@@ -114,7 +120,7 @@ app.post("/conectar", (request, response) => {
                         console.log(err);
                         response.end();
                     } else {
-                        app.locals.UserImg = callback;
+                        request.session.UserImg = callback;
 
                         //Sexo del Usuario
                         daoU.getUserSex(user, (err, callback) => {
@@ -123,9 +129,9 @@ app.post("/conectar", (request, response) => {
                                 response.end();
                             } else {
                                 if (callback === undefined)
-                                    app.locals.UserSex = null;
+                                    request.session.UserSex = null;
                                 else
-                                    app.locals.UserSex = callback;
+                                    request.session.UserSex = callback;
 
                                 //Puntos del usuario
                                 daoU.getUserPoints(user, (err, callback) => {
@@ -134,9 +140,9 @@ app.post("/conectar", (request, response) => {
                                         response.end();
                                     } else {
                                         if (callback === undefined)
-                                            app.locals.UserPoints = null;
+                                            request.session.UserPoints = null;
                                         else
-                                            app.locals.UserPoints = callback;
+                                            request.session.UserPoints = callback;
 
                                         //Edad del usuario
                                         daoU.getUserAge(user, (err, callback) => {
@@ -145,10 +151,10 @@ app.post("/conectar", (request, response) => {
                                                 response.end();
                                             } else {
                                                 if (callback === undefined)
-                                                    app.locals.UserAge = null;
+                                                    request.session.UserAge = null;
                                                 else {
-                                                    app.locals.UserDate = callback;
-                                                    app.locals.UserAge = getAge(callback);
+                                                    request.session.UserDate = callback;
+                                                    request.session.UserAge = getAge(callback);
 
                                                     //Nombre del usuario
                                                     daoU.getUserName(user, (err, callback) => {
@@ -157,11 +163,19 @@ app.post("/conectar", (request, response) => {
                                                             response.end();
                                                         } else {
                                                             if (callback === undefined)
-                                                                app.locals.UserName = null;
+                                                                request.session.UserName = null;
                                                             else {
-                                                                app.locals.UserName = callback;
+                                                                request.session.UserName = callback;
 
                                                                 //Renderizar plantilla
+																
+																response.locals.UserImg = request.session.UserImg;
+																response.locals.UserPoints = request.session.UserPoints;
+																response.locals.UserName = request.session.UserName;
+																response.locals.UserAge = request.session.UserAge;
+																response.locals.UserSex = request.session.UserSex;
+																
+																
                                                                 response.render("myProfile");
                                                             }
                                                         }
@@ -185,6 +199,7 @@ app.post("/conectar", (request, response) => {
 app.get("/nuevoUsuario", (request, response) => {
 
     response.status(200);
+	
     response.render("newUser", {errores: [], usuario: {}});
 });
 
@@ -237,14 +252,19 @@ app.post("/altaNuevoUsuario", (request, response) => {
 								response.status(200);
 
 								//Variables para cargar el perfil
-								app.locals.UserName = user.nombre;
-								app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-								app.locals.UserDate = user.fechaNacimiento;
-								app.locals.UserPoints = 0;
-								app.locals.UserSex = user.sexo;
-								app.locals.UserMail = user.email;
-								app.locals.UserImg = user.img;
-								request.session.currentUser = user;
+								request.session.UserName = user.nombre;
+								request.session.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+								request.session.UserDate = user.fechaNacimiento;
+								request.session.UserPoints = 0;
+								request.session.UserSex = user.sexo;
+								request.session.UserMail = user.email;
+								request.session.UserImg = user.img;
+								
+								response.locals.UserImg = request.session.UserImg;
+								response.locals.UserPoints = request.session.UserPoints;
+								response.locals.UserName = request.session.UserName;
+								response.locals.UserAge = request.session.UserAge;
+								response.locals.UserSex = request.session.UserSex;
 
 								response.render("myProfile");
 							}
@@ -264,8 +284,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
 							fechaNacimiento: request.body.fechaNacimiento,
 							img: request.body.img,
 							exist: error1
-						};
-						
+						};						
 						
 
 						response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});						
@@ -296,6 +315,13 @@ app.post("/altaNuevoUsuario", (request, response) => {
 app.get("/myProfile", (request, response) => {
 
     response.status(200);
+	
+	response.locals.UserImg = request.session.UserImg;
+	response.locals.UserPoints = request.session.UserPoints;
+	response.locals.UserName = request.session.UserName;
+	response.locals.UserAge = request.session.UserAge;
+	response.locals.UserSex = request.session.UserSex;
+	
     response.render("myProfile");
 });
 
@@ -303,6 +329,14 @@ app.get("/myProfile", (request, response) => {
 app.get("/modificarPerfil", (request, response) => {
 
     response.status(200);
+	
+	response.locals.UserImg = request.session.UserImg;
+	response.locals.UserPoints = request.session.UserPoints;
+	response.locals.UserName = request.session.UserName;
+	response.locals.UserDate = request.session.UserDate;
+	response.locals.UserSex = request.session.UserSex;
+	
+	
     response.render("myProfileAdmin", {errores: []});
 });
 
@@ -322,7 +356,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
             //Datos para modificar el usuario
             let user = {
                 nombre: request.body.nombre,
-                email: app.locals.UserMail,
+                email: request.session.UserMail,
                 pass: request.body.pass,
                 fechaNacimiento: request.body.fechaNacimiento,
                 sexo: request.body.sexo,
@@ -331,7 +365,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 
             //Acotar si se ha modificado la imagen		
             if (user.img === undefined || user.img === '') {
-                user.img = app.locals.UserImg;
+                user.img = request.session.UserImg;
             } else {
                 user.img = "/profile_imgs/" + user.img;
             }
@@ -343,7 +377,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                     response.end();
                 } else {
 
-                    app.locals.UserName = user.nombre;
+                    request.session.UserName = user.nombre;
 
                     daoU.setDate(user, (err, callback) => {
                         if (err) {
@@ -351,8 +385,8 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                             response.end();
                         } else {
 
-                            app.locals.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-                            app.locals.UserDate = user.fechaNacimiento;
+                            request.session.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+                            request.session.UserDate = user.fechaNacimiento;
 
                             daoU.setSex(user, (err, callback) => {
                                 if (err) {
@@ -360,7 +394,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                                     response.end();
                                 } else {
 
-                                    app.locals.UserSex = user.sexo;
+                                    request.session.UserSex = user.sexo;
 
                                     daoU.setImage(user, (err, callback) => {
                                         if (err) {
@@ -368,7 +402,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                                             response.end();
                                         } else {
 
-                                            app.locals.UserImg = user.img;
+                                            request.session.UserImg = user.img;
 
 
                                             if (user.pass !== "") {
@@ -378,12 +412,26 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                                                         console.log(err);
                                                         response.end();
                                                     } else
+														
+													
+														response.locals.UserImg = request.session.UserImg;
+														response.locals.UserPoints = request.session.UserPoints;
+														response.locals.UserName = request.session.UserName;
+														response.locals.UserAge = request.session.UserAge;
+														response.locals.UserSex = request.session.UserSex;													
+													
                                                         response.render("myProfile");
                                                 });
 
                                             }
                                             // FINAL DE IF DE SETPASS		
                                             else {
+												
+												response.locals.UserImg = request.session.UserImg;
+												response.locals.UserPoints = request.session.UserPoints;
+												response.locals.UserName = request.session.UserName;
+												response.locals.UserAge = request.session.UserAge;
+												response.locals.UserSex = request.session.UserSex;
 
                                                 response.render("myProfile");
                                             }
@@ -422,7 +470,7 @@ app.get("/friends", (request, response) => {
     let errSol = null;
     let errAmi = null;
 
-    daoF.getRequests(app.locals.UserMail, (err, listaSolicitudes) => {
+    daoF.getRequests(request.session.UserMail, (err, listaSolicitudes) => {
 
         if (err) {
             console.log(err);
@@ -437,7 +485,7 @@ app.get("/friends", (request, response) => {
                 errSol = "No tienes ninguna solicitud";
             }
 
-            daoF.getFriends(app.locals.UserMail, (err, listaAmigos) => {
+            daoF.getFriends(request.session.UserMail, (err, listaAmigos) => {
 
                 if (err) {
                     console.log(err);
@@ -449,6 +497,10 @@ app.get("/friends", (request, response) => {
                     if (listaAmigos === undefined) {
                         errAmi = "No tienes ningun amigo";
                     }
+					
+					
+					response.locals.UserImg = request.session.UserImg;
+					response.locals.UserPoints = request.session.UserPoints;				
 
                     response.render("friends", {errorsSolicitudes: errSol, errorsAmigos: errAmi, listaAmigos: listaAmigos, listaSolicitudes: listaSolicitudes});
                 }
@@ -462,12 +514,14 @@ app.post("/aceptarAmistad", (request, response) => {
 
     let amigo = request.body.aceptaAmigo;
 
-    daoF.addFriend(app.locals.UserMail, amigo, (err, callback) => {
+    daoF.addFriend(request.session.UserMail, amigo, (err, callback) => {
 
         if (err) {
             console.log(err);
             response.end();
         } else {
+					
+			
             response.redirect("friends");
         }
     });
@@ -478,7 +532,7 @@ app.post("/rechazarAmistad", (request, response) => {
 
     let amigo = request.body.rechazarAmigo;
 
-    daoF.rmRequest(app.locals.UserMail, amigo, (err, callback) => {
+    daoF.rmRequest(request.session.UserMail, amigo, (err, callback) => {
 
         if (err) {
             console.log(err);
@@ -502,7 +556,7 @@ app.post("/search", (request, response) => {
 
     let char = "%" + busqueda.UserSearch + "%";
 
-    daoU.search(app.locals.UserMail, char, (err, lista) => {
+    daoU.search(request.session.UserMail, char, (err, lista) => {
 
         if (err) {
             console.log(err);
@@ -516,6 +570,9 @@ app.post("/search", (request, response) => {
             if (lista === undefined) {
                 errors = "La busqueda no tiene resultados";
             }
+			
+			response.locals.UserImg = request.session.UserImg;
+			response.locals.UserPoints = request.session.UserPoints;
 
             response.render("searchResult", {errors: errors, busqueda: busqueda, lista: lista});
         }
@@ -526,7 +583,7 @@ app.post("/search", (request, response) => {
 //Solicitar, boton solicita amistad de la pagina de resultados de busqueda
 app.post("/solicitarAmistad", (request, response) => {
 
-    daoF.addRequest(app.locals.UserMail, request.body.solicitudAmigo, (err, callback) => {
+    daoF.addRequest(request.session.UserMail, request.body.solicitudAmigo, (err, callback) => {
 
         if (err) {
             console.log(err);
@@ -606,6 +663,10 @@ app.post("/verPerfil", (request, response) => {
                                                     user.nombre = callback;
 
                                                     //Renderizar plantilla
+													
+													response.locals.UserImg = request.session.UserImg;
+													response.locals.UserPoints = request.session.UserPoints;
+													
                                                     response.render("otherProfile", {user: user});
                                                 }
                                             }
@@ -626,7 +687,7 @@ app.post("/verPerfil", (request, response) => {
 //Pagina de preguntas
 app.get("/questions", (request, response) => {
 
-    let user = app.locals.UserMail;
+    let user = request.session.UserMail;
 
     daoQ.getUserNoAnsweredQuestions(user, (err, listaPreguntas) => {
         if (err) {
@@ -643,6 +704,10 @@ app.get("/questions", (request, response) => {
             } else {
 
                 //Renderizar plantilla
+				
+				response.locals.UserImg = request.session.UserImg;
+				response.locals.UserPoints = request.session.UserPoints;
+				
                 response.render("questions", {errors: errors, listaPreguntas: listaPreguntas});
             }
         }
@@ -674,7 +739,7 @@ app.post("/addNewQuestion", (request, response) => {
 app.post("/verPregunta", (request, response) => {
 
     let id_pregunta = request.body.id_pregunta;
-    let user = app.locals.UserMail;
+    let user = request.session.UserMail;
 
     daoQ.getQuestion(id_pregunta, (err, pregunta) => {
         if (err) {
@@ -694,6 +759,10 @@ app.post("/verPregunta", (request, response) => {
                     }
 
                     //Renderizar plantilla
+					
+					response.locals.UserImg = request.session.UserImg;
+					response.locals.UserPoints = request.session.UserPoints;
+					
                     response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
 
                 }
@@ -724,6 +793,10 @@ app.post("/responderPregunta", (request, response) => {
                     response.status(200);
 
                     //Renderizar plantilla
+					
+					response.locals.UserImg = request.session.UserImg;
+					response.locals.UserPoints = request.session.UserPoints;
+					
                     response.render("answerQuestion", {pregunta: pregunta, respuestas: respuestas});
 
                 }
@@ -736,7 +809,7 @@ app.post("/confirmarRespuesta", (request, response) => {
 
     let id_pregunta = request.body.id_pregunta;
     let id_respuesta = request.body.id_respuesta;
-    let user = app.locals.UserMail;
+    let user = request.session.UserMail;
 
     //Si el usuario a introducido una nueva respuesta
     if (id_respuesta === "otra") {
@@ -762,6 +835,9 @@ app.post("/confirmarRespuesta", (request, response) => {
                         response.status(200);
 
                         //Renderizar plantilla
+						response.locals.UserImg = request.session.UserImg;
+						response.locals.UserPoints = request.session.UserPoints;
+						
                         response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
 
                     }
@@ -795,6 +871,9 @@ app.post("/confirmarRespuesta", (request, response) => {
 
 
                                 //Renderizar plantilla
+								response.locals.UserImg = request.session.UserImg;
+								response.locals.UserPoints = request.session.UserPoints;							
+								
                                 response.render("questionView", {pregunta: pregunta, respuesta: respuesta});
 
                             }
@@ -823,6 +902,12 @@ app.get("/logOut", (request, response) => {
 app.get("/addQuestion", (request, response) => {
 
     response.status(200);
+	
+	response.locals.UserImg = request.session.UserImg;
+	response.locals.UserPoints = request.session.UserPoints;
+	response.locals.UserName = request.session.UserName;
+
+	
     response.render("addQuestion", {errors: null});
 
 });
