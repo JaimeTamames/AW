@@ -208,12 +208,11 @@ class DAOQuestions {
                     return;
                 } else {
 
-                    connection.release();
 
                     if (pregunta.respuestas.length > 0) {
 
                         let i;
-                        let sql = "INSERT INTO answers (id_pregunta, respuesta) VALUES ?,?";
+                        let sql = "INSERT INTO answers (id_pregunta, respuesta) VALUES (?,?)";
                         let sqlValues = [];
 						
 
@@ -221,8 +220,6 @@ class DAOQuestions {
 
                             sqlValues.push([result.insertId, pregunta.respuestas[i]]);
                         }
-						
-						console.log(sqlValues);
 
                         connection.query(
                                 sql, [sqlValues],
