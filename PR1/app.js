@@ -13,6 +13,7 @@ const express_mysql_session = require("express-mysql-session");
 var expressValidator = require("express-validator");
 const MySQLStore = express_mysql_session(express_session);
 const app = express();
+
 const sessionStore = new MySQLStore({
 
     database: config.mysqlConfig.dbName,
@@ -21,6 +22,7 @@ const sessionStore = new MySQLStore({
     password: config.mysqlConfig.dbPassword
 
 });
+
 //Middleware sesion
 const middlewareSession = express_session({
     saveUninitialized: false,
@@ -29,12 +31,14 @@ const middlewareSession = express_session({
     store: sessionStore
 });
 app.use(middlewareSession);
+
 let pool = mysql.createPool({
     database: config.mysqlConfig.dbName,
     host: config.mysqlConfig.dbHost,
     user: config.mysqlConfig.dbUser,
     password: config.mysqlConfig.dbPassword
 });
+
 //Pool de conexiones a la BBDD
 let daoU = new daoUsers.DAOUsers(pool);
 let daoF = new daoFriends.DAOFriends(pool);
@@ -49,6 +53,7 @@ app.listen(config.mysqlConfig.port, function (err) {
         console.log(`Servidor escuchando en puerto ${config.mysqlConfig.port}.`);
     }
 });
+
 //Ficheros estaticos
 const ficherosEstaticos = path.join(__dirname, "public");
 app.use(express.static(ficherosEstaticos));
@@ -67,18 +72,21 @@ app.get("/", (request, response) => {
     response.status(200);
     response.redirect("/index");
 });
+
 //Pagina principal
 app.get("/index", (request, response) => {
 
     response.status(200);
     response.render("index", {errorMsg: null});
 });
+
 //Pagina principal
 app.get("/index.html", (request, response) => {
 
     response.status(200);
     response.render("index", {errorMsg: null});
 });
+
 //Login, boton conectar de la pagina index
 app.post("/conectar", (request, response) => {
 
@@ -172,12 +180,14 @@ app.post("/conectar", (request, response) => {
         }
     });
 });
+
 //Pagina nuevo usuario
 app.get("/nuevoUsuario", (request, response) => {
 
     response.status(200);
     response.render("newUser", {errores: [], usuario: {}});
 });
+
 //Alta usuario, boton crear usuario de la pagina newUser
 app.post("/altaNuevoUsuario", (request, response) => {
 
@@ -705,7 +715,7 @@ app.post("/verPregunta", (request, response) => {
                             response.locals.UserImg = request.session.UserImg;
                             response.locals.UserPoints = request.session.UserPoints;
 
-//Renderizar plantilla
+                            //Renderizar plantilla
                             response.render("questionView", {pregunta: pregunta, respuesta: respuesta, listaRespuestasAmigos: listaRespuestasAmigos});
 
                         }
@@ -851,8 +861,6 @@ app.post("/confirmarRespuesta", (request, response) => {
     }
 });
 
-
-
 //Desconectar usuario, boton desconectar
 app.get("/logOut", (request, response) => {
 
@@ -860,7 +868,6 @@ app.get("/logOut", (request, response) => {
     request.session.destroy();
     response.redirect("/index");
 });
-
 
 //Añadir pregunta interfaz
 app.get("/addQuestion", (request, response) => {
@@ -872,7 +879,6 @@ app.get("/addQuestion", (request, response) => {
     response.render("addQuestion", {errors: null});
 
 });
-
 
 //Recibe una fecha como parametro y devuelve la edad
 function getAge(x) {

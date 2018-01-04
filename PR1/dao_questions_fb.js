@@ -222,6 +222,7 @@ class DAOQuestions {
         });
     }
 
+    //Inserta una pregunta y sus rescpuestas dadas por un usuario
     addQuestion(pregunta, callback) {
 
         //Implementar 

@@ -18,7 +18,7 @@ class DAOFriends {
         this.pool = pool;
     }
 
-    /////////// TABLA DE SOLICITUDES //////////////
+    /////////// SOLICITUDES //////////////
 
     //Añadir solicitud de amistad
     addRequest(user, friend, callback) {
@@ -38,11 +38,9 @@ class DAOFriends {
                 connection.release();
 
                 callback(null, undefined);
-
             }
             );
         });
-
     }
 
     //Coger todas las solicitudes de un usuario, devuelve todas las filas
@@ -68,13 +66,12 @@ class DAOFriends {
                 } else {
                     callback(null, rows);
                 }
-
             }
             );
         });
     }
 
-    /////// TABLA DE AMIGOS ////////////
+    /////// AMIGOS ////////////
 
     //Coger todas los amigos de un usuario, devuelve todas las filas
     getFriends(user, callback) {
@@ -99,7 +96,6 @@ class DAOFriends {
                 } else {
                     callback(null, rows);
                 }
-
             }
             );
         });
@@ -134,13 +130,10 @@ class DAOFriends {
                         callback(null, undefined);
                     }
                 });
-
             });
         });
     }
-
 }
-
 
 module.exports = {
     DAOFriends: DAOFriends

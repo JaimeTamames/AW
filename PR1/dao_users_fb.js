@@ -94,6 +94,7 @@ class DAOUsers {
         });
     }
 
+    //Obtiene el sexo de un usuario
     getUserSex(email, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -122,6 +123,7 @@ class DAOUsers {
         });
     }
 
+    //Obtiene la edad de un usuario
     getUserAge(email, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -150,6 +152,7 @@ class DAOUsers {
         });
     }
 
+    //Obtiene los puntos de un usuario
     getUserPoints(email, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -178,6 +181,7 @@ class DAOUsers {
         });
     }
 
+    //Obtiene el nombre de un usuario
     getUserName(email, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -206,6 +210,7 @@ class DAOUsers {
         });
     }
 
+    //Añade un usuario con los campos validados
     addUser(user, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -231,6 +236,7 @@ class DAOUsers {
         });
     }
 
+    //Cambia la contraseña de un usuario
     setPassword(user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -255,6 +261,7 @@ class DAOUsers {
         });
     }
 
+    //Cambia la imagen de perfil de un usuario
     setImage(user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -279,6 +286,7 @@ class DAOUsers {
         });
     }
 
+    //Cambia el nombre de un usuario
     setName(user, callback) {
 
         this.pool.getConnection((err, connection) => {
@@ -304,6 +312,7 @@ class DAOUsers {
         });
     }
 
+    //Cambia el sexo de un usuario
     setSex(user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -328,6 +337,7 @@ class DAOUsers {
         });
     }
 
+    //Cambia la fecha de nacimiento de un usuario
     setDate(user, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -352,6 +362,7 @@ class DAOUsers {
         });
     }
 
+    //Busca a partir de una cadena de texto las coincidencias con el nombre de los usuarios de la app
     search(user, char, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -379,10 +390,10 @@ class DAOUsers {
         });
 
     }
-	
-	
-	existUser(user, callback) {
-		 this.pool.getConnection((err, connection) => {
+
+    //Comprueba si existe un usuario dado de alta con ese email, devuleve true o false
+    existUser(user, callback) {
+        this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
@@ -405,8 +416,8 @@ class DAOUsers {
                 }
             }
             );
-        });		
-	}
+        });
+    }
 
 }
 
