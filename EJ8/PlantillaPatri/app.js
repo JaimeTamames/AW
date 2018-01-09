@@ -39,7 +39,10 @@ app.get("/", (request, response) => {
 });
 
 app.get("/tasks", (request, response) => {
-    // Implementar
+    
+    //Por defecto devuelve el codigo 200. No hace falta indicarlo.
+    response.json(tasks);
+
 });
 
 app.post("/tasks", (request, response) => {
@@ -54,8 +57,25 @@ app.post("/tasks", (request, response) => {
 });
 
 app.delete("/tasks/:id", (request, response) => {
-    // Implementar
+
+    let idBus = Number(request.params.id);
+
+    let ind = tasks.findIndex(i => i.id === idBus);
+
+    //Si es un indice válido y si está en los límites del array.
+    if (!isNaN(idBus) && idBus % 1 ===0) {
+        
+        tasks.splice(ind, 1);
+
+        response.status(200);
+    }
+    else
+        response.status(404);
+
+    response.end();
 });
+
+//*********************************************************************************************************** */
 
 app.listen(config.port, function(err) {
     if (err) {
