@@ -40,7 +40,6 @@ app.get("/", (request, response) => {
 
 app.get("/tasks", (request, response) => {
     
-    //Por defecto devuelve el codigo 200. No hace falta indicarlo.
     response.json(tasks);
 
 });

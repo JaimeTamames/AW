@@ -31,7 +31,50 @@ function taskToDOMElement(task) {
 }
 
 function loadTasks() {
-    // Implementar
+   
+   $.ajax({
+	   
+	   method:"GET",
+	   url:"tasks";
+	   
+	   success: (data) => {
+		   
+		  console.log(data);
+			
+		  data.forEach(elem => {
+			  
+			  
+			  
+			  
+		  };			
+		   
+		   
+	   }
+	   
+	   //error:.....
+	   
+	   /*
+	   $("#botonvalue").on("click", () => {
+		   
+		   let cantidad = $("#idcampo").prop("value");
+		   let otro = $("#idcombobox").find("option:selected").prop("value");
+		   
+		   $.ajax({
+			   
+			   method:"GET",
+			   url:();
+			   
+			   data: 
+			   
+			   
+		   };
+		   
+	   });*/
+	   
+	   
+   })
+   
+   
 }
 
 function onRemoveButtonClick(event) {
@@ -50,4 +93,3 @@ function onRemoveButtonClick(event) {
 function onAddButtonClick(event) {
     // Implementar
 }
-
