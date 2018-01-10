@@ -35,23 +35,22 @@ function loadTasks() {
    $.ajax({
 	   
 	   method:"GET",
-	   url:"tasks";
+	   url:"tasks",
 	   
-	   success: (data) => {
+	   success: function(data) {
 		   
 		  console.log(data);
 			
-		  data.forEach(elem => {
-			  
-			  
-			  
-			  
-		  };			
+		  data.forEach(elem => {			  
+			  $("#tareas").before(taskToDOMElement(elem));		  
+		  });			
 		   
 		   
-	   }
+	   },
 	   
-	   //error:.....
+	   error: function(error) {
+		   alert("ha ocurrido un error: " + error);		   
+	   }
 	   
 	   /*
 	   $("#botonvalue").on("click", () => {
@@ -72,7 +71,7 @@ function loadTasks() {
 	   });*/
 	   
 	   
-   })
+   });
    
    
 }
@@ -86,10 +85,53 @@ function onRemoveButtonClick(event) {
     // pulsado.
     let liPadre = selected.parent();
 
-    // Implementar el resto del método aquí.
-    // ...
+    
+	$.ajax({
+		
+		type:"Delete",
+		url:"tasks/" + liPadre.data("id"),
+		
+		success: function(data) {
+			
+			liPadre.remove();
+			
+		},
+		error: function(error) {
+		   alert("ha ocurrido un error: " + error);		   
+		}
+		
+		
+	});
+	
 }
 
 function onAddButtonClick(event) {
-    // Implementar
+    
+	let newTask = document.getElementsByName("taskText")[0].value;
+	
+	if(newTask.length > 0){ //Comprobamos que la tarea no esté vacia
+        
+		$.ajax({ 
+            method: "POST",
+            url:"tasks",
+            contentType:"application/json",
+            data:JSON.stringify({text:newTask}),
+
+            success: (data)=>{
+                $("#tareas").before(taskToDOMElement(data));
+            },
+            //En caso de error, mostramos el error producido
+            error: function (error) {
+                alert("Se ha producido un error: " + error);
+            }
+
+        });
+		
+    }else{
+        alert("No puedes añadir una tarea vacia.")
+
+    }
+	
+	
+	
 }

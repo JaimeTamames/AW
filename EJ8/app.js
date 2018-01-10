@@ -1,3 +1,5 @@
+// Jaime Tamames y Rubén Barrado
+
 const express = require("express");
 const path = require("path");
 const config = require("./config");
@@ -39,7 +41,7 @@ app.get("/", (request, response) => {
 });
 
 app.get("/tasks", (request, response) => {
-    // Implementar
+    response.json(tasks);
 });
 
 app.post("/tasks", (request, response) => {
@@ -54,7 +56,17 @@ app.post("/tasks", (request, response) => {
 });
 
 app.delete("/tasks/:id", (request, response) => {
-    // Implementar
+    
+	let id = Number(request.params.id);
+
+    let pos = tasks.findIndex(i => i.id === id);
+
+    tasks.splice(pos, 1);
+
+    response.status(200);    
+
+    response.end();
+	
 });
 
 app.listen(config.port, function(err) {
