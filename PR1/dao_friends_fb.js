@@ -53,7 +53,7 @@ class DAOFriends {
             connection.query(
                     "SELECT friends.user AS email, user.nombre AS nombre, user.img AS img, friends.state AS state " +
                     "FROM user LEFT JOIN friends ON friends.user = user.email " +
-                    "WHERE friends.friend = ? AND friends.state = 'pedida';",
+                    "WHERE friends.friend = ? AND friends.state = 'pedida'",
                     [user],
                     (err, rows) => {
                 if (err) {
@@ -71,6 +71,30 @@ class DAOFriends {
         });
     }
 
+    //Rechaza/elimina una solicitud de amistad
+    rmRequest(user, friend, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "DELETE FROM friends " +
+                    "WHERE user = ? AND friend = ?",
+                    [friend, user],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                
+                connection.release();
+                callback(null, undefined);
+            }
+            );
+        });
+    }
+
     /////// AMIGOS ////////////
 
     //Coger todas los amigos de un usuario, devuelve todas las filas
@@ -83,7 +107,7 @@ class DAOFriends {
             connection.query(
                     "SELECT friends.friend AS email, user.nombre AS nombre, user.img AS img " +
                     "FROM user LEFT JOIN friends ON friends.friend = user.email " +
-                    "WHERE friends.user = ? AND friends.state = 'aceptada';",
+                    "WHERE friends.user = ? AND friends.state = 'aceptada'",
                     [user],
                     (err, rows) => {
                 if (err) {
@@ -110,7 +134,7 @@ class DAOFriends {
                 return;
             }
             connection.query(
-                    "UPDATE friends SET state = 'aceptada' WHERE user = ? AND friend = ?;",
+                    "UPDATE friends SET state = 'aceptada' WHERE user = ? AND friend = ?",
                     [friend, user],
                     (err, rows) => {
                 if (err) {
@@ -119,7 +143,7 @@ class DAOFriends {
                 }
                 connection.release();
                 connection.query(
-                        "INSERT INTO friends (user, friend, state) VALUES (?, ?, 'aceptada');",
+                        "INSERT INTO friends (user, friend, state) VALUES (?, ?, 'aceptada')",
                         [user, friend],
                         (err, rows) => {
                     if (err) {

@@ -90,13 +90,10 @@
 
                             <div class="flexGrow">
 
-                                <form action="/verPerfil" method="POST">
+                                <a href="/verPerfil/<%= result.email %>" class="texto">
+                                    <p class="texto"><%= result.nombre %></p>
+                                </a>
 
-                                    <input value="<%= result.email %>" name="perfil" type="hidden">
-
-                                    <input class="texto" type="submit"  value="<%= result.nombre %>"/>
-
-                                </form>
                             </div>
 
                             <div>
@@ -157,8 +154,6 @@
                             <input class="boton fuentePropia negrita fuenteGrande blanco" type="submit" value="Buscar"/>
                         </div>
 
-
-
                     </form>
 
                 </div>		
@@ -180,13 +175,10 @@
 
                             <div class="flexGrow">
 
-                                <form action="/verPerfil" method="POST">
+                                <a href="/verPerfil/<%= result.email %>" class="texto">
+                                    <p class="texto"><%= result.nombre %></p>
+                                </a>
 
-                                    <input value="<%= result.email %>" name="perfil" type="hidden">
-
-                                    <input class="texto" type="submit"  value="<%= result.nombre %>"/>
-
-                                </form>
                             </div>
 
                         </li>

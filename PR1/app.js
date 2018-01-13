@@ -66,6 +66,15 @@ app.set("views", path.join(__dirname, "views"));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(expressValidator());
 
+//Middelware que comprueba si se esta logeado
+function userLog (request, response, next){
+    
+    if(request.session.UserMail)
+        next();
+    else
+        response.redirect("/");
+}
+
 //Pagina principal
 app.get("/", (request, response) => {
 
@@ -90,10 +99,10 @@ app.get("/index.html", (request, response) => {
 //Login, boton conectar de la pagina index
 app.post("/conectar", (request, response) => {
 
-    let user = request.body.email;
-    let pass = request.body.pass;
-    request.session.UserMail = user;
-    daoU.isUserCorrect(user, pass, (err, callback) => {
+    let userMail = request.body.email;
+    let userPass = request.body.pass;
+
+    daoU.isUserCorrect(userMail, userPass, (err, callback) => {
 
         if (err) {
 
@@ -108,72 +117,31 @@ app.post("/conectar", (request, response) => {
             } else {
 
                 response.status(200);
-                //Imagen usuario
-                daoU.getUserImageName(user, (err, callback) => {
+
+                daoU.getUser(userMail, (err, user) => {
                     if (err) {
                         console.log(err);
                         response.end();
                     } else {
-                        request.session.UserImg = callback;
-                        //Sexo del Usuario
-                        daoU.getUserSex(user, (err, callback) => {
-                            if (err) {
-                                console.log(err);
-                                response.end();
-                            } else {
-                                if (callback === undefined)
-                                    request.session.UserSex = null;
-                                else
-                                    request.session.UserSex = callback;
-                                //Puntos del usuario
-                                daoU.getUserPoints(user, (err, callback) => {
-                                    if (err) {
-                                        console.log(err);
-                                        response.end();
-                                    } else {
-                                        if (callback === undefined)
-                                            request.session.UserPoints = null;
-                                        else
-                                            request.session.UserPoints = callback;
-                                        //Edad del usuario
-                                        daoU.getUserAge(user, (err, callback) => {
-                                            if (err) {
-                                                console.log(err);
-                                                response.end();
-                                            } else {
-                                                if (callback === undefined)
-                                                    request.session.UserAge = null;
-                                                else {
-                                                    request.session.UserDate = callback;
-                                                    request.session.UserAge = getAge(callback);
-                                                    //Nombre del usuario
-                                                    daoU.getUserName(user, (err, callback) => {
-                                                        if (err) {
-                                                            console.log(err);
-                                                            response.end();
-                                                        } else {
-                                                            if (callback === undefined)
-                                                                request.session.UserName = null;
-                                                            else {
-                                                                request.session.UserName = callback;
-                                                                //Renderizar plantilla
 
-                                                                response.locals.UserImg = request.session.UserImg;
-                                                                response.locals.UserPoints = request.session.UserPoints;
-                                                                response.locals.UserName = request.session.UserName;
-                                                                response.locals.UserAge = request.session.UserAge;
-                                                                response.locals.UserSex = request.session.UserSex;
-                                                                response.render("myProfile");
-                                                            }
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        });
-                                    }
-                                });
-                            }
-                        });
+                        request.session.UserMail = user.email;
+                        request.session.UserName = user.nombre;
+                        request.session.UserPass = user.password;
+                        request.session.UserImg = user.img;
+                        request.session.UserSex = user.sexo;
+                        request.session.UserPoints = user.puntuacion;
+                        request.session.UserDate = user.fechaNacimiento;
+                        request.session.UserAge = getAge(user.fechaNacimiento);
+                        
+
+                        //Renderizar plantilla
+                        response.locals.UserImg = request.session.UserImg;
+                        response.locals.UserPoints = request.session.UserPoints;
+                        response.locals.UserName = request.session.UserName;
+                        response.locals.UserAge = request.session.UserAge;
+                        response.locals.UserSex = request.session.UserSex;
+                        response.render("myProfile");
+
                     }
                 });
             }
@@ -208,13 +176,13 @@ app.post("/altaNuevoUsuario", (request, response) => {
                 img: request.body.img,
                 exist: null
             };
+
             //Acotar si se ha añadido la imagen		
             if (user.img === undefined || user.img === '') {
                 user.img = "profile_imgs/NoProfile.png";
             } else {
                 user.img = "/profile_imgs/" + user.img;
             }
-
 
             daoU.existUser(user, (err, callback) => {
 
@@ -233,6 +201,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
                             } else {
 
                                 response.status(200);
+
                                 //Variables para cargar el perfil
                                 request.session.UserName = user.nombre;
                                 request.session.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
@@ -241,6 +210,8 @@ app.post("/altaNuevoUsuario", (request, response) => {
                                 request.session.UserSex = user.sexo;
                                 request.session.UserMail = user.email;
                                 request.session.UserImg = user.img;
+
+                                //Renderizar plantilla
                                 response.locals.UserImg = request.session.UserImg;
                                 response.locals.UserPoints = request.session.UserPoints;
                                 response.locals.UserName = request.session.UserName;
@@ -252,7 +223,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
 
                     } else {
 
-                        let error1 = "El usuario ya esta dado de alta";
+                        let error1 = "Este usuario ya esta dado de alta";
                         //Datos introducidos que se devuelven para no escribirlos de nuevo
                         let usuarioIncorrecto = {
                             email: request.body.email,
@@ -264,9 +235,7 @@ app.post("/altaNuevoUsuario", (request, response) => {
                             exist: error1
                         };
 
-
                         response.render("newUser", {errores: result.mapped(), usuario: usuarioIncorrecto});
-
                     }
                 }
             });
@@ -291,34 +260,40 @@ app.post("/altaNuevoUsuario", (request, response) => {
 });
 
 //Pagina mi perfil
-app.get("/myProfile", (request, response) => {
+app.get("/myProfile", userLog, (request, response) => {
 
     response.status(200);
+
     response.locals.UserImg = request.session.UserImg;
     response.locals.UserPoints = request.session.UserPoints;
     response.locals.UserName = request.session.UserName;
     response.locals.UserAge = request.session.UserAge;
     response.locals.UserSex = request.session.UserSex;
+
     response.render("myProfile");
 });
 
 //Pagina modificar perfil
-app.get("/modificarPerfil", (request, response) => {
+app.get("/modificarPerfil", userLog, (request, response) => {
 
     response.status(200);
+
     response.locals.UserImg = request.session.UserImg;
     response.locals.UserPoints = request.session.UserPoints;
     response.locals.UserName = request.session.UserName;
+    response.locals.UserPass = request.session.UserPass;
     response.locals.UserDate = request.session.UserDate;
     response.locals.UserSex = request.session.UserSex;
+
     response.render("myProfileAdmin", {errores: []});
 });
 
-//Aplicar cambios,boton de la pagina myProfileAdmin
-app.post("/aplicarCambiosPerfil", (request, response) => {
+//Aplicar cambios, boton de la pagina myProfileAdmin
+app.post("/aplicarCambiosPerfil", userLog, (request, response) => {
 
     request.checkBody("nombre", "Nombre de usuario vacío").notEmpty();
     request.checkBody("fechaNacimiento", "Fecha de nacimiento no válida").notEmpty().isBefore();
+
     if (request.body.pass !== "") {
         request.checkBody("pass", "La contraseña debe tener entre 6 y 20 caracteres").notEmpty().isLength({min: 6, max: 20});
     }
@@ -336,89 +311,33 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
                 img: request.body.img
             };
 
-//Acotar si se ha modificado la imagen		
+            //Acotar si se ha modificado la imagen		
             if (user.img === undefined || user.img === '') {
                 user.img = request.session.UserImg;
             } else {
                 user.img = "/profile_imgs/" + user.img;
             }
-//-------------------------------------//   SETERS
 
-            daoU.setName(user, (err, callback) => {
+            daoU.setUser(user, (err, callback) => {
                 if (err) {
                     console.log(err);
                     response.end();
                 } else {
 
                     request.session.UserName = user.nombre;
-                    daoU.setDate(user, (err, callback) => {
-                        if (err) {
-                            console.log(err);
-                            response.end();
-                        } else {
+                    request.session.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
+                    request.session.UserDate = user.fechaNacimiento;
+                    request.session.UserSex = user.sexo;
+                    request.session.UserImg = user.img;
 
-                            request.session.UserAge = getAge(user.fechaNacimiento); //Convetir a edad
-                            request.session.UserDate = user.fechaNacimiento;
-                            daoU.setSex(user, (err, callback) => {
-                                if (err) {
-                                    console.log(err);
-                                    response.end();
-                                } else {
-
-                                    request.session.UserSex = user.sexo;
-                                    daoU.setImage(user, (err, callback) => {
-                                        if (err) {
-                                            console.log(err);
-                                            response.end();
-                                        } else {
-
-                                            request.session.UserImg = user.img;
-                                            if (user.pass !== "") {
-
-                                                daoU.setPassword(user, (err, callback) => {
-                                                    if (err) {
-                                                        console.log(err);
-                                                        response.end();
-                                                    } else
-                                                        response.locals.UserImg = request.session.UserImg;
-                                                    response.locals.UserPoints = request.session.UserPoints;
-                                                    response.locals.UserName = request.session.UserName;
-                                                    response.locals.UserAge = request.session.UserAge;
-                                                    response.locals.UserSex = request.session.UserSex;
-
-                                                    response.render("myProfile");
-                                                });
-
-                                            }
-// FINAL DE IF DE SETPASS		
-                                            else {
-
-                                                response.locals.UserImg = request.session.UserImg;
-                                                response.locals.UserPoints = request.session.UserPoints;
-                                                response.locals.UserName = request.session.UserName;
-                                                response.locals.UserAge = request.session.UserAge;
-                                                response.locals.UserSex = request.session.UserSex;
-                                                response.render("myProfile");
-                                            }
-
-                                        }
-
-                                    });
-// FINAL DE SETIMAGE
-
-                                }
-
-                            });
-//FINAL DE SETSEX							
-                        }
-
-                    });
-
-// FINAL DE SETDATE						
+                    response.locals.UserImg = request.session.UserImg;
+                    response.locals.UserPoints = request.session.UserPoints;
+                    response.locals.UserName = request.session.UserName;
+                    response.locals.UserAge = request.session.UserAge;
+                    response.locals.UserSex = request.session.UserSex;
+                    response.render("myProfile");
                 }
-
-            });
-//FINAL DE SETNAME				
+            });            			
         } else {
 
             //No devolvemos datos introducidos previamente, pueden crear confusion de si estan ya cambiados o no, pero si errores       
@@ -428,7 +347,7 @@ app.post("/aplicarCambiosPerfil", (request, response) => {
 });
 
 //Pagina de amigos
-app.get("/friends", (request, response) => {
+app.get("/friends", userLog, (request, response) => {
 
     //response.status(200);
 
@@ -471,7 +390,7 @@ app.get("/friends", (request, response) => {
 });
 
 //Aceptar, boton de la pagina amigos
-app.post("/aceptarAmistad", (request, response) => {
+app.post("/aceptarAmistad", userLog, (request, response) => {
 
     let amigo = request.body.aceptaAmigo;
     daoF.addFriend(request.session.UserMail, amigo, (err, callback) => {
@@ -488,10 +407,12 @@ app.post("/aceptarAmistad", (request, response) => {
 });
 
 //Rechazar, boton de la pagina amigos
-app.post("/rechazarAmistad", (request, response) => {
+app.post("/rechazarAmistad", userLog, (request, response) => {
 
     let amigo = request.body.rechazarAmigo;
-    daoF.rmRequest(request.session.UserMail, amigo, (err, callback) => {
+    let user = request.session.UserMail;
+
+    daoF.rmRequest(user, amigo, (err, callback) => {
 
         if (err) {
             console.log(err);
@@ -505,7 +426,7 @@ app.post("/rechazarAmistad", (request, response) => {
 });
 
 //Buscar, boton de la pagina amigos
-app.post("/search", (request, response) => {
+app.post("/search/", userLog, (request, response) => {
 
     //Caracteres que se quieren buscar
     let busqueda = {
@@ -537,7 +458,7 @@ app.post("/search", (request, response) => {
 });
 
 //Solicitar, boton solicita amistad de la pagina de resultados de busqueda
-app.post("/solicitarAmistad", (request, response) => {
+app.post("/solicitarAmistad", userLog, (request, response) => {
 
     daoF.addRequest(request.session.UserMail, request.body.solicitudAmigo, (err, callback) => {
 
@@ -553,10 +474,10 @@ app.post("/solicitarAmistad", (request, response) => {
 });
 
 //Ver perfil de solicitantes o amistades
-app.post("/verPerfil", (request, response) => {
+app.get("/verPerfil/:email", userLog, (request, response) => {
 
     let user = {
-        mail: request.body.perfil,
+        mail: request.params.email,
         nombre: null,
         edad: null,
         sexo: null,
@@ -564,79 +485,35 @@ app.post("/verPerfil", (request, response) => {
         img: null
     };
 
-//Imagen usuario
-    daoU.getUserImageName(user.mail, (err, callback) => {
+    //Imagen usuario
+    daoU.getUser(user.mail, (err, callback) => {
         if (err) {
             console.log(err);
             response.end();
         } else {
-            user.img = callback;
-            //Sexo del Usuario
-            daoU.getUserSex(user.mail, (err, callback) => {
-                if (err) {
-                    console.log(err);
-                    response.end();
-                } else {
-                    if (callback === undefined)
-                        user.sexo = null;
-                    else
-                        user.sexo = callback;
-                    //Puntos del usuario
-                    daoU.getUserPoints(user.mail, (err, callback) => {
-                        if (err) {
-                            console.log(err);
-                            response.end();
-                        } else {
-                            if (callback === undefined)
-                                user.puntos = null;
-                            else
-                                user.puntos = callback;
-                            //Edad del usuario
-                            daoU.getUserAge(user.mail, (err, callback) => {
-                                if (err) {
-                                    console.log(err);
-                                    response.end();
-                                } else {
-                                    if (callback === undefined)
-                                        user.edad = null;
-                                    else {
 
-                                        user.edad = getAge(callback);
-                                        //Nombre del usuario
-                                        daoU.getUserName(user.mail, (err, callback) => {
-                                            if (err) {
-                                                console.log(err);
-                                                response.end();
-                                            } else {
-                                                if (callback === undefined)
-                                                    user.nombre = null;
-                                                else {
-                                                    user.nombre = callback;
-                                                    //Renderizar plantilla
+            user.img = callback.img;
+            user.sexo = callback.sexo;
+            user.puntos = callback.puntos;
+            user.edad = getAge(callback.fechaNacimiento);
+            user.nombre = callback.nombre;
+            
+            //Renderizar plantilla
 
-                                                    response.locals.UserImg = request.session.UserImg;
-                                                    response.locals.UserPoints = request.session.UserPoints;
-                                                    response.render("otherProfile", {user: user});
-                                                }
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-                        }
-                    });
+            response.locals.UserImg = request.session.UserImg;
+            response.locals.UserPoints = request.session.UserPoints;
 
-                }
-            });
+            response.render("otherProfile", {user: user});         
         }
     });
 
 });
 
 //Pagina de preguntas
-app.get("/questions", (request, response) => {
+app.get("/questions", userLog, (request, response) => {
 
     let user = request.session.UserMail;
+
     daoQ.getUserNoAnsweredQuestions(user, (err, listaPreguntas) => {
         if (err) {
             console.log(err);
@@ -659,7 +536,7 @@ app.get("/questions", (request, response) => {
     });
 });
 
-app.post("/addNewQuestion", (request, response) => {
+app.post("/addNewQuestion", userLog, (request, response) => {
 
     let textRespuestas = request.body.respuestas;
     let pregunta = {
@@ -680,10 +557,11 @@ app.post("/addNewQuestion", (request, response) => {
 
 });
 
-app.post("/verPregunta", (request, response) => {
+app.get("/verPregunta/:id_pregunta", userLog, (request, response) => {
 
-    let id_pregunta = request.body.id_pregunta;
+    let id_pregunta = request.params.id_pregunta;
     let user = request.session.UserMail;
+
     daoQ.getQuestion(id_pregunta, (err, pregunta) => {
         if (err) {
             console.log(err);
@@ -727,9 +605,10 @@ app.post("/verPregunta", (request, response) => {
     });
 });
 
-app.post("/responderPregunta", (request, response) => {
+app.get("/responderPregunta/:id_pregunta", userLog, (request, response) => {
 
-    let id_pregunta = request.body.id_pregunta;
+    let id_pregunta = request.params.id_pregunta;
+
     daoQ.getQuestionWAnswers(id_pregunta, (err, respuestas) => {
         if (err) {
             console.log(err);
@@ -756,11 +635,12 @@ app.post("/responderPregunta", (request, response) => {
     });
 });
 
-app.post("/confirmarRespuesta", (request, response) => {
+app.post("/confirmarRespuesta", userLog, (request, response) => {
 
     let id_pregunta = request.body.id_pregunta;
     let id_respuesta = request.body.id_respuesta;
     let user = request.session.UserMail;
+
     //Si el usuario a introducido una nueva respuesta
     if (id_respuesta === "otra") {
 
@@ -796,7 +676,7 @@ app.post("/confirmarRespuesta", (request, response) => {
                                 response.locals.UserImg = request.session.UserImg;
                                 response.locals.UserPoints = request.session.UserPoints;
 
-//Renderizar plantilla
+                                //Renderizar plantilla
                                 response.render("questionView", {pregunta: pregunta, respuesta: respuesta, listaRespuestasAmigos: listaRespuestasAmigos});
 
                             }
@@ -844,7 +724,7 @@ app.post("/confirmarRespuesta", (request, response) => {
                                         response.locals.UserImg = request.session.UserImg;
                                         response.locals.UserPoints = request.session.UserPoints;
 
-//Renderizar plantilla
+                                        //Renderizar plantilla
                                         response.render("questionView", {pregunta: pregunta, respuesta: respuesta, listaRespuestasAmigos: listaRespuestasAmigos});
 
                                     }
@@ -865,19 +745,22 @@ app.post("/confirmarRespuesta", (request, response) => {
 app.get("/logOut", (request, response) => {
 
     response.status(200);
+
     request.session.destroy();
+
     response.redirect("/index");
 });
 
 //Añadir pregunta interfaz
-app.get("/addQuestion", (request, response) => {
+app.get("/addQuestion", userLog, (request, response) => {
 
     response.status(200);
+
     response.locals.UserImg = request.session.UserImg;
     response.locals.UserPoints = request.session.UserPoints;
     response.locals.UserName = request.session.UserName;
-    response.render("addQuestion", {errors: null});
 
+    response.render("addQuestion", {errors: null});
 });
 
 //Recibe una fecha como parametro y devuelve la edad

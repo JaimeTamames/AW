@@ -81,14 +81,9 @@
 
                 <p class="fuenteMedia"> No has contestado a esta pregunta.</p>
 
-                <form action="/responderPregunta" method="POST">
-
-
-                    <input value="<%= pregunta.id_pregunta %>" name="id_pregunta" type="hidden">
-
+                <a href="/responderPregunta/<%= pregunta.id_pregunta %>" class="texto">
                     <input class="boton fuentePropia negrita fuenteGrande blanco espacioArriba" type="submit"  value="Responder pregunta"/>
-
-                </form>
+                </a>
 
                 <% }else{ %>
 
@@ -115,13 +110,9 @@
 
                             <div class="flexGrow">
 
-                                <form action="/verPerfil" method="POST">
-
-                                    <input value="<%= result.email %>" name="perfil" type="hidden">
-
-                                    <input class="texto" type="submit"  value="<%= result.nombre %>"/>
-
-                                </form>
+                                <a href="/verPerfil/<%= result.email %>" class="texto">
+                                    <p class="texto"><%= result.nombre %></p>
+                                </a>
 
                             </div>
 

@@ -40,9 +40,9 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT *" +
-                    " FROM user" +
-                    " WHERE email = ? AND password = ?",
+                    "SELECT * " +
+                    "FROM user " +
+                    "WHERE email = ? AND password = ?",
                     [email, password],
                     (err, rows) => {
                 if (err) {
@@ -57,6 +57,43 @@ class DAOUsers {
                 }
             }
             );
+        });
+    }
+
+    /**
+     * Obtiene datos de un usuario.
+     * 
+     * Es una operación asíncrona, de modo que se llamará a la función callback
+     * pasando, por un lado, el objeto Error (si se produce, o null en caso contrario)
+     * y, por otro lado, una cadena con el nombre de la imagen de perfil (o undefined
+     * en caso de producirse un error).
+     * 
+     * @param {string} email Identificador del usuario cuyas datos se quieren obtener
+     * @param {function} callback Función que recibirá el objeto error y el resultado
+     */
+    getUser(email, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                "SELECT email, nombre, password, img, sexo, puntuacion, fechaNacimiento " +
+                "FROM user " +
+                "WHERE email = ?",
+                    [email],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0]);
+                }
+            });
         });
     }
 
@@ -77,7 +114,10 @@ class DAOUsers {
                 callback(err);
                 return;
             }
-            connection.query("SELECT img FROM user WHERE email = ?",
+            connection.query(
+                    "SELECT img " +
+                    "FROM user " +
+                    "WHERE email = ?",
                     [email],
                     (err, rows) => {
                 if (err) {
@@ -103,8 +143,8 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT sexo" +
-                    " FROM user" +
+                    "SELECT sexo " +
+                    " FROM user " +
                     " WHERE email = ?",
                     [email],
                     (err, rows) => {
@@ -132,8 +172,8 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT fechaNacimiento" +
-                    " FROM user" +
+                    "SELECT fechaNacimiento " +
+                    " FROM user " +
                     " WHERE email = ?",
                     [email],
                     (err, rows) => {
@@ -161,8 +201,8 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT puntuacion" +
-                    " FROM user" +
+                    "SELECT puntuacion " +
+                    " FROM user " +
                     " WHERE email = ?",
                     [email],
                     (err, rows) => {
@@ -190,8 +230,8 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "SELECT nombre" +
-                    " FROM user" +
+                    "SELECT nombre " +
+                    " FROM user " +
                     " WHERE email = ?",
                     [email],
                     (err, rows) => {
@@ -219,9 +259,35 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "INSERT INTO user (email, password, nombre, sexo, puntuacion, fechaNacimiento, img)" +
+                    "INSERT INTO user (email, password, nombre, sexo, puntuacion, fechaNacimiento, img) " +
                     "VALUES (?, ?, ?, ?, ?, ?, ?)",
                     [user.email, user.pass, user.nombre, user.sexo, 0, user.fechaNacimiento, user.img],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+
+                    connection.release();
+                    callback(null, undefined);
+                }
+            }
+            );
+        });
+    }
+
+    //Cambia los datos de un usuario con los campos validados
+    setUser(user, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE user SET password = ?, nombre = ?, sexo = ?, fechaNacimiento = ?, img = ? " +
+                    "WHERE email = ?",
+                    [user.pass, user.nombre, user.sexo, user.fechaNacimiento, user.img, user.email],
                     (err, result) => {
                 if (err) {
                     callback(err);
@@ -246,7 +312,7 @@ class DAOUsers {
             connection.query(
                     "UPDATE user SET " +
                     "password = ? " +
-                    "WHERE email = ?;",
+                    "WHERE email = ?",
                     [user.pass, user.email],
                     (err, result) => {
                 if (err) {
@@ -271,7 +337,7 @@ class DAOUsers {
             connection.query(
                     "UPDATE user SET " +
                     "img = ? " +
-                    "WHERE email = ?;",
+                    "WHERE email = ?",
                     [user.img, user.email],
                     (err, result) => {
                 if (err) {
@@ -297,7 +363,7 @@ class DAOUsers {
             connection.query(
                     "UPDATE user SET " +
                     "nombre = ? " +
-                    "WHERE email = ?;",
+                    "WHERE email = ?",
                     [user.nombre, user.email],
                     (err, result) => {
                 if (err) {
@@ -321,8 +387,8 @@ class DAOUsers {
             }
             connection.query(
                     "UPDATE user SET " +
-                    "sexo = ?" +
-                    "WHERE email = ?;",
+                    "sexo = ? " +
+                    "WHERE email = ?",
                     [user.sexo, user.email],
                     (err, result) => {
                 if (err) {
@@ -346,8 +412,8 @@ class DAOUsers {
             }
             connection.query(
                     "UPDATE user SET " +
-                    "fechaNacimiento = ?" +
-                    "WHERE email = ?;",
+                    "fechaNacimiento = ? " +
+                    "WHERE email = ?",
                     [user.fechaNacimiento, user.email],
                     (err, result) => {
                 if (err) {
@@ -372,7 +438,7 @@ class DAOUsers {
             connection.query(
                     "SELECT DISTINCT  user.email AS email, user.nombre AS nombre, user.img AS img,  friends.state AS state " +
                     "FROM user left JOIN friends ON user.email = friends.friend AND friends.user = ? " +
-                    "WHERE user.nombre LIKE ?;",
+                    "WHERE user.nombre LIKE ?",
                     [user, char],
                     (err, rows) => {
                 if (err) {
@@ -401,7 +467,7 @@ class DAOUsers {
             connection.query(
                     "SELECT email " +
                     "FROM user " +
-                    "WHERE email = ? ;",
+                    "WHERE email = ?",
                     [user.email],
                     (err, rows) => {
                 if (err) {

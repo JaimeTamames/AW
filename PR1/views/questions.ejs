@@ -83,13 +83,9 @@
 
                     <% listaPreguntas.forEach(result => { %>
 
-                    <form action="/verPregunta" method="POST">
-
-                        <input value="<%= result.id_pregunta %>" name="id_pregunta" type="hidden">
-
-                        <input class="pregunta" type="submit"  value="<%= result.preguntas %>"/>
-
-                    </form>
+                    <a href="/verPregunta/<%= result.id_pregunta %>" class="texto">
+                        <p class="texto"><%= result.preguntas %></p>
+                    </a>
 
                     <% }); %>
                     <% }else{ %>
@@ -106,7 +102,7 @@
                     <p class="fuentePropia negrita fuenteGrande">¡Añade tus preguntas!</p>
                 </div>
 
-                <form action="/addQuestion:" method="GET" class="registroPost">
+                <form action="/addQuestion:" method="POST" class="registroPost">
 
                     <div>
 

@@ -90,13 +90,9 @@
 
                             <div class="flexGrow">
 
-                                <form action="/verPerfil" method="POST">
-
-                                    <input value="<%= result.email %>" name="perfil" type="hidden">
-
-                                    <input class="texto" type="submit"  value="<%= result.nombre %>"/>
-
-                                </form>
+                                <a href="/verPerfil/<%= result.email %>" class="texto">
+                                    <p class="texto"><%= result.nombre %></p>
+                                </a>
 
                             </div>
 
