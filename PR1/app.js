@@ -30,6 +30,7 @@ const middlewareSession = express_session({
     resave: false,
     store: sessionStore
 });
+
 app.use(middlewareSession);
 
 let pool = mysql.createPool({

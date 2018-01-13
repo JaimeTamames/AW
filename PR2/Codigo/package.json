@@ -1,0 +1,24 @@
+{
+  "name": "pr2-aw",
+  "version": "1.0.0",
+  "description": "Practica 2",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "private": true,
+  "keywords": [
+    "aplicaciones",
+    "web",
+    "practica 2"
+  ],
+  "author": "Manuel Montenegro",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.1",
+    "express": "^4.15.4",
+    "express-mysql-session": "^1.2.3",
+    "express-session": "^1.15.6",
+    "mysql": "^2.15.0"
+  }
+}

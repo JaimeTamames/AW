@@ -1,0 +1,178 @@
+@charset "UTF-8";
+/* CSS Document */
+
+body{
+
+    margin: 0px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.header{
+
+    background-color: #354248;
+    width: 100%;
+    height: 60px;
+
+    color: white;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+}
+
+.header>label{
+
+    margin: 20px;
+}
+
+.bienvenido{
+
+    background-color: #e0e0e0;
+    width: 100%;
+    height: 200px;
+
+    color: #354248;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    border-radius: 10px;
+}
+
+.bienvenido>label{
+
+    font-size: 50px;
+    margin: 40px;
+
+    flex-grow: 1;
+}
+
+.bienvenido>img{
+
+    height: 260px;
+    margin: 20px;
+}
+
+.login{
+
+    background-color: #354248;
+    width: 50%;
+    height: 300px;
+
+    color: white;
+
+    display: flex;
+    flex-direction: column;
+    align-items: left;   
+
+    justify-content: space-between;
+    
+    padding: 40px;
+    margin: 20px;
+
+    border-radius: 10px;
+}
+
+.login>form{
+
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+
+    justify-content: space-between;
+
+    height: 100%;
+    width: 100%;
+}
+
+.login>form>input{
+
+    width: 100%;
+    height: 30px;
+    border-radius: 5px;
+
+    padding: 5px;
+}
+
+.boton{
+
+    background-color:#0b59e1;
+    color: white;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-color: #0b59e1;
+    border-radius: 5px;
+
+    height: 40px;
+
+    cursor: pointer;
+
+}
+
+.boton:hover{
+
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-color: white;
+}
+
+.boton:active {
+
+    transform: translateY(2px);
+}
+
+.boton2{
+
+    background-color:#354248;
+    color: #7a7d7e;
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-color: #7a7d7e;
+    border-radius: 5px;
+
+    height: 40px;
+
+    cursor: pointer;
+
+}
+
+.boton2:hover{
+
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-color: white;
+}
+
+.boton2:active {
+
+    transform: translateY(2px);
+}
+
+.fuenteGrande{
+
+    font-size: 30px;
+}
+
+.fuenteMedia{
+
+    font-size: 20px;
+}
+
+.fuentePequeña {
+
+    font-size: 15px;
+}
