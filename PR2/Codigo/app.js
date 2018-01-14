@@ -101,6 +101,13 @@ app.get("/login", (request, response) => {
     var usuario = request.query.usuario;
     var contraseña = request.query.contraseña;
 
+<<<<<<< HEAD
+=======
+=======
+    console.log(usuario + " " + contraseña);
+>>>>>>> 0c918476353a184c086a42e2f758303c6481f020
+
+>>>>>>> e9d8cba142a67078143cd86f0d86e9a7ec823aee
     daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
         if (err) {
