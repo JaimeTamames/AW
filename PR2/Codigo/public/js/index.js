@@ -10,23 +10,23 @@ $(document).ready(() => {
         $.ajax({
             type: 'GET',
             url: '/login',
-<<<<<<< HEAD
-=======
-            
->>>>>>> 0c918476353a184c086a42e2f758303c6481f020
+            beforeSend: (req) => {
+                req.setRequestHeader("Authorization", "Basic " + btoa(usuario + ":" + contraseña));
+            },
             data: {
                 usuario: usuario,
                 contraseña: contraseña,
             },
-            success: (data) => {
+            success: (data, state, jqXRH) => {
                 
                 $("#login").hide();
                 $("#bienvenido").hide();
                 $("#sesion").show();
             },
-            error: (data) =>{
+            error: (jqXHR, textStatus, errorThrown) =>{
 
-                alert("nope");
+                alert("Datos introducidos incorrectos");
+                alert(errorThrown);
             }
         });
 

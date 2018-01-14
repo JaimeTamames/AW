@@ -52,7 +52,7 @@ app.use(passport.initialize());
 passport.use(new passportHTTP.BasicStrategy(
     { realm: 'Autenticacion' },
     (user, pass, callback) => {
-        if (user === "manuel" && pass === "123456") {
+        if (user === "ruben" && pass === "mipass") {
             callback(null, { userId: "Manuel" });
         } else {
             callback(null, false);
@@ -81,16 +81,12 @@ app.get("/", (request, response) => {
     response.redirect("/index.html");
 });
 
-app.get("/login", (request, response) => {
+app.get("/login", passport.authenticate('basic', {session: false}), (request, response) => {
 
     var usuario = request.query.usuario;
     var contraseña = request.query.contraseña;
 
-<<<<<<< HEAD
-    console.log(usuario + " " + contraseña)
-=======
     console.log(usuario + " " + contraseña);
->>>>>>> 0c918476353a184c086a42e2f758303c6481f020
 
     daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
@@ -116,7 +112,7 @@ app.get("/login", (request, response) => {
     });
 });
 
-app.get("/protegido", passport.authenticate('basic', {session: false}), (request, response) => {
+app.get("/protegido", passport.authenticate('basic', {session: true}), (request, response) => {
         response.json({permitido: true});
 
 });
@@ -124,7 +120,7 @@ app.get("/protegido", passport.authenticate('basic', {session: false}), (request
 //Declaracion del middelware para las paginas no encontradas
 app.use((request, response, next) => {
     response.status(404);
-    response.end("Not found: " + request.url);
+    response.redirect("/notFound.html");
 });
 
 //Estado del servidor
