@@ -96,7 +96,6 @@ app.get("/", (request, response) => {
     response.redirect("/index.html");
 });
 
-app.get("/login", (request, response) => {
 
     var usuario = request.query.usuario;
     var contraseña = request.query.contraseña;
@@ -169,7 +168,7 @@ app.get("/protegido", passport.authenticate('basic', {session: false}), (request
 //Declaracion del middelware para las paginas no encontradas
 app.use((request, response, next) => {
     response.status(404);
-    response.end("Not found: " + request.url);
+    response.redirect("/notFound.html");
 });
 
 //Estado del servidor
