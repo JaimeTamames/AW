@@ -8,13 +8,13 @@ $(document).ready(() => {
         let contraseña = $("#contraseñaUsuario").val();
 
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: '/login',
-            contentType: 'application/json',
-            data: JSON.stringify({
+            
+            data: {
                 usuario: usuario,
                 contraseña: contraseña,
-            }),
+            },
             success: (data) => {
 
                 $("#p").text(data.user);
@@ -23,6 +23,10 @@ $(document).ready(() => {
                 $("#login").hide();
                 $("#bienvenido").hide();
                 $("#sesion").show();
+            },
+            error: (data) =>{
+
+                alert("nope");
             }
         });
 
