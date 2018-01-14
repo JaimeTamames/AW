@@ -64,10 +64,12 @@ app.get("/", (request, response) => {
     response.redirect("/index.html");
 });
 
-app.post("/login", (request, response) => {
+app.get("/login", (request, response) => {
 
     var usuario = request.query.usuario;
     var contraseña = request.query.contraseña;
+
+    console.log(usuario + " " + contraseña)
 
     daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
