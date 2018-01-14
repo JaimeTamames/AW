@@ -10,6 +10,10 @@ $(document).ready(() => {
         $.ajax({
             type: 'GET',
             url: '/login',
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 0c918476353a184c086a42e2f758303c6481f020
             data: {
                 usuario: usuario,
                 contraseña: contraseña,
@@ -19,6 +23,10 @@ $(document).ready(() => {
                 $("#login").hide();
                 $("#bienvenido").hide();
                 $("#sesion").show();
+            },
+            error: (data) =>{
+
+                alert("nope");
             }
         });
 

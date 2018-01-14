@@ -12,6 +12,9 @@ const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
 const MySQLStore = express_mysql_session(express_session);
 
+var passport = require("passport");
+var passportHTTP = require("passport-http");
+
 let app = express();
 
 //Configuracion de la BBDD
@@ -43,6 +46,20 @@ const middlewareSession = express_session({
 });
 app.use(middlewareSession);
 
+//Middelware passport
+app.use(passport.initialize());
+
+passport.use(new passportHTTP.BasicStrategy(
+    { realm: 'Autenticacion' },
+    (user, pass, callback) => {
+        if (user === "manuel" && pass === "123456") {
+            callback(null, { userId: "Manuel" });
+        } else {
+            callback(null, false);
+        }
+    }
+));
+
 //Ficheros estaticos
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -69,7 +86,11 @@ app.get("/login", (request, response) => {
     var usuario = request.query.usuario;
     var contraseña = request.query.contraseña;
 
+<<<<<<< HEAD
     console.log(usuario + " " + contraseña)
+=======
+    console.log(usuario + " " + contraseña);
+>>>>>>> 0c918476353a184c086a42e2f758303c6481f020
 
     daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
@@ -93,6 +114,11 @@ app.get("/login", (request, response) => {
             }
         }
     });
+});
+
+app.get("/protegido", passport.authenticate('basic', {session: false}), (request, response) => {
+        response.json({permitido: true});
+
 });
 
 //Declaracion del middelware para las paginas no encontradas
