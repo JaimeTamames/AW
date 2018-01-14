@@ -6,43 +6,47 @@
     <title>Juego del mentiroso</title>
     <meta charset="utf8">
     <link rel="stylesheet" href="css/index.css" media="screen">
-    <script src="js/jquery-3.2.1.min.js"></script>
+    <script src="jquery/jquery-3.1.1.min.js"></script>
     <script src="js/index.js"></script>
 </head>
 
 <body>
     <div class="header fuenteMedia">
-        <label>Juego del mentiroso</label>
+
+        <label id="nombreJuego">Juego del mentiroso</label>
+
+        <div id="sesion">
+            
+            <label id="nombreUsuario"></label>
+            <button class="boton fuenteMedia" id="desconectarSesion">Desconectar</button>
+
+        </div>   
+
     </div>
 
-    <div class="bienvenido">
+    <div class="bienvenido" id="bienvenido">
         <label>¡Bienvenido!</label>
 
         <img src="img/ImagenPortada.png">
 
     </div> 
 
-    <div class="login">
-
-        <form action="/conectar" method="POST">
+    <div id="login">
 
             <label class="fuenteGrande">Identificarse</label>
             <label class="fuenteMedia">Nombre de usuario:</label>
-            <input class="fuenteMedia" name="nombre" type="text" placeholder="Introduce nombre">
+            <input class="fuenteMedia" id="nombreUsuario" type="text" placeholder="Introduce nombre">
             <label class="fuenteMedia">Contraseña:</label>
-            <input class="fuenteMedia" name="contraseña" type="password" placeholder="Introduce contraseña">
+            <input class="fuenteMedia" id="contraseñaUsuario" type="password" placeholder="Introduce contraseña">
 
             <div>
                 <span>
-                    <input class="boton fuenteMedia" type="submit" value="Aceptar"/>
+                    <button class="boton fuenteMedia" id="aceptarLogin">Aceptar</button>
                 </span>
                 <span>
-                    <input class="boton2 fuenteMedia" type="submit" value="Nuevo usuario"/>
+                    <button class="boton2 fuenteMedia" id="nuevoUsuario">Nuevo usuario</button>
                 </span>
             </div>
-
-        </form>
-
     </div>
 
 

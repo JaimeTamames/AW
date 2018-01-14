@@ -7,6 +7,7 @@ const path = require("path");
 const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const config = require("./config");
+const daoUsers = require("./dao_users_jm");
 const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
 const MySQLStore = express_mysql_session(express_session);
@@ -30,6 +31,9 @@ let pool = mysql.createPool({
     password: config.mysqlConfig.dbPassword
 });
 
+//DAOs
+let daoU = new daoUsers.DAOUsers(pool);
+
 //Middleware sesion
 const middlewareSession = express_session({
     saveUninitialized: false,
@@ -39,31 +43,11 @@ const middlewareSession = express_session({
 });
 app.use(middlewareSession);
 
-//Estado del servidor
-app.listen(config.mysqlConfig.port, function (err) {
-    if (err) {
-        console.log("No se ha podido iniciar el servidor.");
-        console.log(err);
-    } else {
-        console.log(`Servidor escuchando en puerto ${config.mysqlConfig.port}.`);
-    }
-});
-
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
 //Ficheros estaticos
-const ficherosEstaticos = path.join(__dirname, "public");
-app.use(express.static(ficherosEstaticos));
+app.use(express.static(path.join(__dirname, "public")));
 
 //Declaracion del middelware bodyParser para obtener el contenido de la peticion post
 app.use(bodyParser.urlencoded({extended: false}));
-
-//Declaracion del middelware para las paginas no encontradas
-app.use((request, response, next) => {
-    response.status(404);
-    response.end("Not found: " + request.url);
-});
 
 //Middelware que comprueba si se esta logeado
 function userLog (request, response, next){
@@ -75,5 +59,51 @@ function userLog (request, response, next){
 }
 
 app.get("/", (request, response) => {
-    response.redirect("/main.html");
+    response.redirect("/index.html");
+});
+
+app.get("/login", (request, response) => {
+
+    var usuario = request.query.usuario;
+    var contraseña = request.query.contraseña;
+
+    console.log(usuario + "_" + contraseña);
+
+    daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else {
+
+            if (!callback) {
+
+                response.status(400);
+                response.end("Este usuario no existe");
+
+            } else {
+
+                response.status(200);
+                console.log("Bien");
+
+            }
+        }
+    });
+});
+
+//Declaracion del middelware para las paginas no encontradas
+app.use((request, response, next) => {
+    response.status(404);
+    response.end("Not found: " + request.url);
+});
+
+//Estado del servidor
+app.listen(config.mysqlConfig.port, function (err) {
+    if (err) {
+        console.log("No se ha podido iniciar el servidor.");
+        console.log(err);
+    } else {
+        console.log(`Servidor escuchando en puerto ${config.mysqlConfig.port}.`);
+    }
 });
