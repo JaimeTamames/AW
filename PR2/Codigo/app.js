@@ -52,11 +52,26 @@ app.use(passport.initialize());
 passport.use(new passportHTTP.BasicStrategy(
     { realm: 'Autenticacion' },
     (user, pass, callback) => {
-        if (user === "manuel" && pass === "123456") {
-            callback(null, { userId: "Manuel" });
-        } else {
-            callback(null, false);
-        }
+
+        daoU.usuarioCorrecto(user, pass, (err, callback) => {
+
+            if (err) {
+    
+                console.log(err);
+                response.end();
+            } else {
+    
+                if (!callback) {
+    
+                    response.status(400);
+                    response.end("Este usuario no existe");
+    
+                } else {
+    
+                    response.status(200);
+                }
+            }
+        });
     }
 ));
 
@@ -86,8 +101,6 @@ app.get("/login", (request, response) => {
     var usuario = request.query.usuario;
     var contraseña = request.query.contraseña;
 
-    console.log(usuario + " " + contraseña);
-
     daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
         if (err) {
@@ -112,8 +125,37 @@ app.get("/login", (request, response) => {
     });
 });
 
+app.get("/nuevoUsuario", (request, response) => {
+
+    var usuario = request.query.usuario;
+    var contraseña = request.query.contraseña;
+
+    daoU.nuevoUsuario(usuario, contraseña, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else {
+
+            if (!callback) {
+
+                response.status(400);
+                response.end("Este usuario no existe");
+
+            } else {
+
+                response.status(201);
+
+            }
+        }
+    });
+});
+
 app.get("/protegido", passport.authenticate('basic', {session: false}), (request, response) => {
         response.json({permitido: true});
+
+        console.log("Hola");
 
 });
 

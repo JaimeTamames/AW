@@ -10,26 +10,45 @@ $(document).ready(() => {
         $.ajax({
             type: 'GET',
             url: '/login',
-            
             data: {
                 usuario: usuario,
                 contraseña: contraseña,
             },
             success: (data) => {
 
-                $("#p").text(data.user);
-                $("#p").before($("<p>").text("hola"));
-
                 $("#login").hide();
                 $("#bienvenido").hide();
                 $("#sesion").show();
+                
             },
             error: (data) =>{
 
-                alert("nope");
             }
         });
 
     });
 
+    $("#nuevoUsuario").on("click", () => {
+
+        let usuario = $("#nombreUsuario").val();
+        let contraseña = $("#contraseñaUsuario").val();
+
+        $.ajax({
+            type: 'GET',
+            url: '/nuevoUsuario',  
+            data: {
+                usuario: usuario,
+                contraseña: contraseña,
+            },
+            success: (data) => {
+
+                document.getElementById("mensaje").innerHTML = "El usuario ha sido creado correctamente, puede loguearse!";
+                
+            },
+            error: (data) =>{
+
+            }
+        });
+
+    });
 });

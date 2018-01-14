@@ -249,8 +249,8 @@ class DAOUsers {
         });
     }
 
-    //Añade un usuario con los campos validados
-    addUser(user, callback) {
+    //Añade un usuario
+    nuevoUsuario(usuario, contraseña, callback) {
 
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -258,9 +258,9 @@ class DAOUsers {
                 return;
             }
             connection.query(
-                    "INSERT INTO user (email, password, nombre, sexo, puntuacion, fechaNacimiento, img) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?)",
-                    [user.email, user.pass, user.nombre, user.sexo, 0, user.fechaNacimiento, user.img],
+                    "INSERT INTO usuarios (login, password) " +
+                    "VALUES (?, ?)",
+                    [usuario, contraseña],
                     (err, result) => {
                 if (err) {
                     callback(err);
