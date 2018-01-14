@@ -4,19 +4,21 @@ $(document).ready(() => {
 
     $("#aceptarLogin").on("click", () => {
 
-        alert('$("#nombreUsuario").val()');
-    
         let usuario = $("#nombreUsuario").val();
         let contraseña = $("#contraseñaUsuario").val();
-        
+
         $.ajax({
-            type: 'GET',
+            type: 'POST',
             url: '/login',
-            data: {
+            contentType: 'application/json',
+            data: JSON.stringify({
                 usuario: usuario,
                 contraseña: contraseña,
-            },
-            success: (data, textStatus, jqXHR) => {
+            }),
+            success: (data) => {
+
+                $("#p").text(data.user);
+                $("#p").before($("<p>").text("hola"));
 
                 $("#login").hide();
                 $("#bienvenido").hide();

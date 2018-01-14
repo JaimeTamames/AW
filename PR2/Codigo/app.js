@@ -49,6 +49,8 @@ app.use(express.static(path.join(__dirname, "public")));
 //Declaracion del middelware bodyParser para obtener el contenido de la peticion post
 app.use(bodyParser.urlencoded({extended: false}));
 
+app.use(bodyParser.json());
+
 //Middelware que comprueba si se esta logeado
 function userLog (request, response, next){
     
@@ -62,12 +64,10 @@ app.get("/", (request, response) => {
     response.redirect("/index.html");
 });
 
-app.get("/login", (request, response) => {
+app.post("/login", (request, response) => {
 
     var usuario = request.query.usuario;
     var contraseña = request.query.contraseña;
-
-    console.log(usuario + "_" + contraseña);
 
     daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
@@ -85,7 +85,8 @@ app.get("/login", (request, response) => {
             } else {
 
                 response.status(200);
-                console.log("Bien");
+                var user = usuario;
+                response.json({"result": user });
 
             }
         }
