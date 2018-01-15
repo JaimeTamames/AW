@@ -30,12 +30,14 @@ nav {
     overflow:hidden;
     padding:10px;
     width:100%;
+	display: none;
 }
 
 nav ul{
     list-style:none;
     margin:0 10px 0 10px;
-    padding:0;
+    padding:0;	
+	display: none;
 }
 
 nav ul li{
@@ -44,14 +46,14 @@ nav ul li{
     margin-right:25px;
 	margin-left:15px;
     text-align:center;
-	color:clear-blue;
-    
+	color:clear-blue;    
+	display: none;
 	
 }
 
 nav ul li:hover{
     
-    font-weight: bold;
+    font-weight: bold;	
 	
 }
 
@@ -68,7 +70,8 @@ nav ul li:hover{
     display: flex;
     flex-direction: row;
     align-items: center;
-	border-bottom: 2px solid black;	
+	border-bottom: 2px solid black;		
+	display: none;
 	
 }
 
