@@ -50,10 +50,10 @@ app.use(middlewareSession);
 app.use(passport.initialize());
 
 passport.use(new passportHTTP.BasicStrategy(
-    { realm: 'Autenticacion' },
-    (user, pass, callback) => {
+    { realm: 'Autenticacion requerida' },
+    function(user, pass, callback) {
 
-        daoU.usuarioCorrecto(user, pass, (err, callback) => {
+        daoU.usuarioCorrecto(user, pass, (err, ok) => {
 
             if (err) {
     
@@ -61,14 +61,13 @@ passport.use(new passportHTTP.BasicStrategy(
                 response.end();
             } else {
     
-                if (!callback) {
-    
-                    response.status(400);
-                    response.end("Este usuario no existe");
+                if (!ok) {
+
+                    callback(null, false);
     
                 } else {
     
-                    response.status(200);
+                    callback(null, { userId: user });
                 }
             }
         });
@@ -83,23 +82,14 @@ app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(bodyParser.json());
 
-//Middelware que comprueba si se esta logeado
-function userLog (request, response, next){
-    
-    if(request.session.UserMail)
-        next();
-    else
-        response.redirect("/");
-}
-
 app.get("/", (request, response) => {
     response.redirect("/index.html");
 });
 
-app.get("/login", (request, response) => {
+app.post("/login", function(request, response) {
 
-    var usuario = request.query.usuario;
-    var contraseña = request.query.contraseña;
+    var usuario = request.body.usuario;
+    var contraseña = request.body.contraseña;
 
     daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
@@ -125,10 +115,10 @@ app.get("/login", (request, response) => {
     });
 });
 
-app.get("/nuevoUsuario", (request, response) => {
+app.get("/nuevoUsuario", function(request, response) {
 
-    var usuario = request.query.usuario;
-    var contraseña = request.query.contraseña;
+    var usuario = request.body.usuario;
+    var contraseña = request.body.contraseña;
 
     daoU.nuevoUsuario(usuario, contraseña, (err, callback) => {
 
@@ -152,10 +142,10 @@ app.get("/nuevoUsuario", (request, response) => {
     });
 });
 
-app.get("/protegido", passport.authenticate('basic', {session: false}), (request, response) => {
-        response.json({permitido: true});
-
-        console.log("Hola");
+app.get("/desconectar", passport.authenticate('basic', { failureRedirect: '/',failureFlash: true, session: false}), 
+        function(request, response) {
+    
+    console.log("Hola");
 
 });
 
