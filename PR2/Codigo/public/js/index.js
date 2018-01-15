@@ -75,11 +75,13 @@ function nuevoUsuario(){
             usuario: usuario,
             contraseña: contraseña,
         }),
-        success: (data) => {
-            
-        },
-        error: (data) =>{
+        success: (data, textStatus, jqXHR) => {
 
+            alert("Usuario " + data.nombre + " creado correctamente, logueate!");       
+        },
+        error: (jqXHR, textStatus, errorThrown) =>{
+
+            alert("Se ha producido un error: " + errorThrown);
         }
     });
 }
@@ -111,11 +113,13 @@ function crearPartida(){
             nombrePartida: nombrePartida,
             idUsuario: loginId,
         }),
-        success: (data) => {
-            
-        },
-        error: (data) =>{
+        success: (data, textStatus, jqXHR) => {
 
+            alert("Partida " + data.nombrePartida + " creada correctamente!");
+        },
+        error: (jqXHR, textStatus, errorThrown) =>{
+
+            alert("Se ha producido un error: " + errorThrown);
         }
     });
 }
@@ -138,13 +142,13 @@ function unirsePartida(){
             idPartida: idPartida,
             idUsuario: loginId,
         }),
-        success: (data) => {
+        success: (data, textStatus, jqXHR) => {
 
             
         },
-        error: (data) =>{
+        error: (jqXHR, textStatus, errorThrown) =>{
 
-            alert(data.mensaje);
+            alert("Se ha producido un error: " + errorThrown);
         }
     });
 }

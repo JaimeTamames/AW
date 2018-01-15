@@ -104,12 +104,11 @@ app.post("/login", function(request, response) {
             if (!callback) {
 
                 response.status(400);
-                response.end("Este usuario no existe");
+                response.end("Este usuario y/o contraseña no existe");
 
             } else {
 
                 response.status(200);
-                var user = usuario;
                 response.json({"nombre": callback.login, "id": callback.id });
 
             }
@@ -133,11 +132,13 @@ app.post("/nuevoUsuario", function(request, response) {
             if (callback) {
 
                 response.status(201);
+                response.json({"nombre": usuario});
+
 
             } else {
 
                 response.status(400);
-                response.end("No se pudo crear el usuario");
+                response.end("Este usuario ya existe");
             }
         }
     });
@@ -159,6 +160,7 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
             if (callback) {
 
                 response.status(201);
+                response.json({"nombrePartida": nombrePartida });
 
             } else {
 
