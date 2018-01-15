@@ -13,6 +13,9 @@ $(document).ready(() => {
     $("#desconectarSesion").on("click", desconectar);
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
+	$("#mispartidas").on("click", mispartidas);
+	$("#partidasamiguetes").on("click", partidasamiguetes);
+	$("#familiar").on("click", familiar);
 
 
 });
@@ -52,6 +55,11 @@ function acceder(){
             $("#crearPartida").show();
             $("#unirsePartida").show();
             $("#usuario").text(usuario);
+			$("#menu").show();
+			$("#mispartidas").show();
+			$("#partidasamiguetes").show();
+			$("#familiar").show();
+			$("#listamenu").show();
             
         },
         error: (jqXHR, textStatus, errorThrown) => {
@@ -161,7 +169,10 @@ function ocultar(){
     $("#sesion").hide();
     $("#crearPartida").hide();
     $("#unirsePartida").hide();
-
-    
+	$("#menu").hide();    
+	$("#mispartidas").hide();
+	$("#partidasamiguetes").hide();
+	$("#familiar").hide();
+	$("#listamenu").hide();
 
 }
