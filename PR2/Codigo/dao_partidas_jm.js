@@ -110,6 +110,64 @@ class DAOPartidas {
         });
     }
 
+    //Comprobar el numero de inscritos en una partida
+    participaEnPartidas(idUsuario, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                "SELECT juega_en.idPartida AS idPartida,  partidas.nombre AS nombre " +
+                "FROM juega_en INNER JOIN partidas ON juega_en.idPartida = partidas.id " +
+                "WHERE juega_en.idUsuario = ?",
+                    [idUsuario],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows);
+                }
+            });
+        });
+    }
+
+    //Comprueba los participantes de una partida
+    participantesDePartida(idPartida, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                "SELECT  usuarios.login AS nombre " +
+                "FROM juega_en INNER JOIN usuarios ON juega_en.idUsuario = usuarios.id " +
+                "WHERE juega_en.idPartida = ?",
+                    [idPartida],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows);
+                }
+            });
+        });
+    }
+
+    
+
+
+
     /** ___________________________________________________________________________________________ */
 
 

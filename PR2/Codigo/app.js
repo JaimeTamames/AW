@@ -88,6 +88,7 @@ app.get("/", (request, response) => {
     response.redirect("/index.html");
 });
 
+//Comprueba que exista el usuario, si es asi se loguea
 app.post("/login", function(request, response) {
 
     var usuario = request.body.usuario;
@@ -110,12 +111,12 @@ app.post("/login", function(request, response) {
 
                 response.status(200);
                 response.json({"nombre": callback.login, "id": callback.id });
-
             }
         }
     });
 });
 
+//Da de alta un nuevo usuario
 app.post("/nuevoUsuario", function(request, response) {
 
     var usuario = request.body.usuario;
@@ -144,6 +145,7 @@ app.post("/nuevoUsuario", function(request, response) {
     });
 });
 
+//Crea una partida con el nombre y añade al jugador a ella
 app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
     var nombrePartida = request.body.nombrePartida;
@@ -172,6 +174,7 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
 
 });
 
+//Une al jugador a la partida si no esta llena
 app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
     var idPartida = request.body.idPartida;
@@ -215,18 +218,69 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                             }
                         }
                     });
-
                 }  
             }
         }
     });
+});
 
+//Comprueba y devuelve en que partidas participa el usuario
+app.get("/participaEnPartidas", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
+    
+    var idUsuario = request.body.idUsuario;
+
+    daoP.participaEnPartidas(idUsuario, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else {
+
+            if (callback === undefined) {
+
+                response.end("El usuario no participa en ninguna partida");
+
+            } else {
+
+                response.status(200);
+                response.json(Object.keys(callback));
+            }
+        }
+    });
+});
+
+//
+app.get("/participantesDePartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
+    
+    var idPartida = request.body.idUsuario;
+
+    daoP.participantesDePartida(idPartida, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else {
+
+            if (callback === undefined) {
+
+                response.status(404);
+                response.end("Este identificador no corresponde a ninguna partida");
+
+            } else {
+
+                response.status(200);
+                response.json(Object.keys(callback));
+            }
+        }
+    });
 });
 
 //Declaracion del middelware para las paginas no encontradas
 app.use((request, response, next) => {
     response.status(404);
-    response.redirect("/notFound.html");
+    response.end("Not found: " + request.url);
 });
 
 //Estado del servidor
