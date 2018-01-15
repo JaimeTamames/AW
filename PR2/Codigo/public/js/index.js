@@ -1,9 +1,12 @@
 "use strict";
 
 let login = null;
+let loginId = null;
 let cadenaBase64 = null;
 
 $(document).ready(() => {
+
+    cargarPricipal();
 
     $("#aceptarLogin").on("click", acceder);
     $("#nuevoUsuario").on("click", nuevoUsuario);
@@ -17,6 +20,15 @@ $(document).ready(() => {
 
 });
 
+//Funcion que carga las vistas principales
+function cargarPricipal(){
+
+    ocultar();
+    $("#login").show();
+    $("#bienvenido").show();
+}
+
+//Funcion que valida el usuario introducido e inicia la sesion
 function acceder(){
 
     let usuario = $("#nombreUsuario").val();
@@ -30,9 +42,10 @@ function acceder(){
             usuario: usuario,
             contraseña: contraseña,
         }),
-        success: (data) => {
+        success: (data, textStatus, jqXHR) => {
 
-            login = usuario;
+            login = data.nombre;
+            loginId = data.id;
 
             cadenaBase64 = btoa(usuario + ":" + contraseña)
 
@@ -45,8 +58,9 @@ function acceder(){
 			$("#menu").show();
             
         },
-        error: (data) =>{
+        error: (jqXHR, textStatus, errorThrown) => {
 
+            alert("Se ha producido un error: " + errorThrown);
         }
     });
 }
@@ -58,7 +72,7 @@ function nuevoUsuario(){
     let contraseña = $("#contraseñaUsuario").val();
 
     $.ajax({
-        type: 'GET',
+        type: 'POST',
         url: '/nuevoUsuario', 
         contentType: "application/json",
         data: JSON.stringify ({
@@ -66,8 +80,6 @@ function nuevoUsuario(){
             contraseña: contraseña,
         }),
         success: (data) => {
-
-            document.getElementById("mensaje").innerHTML = "El usuario ha sido creado correctamente, puede loguearse!";
             
         },
         error: (data) =>{
@@ -76,16 +88,13 @@ function nuevoUsuario(){
     });
 }
 
-//Funcion que desconecta al usuario
+//Funcion que desconecta al usuario y finaliza la sesion
 function desconectar(){
 
         login = null;
+        cadenaBase64 = null;
 
-        ocultar();
-
-        $("#login").show();
-        $("#bienvenido").show();
-
+        cargarPricipal();
 }
 
 //Funcion que crea una nueva partida
@@ -94,8 +103,8 @@ function crearPartida(){
     let nombrePartida = $("#nombreNuevaPartida").val();
 
     $.ajax({
-        type: 'GET',
-        url: '/', 
+        type: 'POST',
+        url: '/crearPartida', 
         beforeSend: function(req) {
             // Añadimos la cabecera 'Authorization' con los datos de autenticación.
             req.setRequestHeader("Authorization",
@@ -104,6 +113,7 @@ function crearPartida(){
         contentType: "application/json",
         data: JSON.stringify ({
             nombrePartida: nombrePartida,
+            idUsuario: loginId,
         }),
         success: (data) => {
             
@@ -117,11 +127,11 @@ function crearPartida(){
 //Funcion que une al usuario a una partida existente
 function unirsePartida(){
 
-    let nombrePartida = $("#nombreUnirsePartida").val();
+    let idPartida = $("#idUnirsePartida").val();
 
     $.ajax({
-        type: 'GET',
-        url: '/', 
+        type: 'POST',
+        url: '/unirsePartida', 
         beforeSend: function(req) {
             // Añadimos la cabecera 'Authorization' con los datos de autenticación.
             req.setRequestHeader("Authorization",
@@ -129,7 +139,8 @@ function unirsePartida(){
         },
         contentType: "application/json",
         data: JSON.stringify ({
-            nombrePartida: nombrePartida,
+            idPartida: idPartida,
+            idUsuario: loginId,
         }),
         success: (data) => {
 
@@ -137,6 +148,7 @@ function unirsePartida(){
         },
         error: (data) =>{
 
+            alert(data.mensaje);
         }
     });
 }

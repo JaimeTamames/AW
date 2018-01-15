@@ -8,6 +8,7 @@ const mysql = require("mysql");
 const bodyParser = require("body-parser");
 const config = require("./config");
 const daoUsers = require("./dao_users_jm");
+const daoPartidas = require("./dao_partidas_jm");
 const express_session = require("express-session");
 const express_mysql_session = require("express-mysql-session");
 const MySQLStore = express_mysql_session(express_session);
@@ -36,6 +37,7 @@ let pool = mysql.createPool({
 
 //DAOs
 let daoU = new daoUsers.DAOUsers(pool);
+let daoP = new daoPartidas.DAOPartidas(pool);
 
 //Middleware sesion
 const middlewareSession = express_session({
@@ -108,14 +110,14 @@ app.post("/login", function(request, response) {
 
                 response.status(200);
                 var user = usuario;
-                response.json({"result": user });
+                response.json({"nombre": callback.login, "id": callback.id });
 
             }
         }
     });
 });
 
-app.get("/nuevoUsuario", function(request, response) {
+app.post("/nuevoUsuario", function(request, response) {
 
     var usuario = request.body.usuario;
     var contraseña = request.body.contraseña;
@@ -128,24 +130,94 @@ app.get("/nuevoUsuario", function(request, response) {
             response.end();
         } else {
 
-            if (!callback) {
-
-                response.status(400);
-                response.end("Este usuario no existe");
-
-            } else {
+            if (callback) {
 
                 response.status(201);
 
+            } else {
+
+                response.status(400);
+                response.end("No se pudo crear el usuario");
             }
         }
     });
 });
 
-app.get("/desconectar", passport.authenticate('basic', { failureRedirect: '/',failureFlash: true, session: false}), 
-        function(request, response) {
+app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
-    console.log("Hola");
+    var nombrePartida = request.body.nombrePartida;
+    var idUsuario = request.body.idUsuario;
+
+    daoP.crearPartida(nombrePartida, idUsuario, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else {
+
+            if (callback) {
+
+                response.status(201);
+
+            } else {
+
+                response.status(400);
+                response.end("No se pudo crear la partida");
+            }
+        }
+    });
+
+});
+
+app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
+    
+    var idPartida = request.body.idPartida;
+    var idUsuario = request.body.idUsuario;
+
+    daoP.numeroJugadoresPartida(idPartida, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else {
+
+            if (callback === undefined) {
+
+                response.status(404);
+
+            } else {
+
+                if(callback.num >= 4){
+                    response.status(400);
+                    response.end("La partida esta llena");
+                }else{
+            
+                    daoP.unirsePartida(idPartida, idUsuario, (err, callback) => {
+
+                        if (err) {
+                
+                            console.log(err);
+                            response.end();
+                        } else {
+                
+                            if (callback) {
+                
+                                response.status(201);
+                
+                            } else {
+                
+                                response.status(400);
+                                response.end("No se pudo unir a la partida");
+                            }
+                        }
+                    });
+
+                }  
+            }
+        }
+    });
 
 });
 
