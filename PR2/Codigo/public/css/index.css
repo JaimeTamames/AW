@@ -25,6 +25,53 @@ body{
 
 }
 
+nav {
+     
+    overflow:hidden;
+    padding:10px;
+    width:100%;
+}
+
+nav ul{
+    list-style:none;
+    margin:0 10px 0 10px;
+    padding:0;
+}
+
+nav ul li{
+    
+    float:left;
+    margin-right:25px;
+	margin-left:15px;
+    text-align:center;
+	color:clear-blue;
+    
+	
+}
+
+nav ul li:hover{
+    
+    font-weight: bold;
+	
+}
+
+.seleccionada {
+	
+	font-weight: bold;
+		
+}
+
+.menu {
+	
+	width: 100%;
+    height: 60px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+	border-bottom: 2px solid black;	
+	
+}
+
 .header>label{
 
     margin: 20px;
