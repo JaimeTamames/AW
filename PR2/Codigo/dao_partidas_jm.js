@@ -3,13 +3,13 @@
 "use strict";
 
 /**
- * Proporciona operaciones para la gestión de usuarios
+ * Proporciona operaciones para la gestión de partidas
  * en la base de datos.
  */
-class DAOUsers {
+class DAOPartidas {
 
     /**
-     * Inicializa el DAO de usuarios.
+     * Inicializa el DAO de partidas.
      * 
      * @param {Pool} pool Pool de conexiones MySQL. Todas las operaciones
      *                    sobre la BD se realizarán sobre este pool.
@@ -18,59 +18,56 @@ class DAOUsers {
         this.pool = pool;
     }
 
-    /**
-     * Determina si un determinado usuario aparece en la BD con la contraseña
-     * pasada como parámetro.
-     * 
-     * Es una operación asíncrona, de modo que se llamará a la función callback
-     * pasando, por un lado, el objeto Error (si se produce, o null en caso contrario)
-     * y, por otro lado, un booleano indicando el resultado de la operación
-     * (true => el usuario existe, false => el usuario no existe o la contraseña es incorrecta)
-     * En caso de error error, el segundo parámetro de la función callback será indefinido.
-     * 
-     * @param {string} usuario Nombre del usuario a buscar
-     * @param {string} contraseña Contraseña a comprobar
-     * @param {function} callback Función que recibirá el objeto error y el resultado
-     */
-    usuarioCorrecto(usuario, contraseña, callback) {
-
+    //Crea una partida
+    crearPartida(nombrePartida, idUsuario, callback) {
+        
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "SELECT * " +
-                    "FROM usuarios " +
-                    "WHERE login = ? AND password = ?",
-                    [usuario, contraseña],
-                    (err, rows) => {
+                    "INSERT INTO partidas (nombre, estado) " +
+                    "VALUES (?, ?)",
+                    [nombrePartida, "creada"],
+                    (err, result) => {
                 if (err) {
                     callback(err);
                     return;
-                }
-                connection.release();
-                if (rows.length === 0) {
-                    callback(null, false);
                 } else {
-                    callback(null, rows[0]);
+
+                    connection.query(
+                        "INSERT INTO juega_en (idUsuario, idPartida) " +
+                        "VALUES (?, ?)",
+                        [idUsuario, result.insertId],
+                        (err, result) => {
+                    if (err) {
+                        callback(err);
+                        return;
+                    } else {
+                        connection.release();
+                        callback(null, true);
+                    }
                 }
-            });
+                );
+                }
+            }
+            );
         });
     }
 
-     //Añade un usuario
-     nuevoUsuario(usuario, contraseña, callback) {
-
+    //Unirse a una partida
+    unirsePartida(idPartida, idUsuario, callback) {
+        
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                    "INSERT INTO usuarios (login, password) " +
+                    "INSERT INTO juega_en (idUsuario, idPartida) " +
                     "VALUES (?, ?)",
-                    [usuario, contraseña],
+                    [idUsuario, idPartida],
                     (err, result) => {
                 if (err) {
                     callback(err);
@@ -85,30 +82,19 @@ class DAOUsers {
         });
     }
 
-    /** ___________________________________________________________________________________________ */
-
-    /**
-     * Obtiene datos de un usuario.
-     * 
-     * Es una operación asíncrona, de modo que se llamará a la función callback
-     * pasando, por un lado, el objeto Error (si se produce, o null en caso contrario)
-     * y, por otro lado, una cadena con el nombre de la imagen de perfil (o undefined
-     * en caso de producirse un error).
-     * 
-     * @param {string} email Identificador del usuario cuyas datos se quieren obtener
-     * @param {function} callback Función que recibirá el objeto error y el resultado
-     */
-    getUser(email, callback) {
+    //Comprobar el numero de inscritos en una partida
+    numeroJugadoresPartida(idPartida, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
                 callback(err);
                 return;
             }
             connection.query(
-                "SELECT email, nombre, password, img, sexo, puntuacion, fechaNacimiento " +
-                "FROM user " +
-                "WHERE email = ?",
-                    [email],
+                "SELECT idPartida, COUNT(*) AS num " +
+                "FROM juega_en " +
+                "WHERE idPartida = ? " +
+                "GROUP BY idPartida",
+                    [idPartida],
                     (err, rows) => {
                 if (err) {
                     callback(err);
@@ -123,6 +109,9 @@ class DAOUsers {
             });
         });
     }
+
+    /** ___________________________________________________________________________________________ */
+
 
     /**
      * Obtiene el nombre de fichero que contiene la imagen de perfil de un usuario.
@@ -276,8 +265,6 @@ class DAOUsers {
             );
         });
     }
-
-   
 
     //Cambia los datos de un usuario con los campos validados
     setUser(user, callback) {
@@ -491,5 +478,5 @@ class DAOUsers {
 }
 
 module.exports = {
-    DAOUsers: DAOUsers
+    DAOPartidas: DAOPartidas
 };
