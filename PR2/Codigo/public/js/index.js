@@ -163,4 +163,5 @@ function ocultar(){
     $("#unirsePartida").hide();
 	$("#menu").hide();    
 
+
 }
