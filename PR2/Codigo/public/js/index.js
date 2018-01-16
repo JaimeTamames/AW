@@ -1,8 +1,8 @@
 "use strict";
 
-let login = null;
-let loginId = null;
-let cadenaBase64 = null;
+let login;
+let loginId;
+let cadenaBase64;
 
 $(document).ready(() => {
 
@@ -55,11 +55,7 @@ function acceder(){
             $("#crearPartida").show();
             $("#unirsePartida").show();
             $("#usuario").text(usuario);
-			$("#menu").show();
-			$("#mispartidas").show();
-			$("#partidasamiguetes").show();
-			$("#familiar").show();
-			$("#listamenu").show();
+            muestraMenu();
             
         },
         error: (jqXHR, textStatus, errorThrown) => {
@@ -124,6 +120,8 @@ function crearPartida(){
         success: (data, textStatus, jqXHR) => {
 
             alert("Partida " + data.nombrePartida + " creada correctamente!");
+
+            muestraMenu();
         },
         error: (jqXHR, textStatus, errorThrown) =>{
 
@@ -152,13 +150,50 @@ function unirsePartida(){
         }),
         success: (data, textStatus, jqXHR) => {
 
-            
+            muestraMenu();
         },
         error: (jqXHR, textStatus, errorThrown) =>{
 
             alert("Se ha producido un error: " + errorThrown);
         }
     });
+}
+
+//Funcion que muestra el menu
+function muestraMenu(){
+
+    $.ajax({
+        type: 'GET',
+        url: '/participaEnPartidas', 
+        beforeSend: function(req) {
+            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+            req.setRequestHeader("Authorization",
+            "Basic " + cadenaBase64);
+        },
+        data: {
+            idUsuario: loginId,
+        },
+        success: (data, textStatus, jqXHR) => {
+
+            //Copiado, ahora hay que insertar tantas pestañas como elementos devuelva en el menu
+            //elem.idPartida, elem.nombrePartida
+            data.forEach(elem => {
+                $("#from").append(
+                    $("<option>").prop("value", elem).text(elem)
+                );                
+                $("#to").append(
+                            $("<option>").prop("value", elem).text(elem)
+                );                
+            });
+
+        },
+        error: (jqXHR, textStatus, errorThrown) =>{
+
+            alert("Se ha producido un error: " + errorThrown);
+        }
+    });
+
+    $("#menu").show();
 }
 
 //Funcion que oculta todos los elementos
@@ -169,10 +204,6 @@ function ocultar(){
     $("#sesion").hide();
     $("#crearPartida").hide();
     $("#unirsePartida").hide();
-	$("#menu").hide();    
-	$("#mispartidas").hide();
-	$("#partidasamiguetes").hide();
-	$("#familiar").hide();
-	$("#listamenu").hide();
+	$("#menu").hide();
 
 }

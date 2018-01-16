@@ -110,7 +110,7 @@ app.post("/login", function(request, response) {
             } else {
 
                 response.status(200);
-                response.json({"nombre": callback.login, "id": callback.id });
+                response.json({"nombre": callback.login, "id": callback.id});
             }
         }
     });
@@ -227,7 +227,8 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
 //Comprueba y devuelve en que partidas participa el usuario
 app.get("/participaEnPartidas", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
-    var idUsuario = request.body.idUsuario;
+    var idUsuario = request.query.idUsuario;
+    console.log(idUsuario);
 
     daoP.participaEnPartidas(idUsuario, (err, callback) => {
 
@@ -244,7 +245,9 @@ app.get("/participaEnPartidas", passport.authenticate('basic', { failureRedirect
             } else {
 
                 response.status(200);
-                response.json(Object.keys(callback));
+                response.json(callback);
+
+
             }
         }
     });

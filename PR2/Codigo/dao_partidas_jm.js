@@ -110,7 +110,7 @@ class DAOPartidas {
         });
     }
 
-    //Comprobar el numero de inscritos en una partida
+    //Comprobar en que partidas juega
     participaEnPartidas(idUsuario, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -118,7 +118,7 @@ class DAOPartidas {
                 return;
             }
             connection.query(
-                "SELECT juega_en.idPartida AS idPartida,  partidas.nombre AS nombre " +
+                "SELECT juega_en.idPartida AS idPartida, partidas.nombre AS nombrePartida " +
                 "FROM juega_en INNER JOIN partidas ON juega_en.idPartida = partidas.id " +
                 "WHERE juega_en.idUsuario = ?",
                     [idUsuario],

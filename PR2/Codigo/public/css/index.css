@@ -103,8 +103,10 @@ body{
 
     display: none;
 
-    background-color: #7a7d7e;
-    border-color: #636566;
+    border-style: solid;
+    border-width: 1px;
+    background-color: #f6f7f9;
+    border-color: #5e5d5d;
     width: 40%;
     height: 80px;
 
@@ -143,8 +145,10 @@ body{
 
     display: none;
 
-    background-color: #7a7d7e;
-    border-color: #636566;
+    border-style: solid;
+    border-width: 1px;
+    background-color: #f6f7f9;
+    border-color: #5e5d5d;
     width: 40%;
     height: 80px;
 
@@ -179,41 +183,45 @@ body{
     padding: 5px;
 }
 
-nav {
-     
-    overflow:hidden;
-    padding:10px;
-    width:100%;
-	display: none;
+#menu{
+
+    width: 100%;
+    align-items: center;
 }
 
-nav ul{
-    list-style:none;
-    margin:0 10px 0 10px;
-    padding:0;	
-	display: none;
+#menu>ul{
+
+    list-style: none;
+    margin: 0px 10px 0px 10px;
+    padding: 0px;	
 }
 
-nav ul li{
+#menu>ul>li{
     
-    float:left;
-    margin-right:25px;
-	margin-left:15px;
-    text-align:center;
-	color:clear-blue;    
-	display: none;
-	
+    float: left;
+    text-align: center;
+    padding: 10px;
 }
 
-nav ul li:hover{
+#menu>ul>li:hover{
     
-    font-weight: bold;	
-	
+    cursor: pointer;	
+}
+
+#menu>ul>li:active{
+
+
 }
 
 .seleccionada {
-	
-	font-weight: bold;
+    
+    font-weight: bold;
+    border-style: solid;
+    border-radius: 5px;
+    border-width: 1px 1px 0px 1px;
+    border-color: #5e5d5d;
+
+    
 		
 }
 
