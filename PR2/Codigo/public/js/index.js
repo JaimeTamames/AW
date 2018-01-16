@@ -14,9 +14,7 @@ $(document).ready(() => {
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
 	$("#mispartidas").on("click", mispartidas);
-	$("#partidasamiguetes").on("click", partidasamiguetes);
-    $("#familiar").on("click", familiar);
-    $("#menu ul").on("click", "li", cargarPartida);
+    //$("#menu ul").on("click", "li", cargarPartida);
 
 
 });
@@ -27,6 +25,25 @@ function cargarPricipal(){
     ocultar();
     $("#login").show();
     $("#bienvenido").show();
+}
+
+function mispartidas() {
+
+    alert("holaaaaaaa");
+    //ocultar();		  
+            
+
+}
+
+function pintarMisPartidas(){
+
+    
+    let result = $("<p>").addClass("clase").text("pestaña de Mis Partidas");
+    /*result.append($("<span>").text(task.text));
+    result.append($("<button>").addClass("remove").text("Eliminar"));
+    result.data("id", task.id);*/
+    return result;
+
 }
 
 //Funcion que valida el usuario introducido e inicia la sesion
@@ -60,6 +77,7 @@ function acceder(){
             $("#unirsePartida").show();
             $("#usuario").text(usuario);
             muestraMenu();
+            mispartidas();
             
         },
         error: (jqXHR, textStatus, errorThrown) => {
@@ -189,7 +207,7 @@ function muestraMenu(){
             //elem.idPartida, elem.nombrePartida
             data.forEach(elem => {
                 
-                $("#misPartidas").after(nombrePartidaToDOMElement(elem));
+                $("#Partidas").after(nombrePartidaToDOMElement(elem));
             });
 
         },
@@ -204,16 +222,20 @@ function muestraMenu(){
 
 //Convierte las partidas en pestañas
 function nombrePartidaToDOMElement(partida) {
-    let result = $("<li>").addClass("prueba").text(partida.nombrePartida);
+    let result = $("<li>");
+    result.append($("<button>", {id:partida.idPartida}).addClass("prueba").text(partida.nombrePartida));
     result.data("id", partida.idPartida);
+
+    /*let idEtiqueta = ("#" + partida.idPartida);
+    $(idEtiqueta).on("click", "button", cargarPartida(partida.idPartida));*/
     return result;
 }
 
 //Carga la vista de una partida
-function cargarPartida(event){
-    let partida = $(event.target);
+function cargarPartida(id){
+    let partida = id;
 
-    alert('${partida.text()}');
+    alert("holaaaa soy la partida con id:" + id);
 }
 
 //Funcion que oculta todos los elementos
