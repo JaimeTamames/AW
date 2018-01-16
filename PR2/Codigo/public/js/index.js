@@ -49,6 +49,9 @@ function acceder(){
 
             cadenaBase64 = btoa(usuario + ":" + contraseña)
 
+            $("#nombreUsuario").prop("value", "");
+            $("#contraseñaUsuario").prop("value", "");
+
             ocultar();
 
             $("#sesion").show();
@@ -81,7 +84,7 @@ function nuevoUsuario(){
         }),
         success: (data, textStatus, jqXHR) => {
 
-            alert("Usuario " + data.nombre + " creado correctamente, logueate!");       
+            alert("Usuario " + data.nombre + " creado correctamente, logueate!");     
         },
         error: (jqXHR, textStatus, errorThrown) =>{
 
@@ -98,6 +101,8 @@ function desconectar(){
 
         cargarPricipal();
 }
+
+//prop.value("");
 
 //Funcion que crea una nueva partida
 function crearPartida(){
@@ -121,7 +126,8 @@ function crearPartida(){
 
             alert("Partida " + data.nombrePartida + " creada correctamente!");
 
-            muestraMenu();
+            $("#nombreNuevaPartida").prop("value", "");
+            $("#misPartidas").after(nombrePartidaToDOMElement(data));
         },
         error: (jqXHR, textStatus, errorThrown) =>{
 
@@ -150,8 +156,10 @@ function unirsePartida(){
         }),
         success: (data, textStatus, jqXHR) => {
 
-            alert("Te has unido a la partida con id " + idPartida);
-            muestraMenu();
+            alert("Te has unido a la partida con id " + data.idPartida);
+
+            $("#idUnirsePartida").prop("value", "");
+            $("#misPartidas").after(nombrePartidaToDOMElement(data));
         },
         error: (jqXHR, textStatus, errorThrown) =>{
 
@@ -179,12 +187,8 @@ function muestraMenu(){
             //Copiado, ahora hay que insertar tantas pestañas como elementos devuelva en el menu
             //elem.idPartida, elem.nombrePartida
             data.forEach(elem => {
-                $("#from").append(
-                    $("<option>").prop("value", elem).text(elem)
-                );                
-                $("#to").append(
-                            $("<option>").prop("value", elem).text(elem)
-                );                
+                
+                $("#misPartidas").after(nombrePartidaToDOMElement(elem));
             });
 
         },
@@ -195,6 +199,13 @@ function muestraMenu(){
     });
 
     $("#menu").show();
+}
+
+//Convierte las partidas en pestañas
+function nombrePartidaToDOMElement(partida) {
+    let result = $("<li>").addClass("prueba").text(partida.nombrePartida);
+    result.data("id", partida.idPartida);
+    return result;
 }
 
 //Funcion que oculta todos los elementos

@@ -18,7 +18,7 @@ class DAOPartidas {
         this.pool = pool;
     }
 
-    //Crea una partida
+    //Crea una partida. Devuelve el nombre y el id de la partida
     crearPartida(nombrePartida, idUsuario, callback) {
         
         this.pool.getConnection((err, connection) => {
@@ -36,6 +36,12 @@ class DAOPartidas {
                     return;
                 } else {
 
+                    let partida = {
+                        nombrePartida: nombrePartida,
+                        idPartida: result.insertId,
+                        ok: false
+                    }
+
                     connection.query(
                         "INSERT INTO juega_en (idUsuario, idPartida) " +
                         "VALUES (?, ?)",
@@ -45,8 +51,10 @@ class DAOPartidas {
                         callback(err);
                         return;
                     } else {
+
+                        partida.ok = true;
                         connection.release();
-                        callback(null, true);
+                        callback(null, partida);
                     }
                 }
                 );
@@ -56,7 +64,7 @@ class DAOPartidas {
         });
     }
 
-    //Unirse a una partida
+    //Unirse a una partida. Devuelve el nombre y el id de la partida
     unirsePartida(idPartida, idUsuario, callback) {
         
         this.pool.getConnection((err, connection) => {
@@ -74,8 +82,31 @@ class DAOPartidas {
                     return;
                 } else {
 
-                    connection.release();
-                    callback(null, true);
+                    let partida = {
+                        nombrePartida: null,
+                        idPartida: idPartida,
+                        ok: false
+                    }
+
+                    connection.query(
+                        "SELECT  nombre " +
+                        "FROM partidas " +
+                        "WHERE id = ?",
+                        [idPartida],
+                        (err, result) => {
+                    if (err) {
+                        callback(err);
+                        return;
+                    } else {
+    
+                        partida.nombrePartida = result[0].nombre;
+                        partida.ok = true;
+    
+                        connection.release();
+                        callback(null, partida);
+                    }
+                }
+                );
                 }
             }
             );
@@ -163,9 +194,6 @@ class DAOPartidas {
             });
         });
     }
-
-    
-
 
 
     /** ___________________________________________________________________________________________ */

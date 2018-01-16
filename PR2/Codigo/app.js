@@ -159,10 +159,10 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
             response.end();
         } else {
 
-            if (callback) {
+            if (callback.ok) {
 
                 response.status(201);
-                response.json({"nombrePartida": nombrePartida });
+                response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida });
 
             } else {
 
@@ -191,6 +191,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
             if (callback === undefined) {
 
                 response.status(404);
+                response.end("La partida no tiene jugadores");
 
             } else {
 
@@ -207,9 +208,10 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                             response.end();
                         } else {
                 
-                            if (callback) {
+                            if (callback.ok) {
                 
                                 response.status(201);
+                                response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida});
                 
                             } else {
                 
@@ -228,7 +230,6 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
 app.get("/participaEnPartidas", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
     var idUsuario = request.query.idUsuario;
-    console.log(idUsuario);
 
     daoP.participaEnPartidas(idUsuario, (err, callback) => {
 
