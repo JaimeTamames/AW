@@ -15,7 +15,8 @@ $(document).ready(() => {
     $("#unirse").on("click", unirsePartida);
 	$("#mispartidas").on("click", mispartidas);
 	$("#partidasamiguetes").on("click", partidasamiguetes);
-	$("#familiar").on("click", familiar);
+    $("#familiar").on("click", familiar);
+    $("#menu ul").on("click", "li", cargarPartida);
 
 
 });
@@ -206,6 +207,13 @@ function nombrePartidaToDOMElement(partida) {
     let result = $("<li>").addClass("prueba").text(partida.nombrePartida);
     result.data("id", partida.idPartida);
     return result;
+}
+
+//Carga la vista de una partida
+function cargarPartida(event){
+    let partida = $(event.target);
+
+    alert('${partida.text()}');
 }
 
 //Funcion que oculta todos los elementos
