@@ -150,6 +150,7 @@ function unirsePartida(){
         }),
         success: (data, textStatus, jqXHR) => {
 
+            alert("Te has unido a la partida con id " + idPartida);
             muestraMenu();
         },
         error: (jqXHR, textStatus, errorThrown) =>{
