@@ -250,7 +250,7 @@ app.get("/participaEnPartidas", passport.authenticate('basic', { failureRedirect
     });
 });
 
-//
+//Devuelve los participantes de una partida
 app.get("/participantesDePartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
     var idPartida = request.body.idUsuario;
