@@ -56,7 +56,7 @@
 
     <!-- Login -->
 
-    <div class="container col-sm-6 mt-4" id="login">
+    <div class="container col-sm-6 mt-4 redondeado" id="login">
         <label class="h2">Identificarse</label>
         <div class="form-group">
             <label>Nombre de usuario:</label>
@@ -88,7 +88,7 @@
 
     <!-- Form crear a una partida -->
 
-    <div class="container col-sm-6 border border-secondary mt-4 hidden" id="crearPartida">
+    <div class="container col-sm-6 border border-secondary mt-4 fondoGris redondeado hidden" id="crearPartida">
 
         <label class="h5">Crear una nueva partida</label>
         <div class="input-group">
@@ -101,7 +101,7 @@
 
     <!-- Form unirse a una partida -->
 
-    <div class="container col-sm-6 border border-secondary mt-4 hidden" id="unirsePartida">
+    <div class="container col-sm-6 border border-secondary mt-4 fondoGris redondeado hidden" id="unirsePartida">
 
         <label class="h5">Unirse a una partida existente</label>
         <div class="input-group">
@@ -114,15 +114,74 @@
 
     <!-- Vista de una partida -->
 
-    <div class="container col-sm-6 border border-secondary mt-4 hidden" id="partida">
+    <div class="container hidden mt-4" id="partida">
+            <div class="row">
+                <div class="col-md-9">
 
-            <div class="input-group">
-                <label class="h5" id="nombrePartida"></label>
-                <span class="input-group-btn">
-                  <button class="btn btn-primary" type="button" id="actualiarPartida">Actualizar partida</button>
-                </span>
+                    <!-- Estado partida -->
+
+                    <div class="column">
+                        <div class="border border-secondary fondoGris redondeado">
+
+                            <label class="h5" id="nombrePartida"></label>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary" type="button" id="actualiarPartida">Actualizar partida</button>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Cartas en la mesa -->
+
+                    <div class="column mt-4" id="mesa">
+                        <div class="border border-secondary fondoGris redondeadoUp">
+                            <label class="h4">Cartas en la mesa</label>
+                        </div>
+                        <div class="border border-secondary redondeadoDown"></div>
+                    </div>
+                    
+                    <!-- Tus cartas -->
+
+                    <div class="column mt-4" id="mano">
+                        <div class="border border-secondary fondoGris redondeadoUp">
+                            <label class="h4">Tus cartas</label>
+                        </div>
+                        <div class="border border-secondary redondeadoDown"></div>
+                    </div>
+
+                </div>
+
+                <!-- Tabla jugadores -->
+
+                <div class="col-md-3">
+                    <div class="border border-secondary redondeadoUp">
+                        <label class="h4">Jugadores</label>
+                    </div>
+                    <div class="border border-secondary redondeadoDown">
+                        <table class="table table-striped" id="jugadores">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th>Nº Cartas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>John</td>
+                                    <td>10</td>
+                                </tr>
+                                <tr>
+                                    <td>Mary</td>
+                                    <td>23</td>
+                                </tr>
+                                <tr>
+                                    <td>July</td>
+                                    <td>12</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>                           
+                </div>
             </div>
-
     </div>
 
 </body>
