@@ -13,7 +13,6 @@ $(document).ready(() => {
     $("#desconectarSesion").on("click", desconectar);
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
-    //$("#familiar").on("click", familiar);
     $("#listaPartidas").on("click", "li", cargarPartida);
 });
 
@@ -205,10 +204,9 @@ function nombrePartidaToDOMElement(partida) {
 
 //Carga la vista de una partida
 function cargarPartida(event){
-    //let partida = $(event.target);
+    let partida = $(event.target);
 
-    alert("hola");
-    console.log("Hola");
+    alert(partida.text());
 }
 
 //Funcion que oculta todos los elementos
