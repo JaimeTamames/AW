@@ -196,8 +196,10 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
             } else {
 
                 if(callback.num >= 4){
+
                     response.status(400);
                     response.end("La partida esta llena");
+
                 }else{
             
                     daoP.unirsePartida(idPartida, idUsuario, (err, callback) => {
@@ -206,6 +208,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                 
                             console.log(err);
                             response.end();
+                            
                         } else {
                 
                             if (callback.ok) {

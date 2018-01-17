@@ -237,12 +237,6 @@ function cargarPartida(event){
             },
             success: (data, textStatus, jqXHR) => {
     
-                //Pintar los jugadores
-                //data.arrayParticipantes.forEach(elem => {
-                    
-                    //$("#misPartidas").after(nombrePartidaToDOMElement(elem));
-                //});
-
                 ocultar();
 
                 $("#sesion").show();
