@@ -13,12 +13,8 @@ $(document).ready(() => {
     $("#desconectarSesion").on("click", desconectar);
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
-	$("#mispartidas").on("click", mispartidas);
-	$("#partidasamiguetes").on("click", partidasamiguetes);
-    $("#familiar").on("click", familiar);
-    $("#menu ul").on("click", "li", cargarPartida);
 
-
+    $("#listaPartidas").on("click", "li", cargarPartida);
 });
 
 //Funcion que carga las vistas principales
@@ -102,8 +98,6 @@ function desconectar(){
 
         cargarPricipal();
 }
-
-//prop.value("");
 
 //Funcion que crea una nueva partida
 function crearPartida(){
@@ -204,16 +198,17 @@ function muestraMenu(){
 
 //Convierte las partidas en pestañas
 function nombrePartidaToDOMElement(partida) {
-    let result = $("<li>").addClass("prueba").text(partida.nombrePartida);
-    result.data("id", partida.idPartida);
+    let result = $("<li>").addClass("nav-item").prop("id", partida.idPartida);
+    result.append($("<a>").addClass("nav-link").prop("data-toggle", "tab").prop("href", "#").text(partida.nombrePartida));
     return result;
 }
 
 //Carga la vista de una partida
 function cargarPartida(event){
-    let partida = $(event.target);
+    //let partida = $(event.target);
 
-    alert('${partida.text()}');
+    alert("hola");
+    console.log("Hola");
 }
 
 //Funcion que oculta todos los elementos

@@ -1,76 +1,106 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <title>Juego del mentiroso</title>
-    <meta charset="utf8">
-    <link rel="stylesheet" href="css/index.css" media="screen">
-    <script src="jquery/jquery-3.1.1.min.js"></script>
-    <script src="js/index.js"></script>
+
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <!-- Estilos propios CSS -->
+    <link rel="stylesheet" href="css/index.css">
+  
 </head>
 
 <body>
-    <div class="header fuenteMedia">
 
-        <label id="nombreJuego">Juego del mentiroso</label>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="jquery/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script>
 
-        <div id="sesion">
-            
-            <label id="usuario"></label>
-            <button class="boton fuenteMedia" id="desconectarSesion">Desconectar</button>
+    <script src="js/index.js"></script>
 
-        </div>   
 
-    </div>
+    <div class="container-fluid header">
+        <div class="row align-items-center">
+            <div class="col-10">
+                <label class="h3" id="nombreJuego">Juego del mentiroso</label>
+            </div>
+            <div class="col-2 hidden" id="sesion">
+                <label class="h3" id="usuario"></label>
+                <button class="btn btn-danger" id="desconectarSesion">Desconectar</button>
+            </div>
+        </div>
+    </div>   
 
-    <div class="bienvenido" id="bienvenido">
-        <label>¡Bienvenido!</label>
-
-        <img src="img/ImagenPortada.png">
-
+    <div class="container-fluid bienvenido" id="bienvenido">
+        <div class="row align-items-center">
+            <div class="col-8">
+                <label class="h1">¡Bienvenido!</label>
+            </div>
+            <div class="col-4">
+                <img class="img-responsive" src="img/ImagenPortada.png">
+            </div>
+        </div>
     </div> 
 
-    <div id="login">
-
-            <label class="fuenteGrande">Identificarse</label>
-            <label class="fuenteMedia">Nombre de usuario:</label>
-            <input class="fuenteMedia" id="nombreUsuario" type="text" placeholder="Introduce nombre">
-            <label class="fuenteMedia">Contraseña:</label>
-            <input class="fuenteMedia" id="contraseñaUsuario" type="text" placeholder="Introduce contraseña">
-
-            <div>
-                <span>
-                    <button class="boton fuenteMedia" id="aceptarLogin">Aceptar</button>
-                </span>
-                <span>
-                    <button class="boton2 fuenteMedia" id="nuevoUsuario">Nuevo usuario</button>
-                </span>
-            </div>
+    <div class="container col-sm-6 mt-4" id="login">
+        <label class="h2">Identificarse</label>
+        <div class="form-group">
+            <label>Nombre de usuario:</label>
+            <input type="text" class="form-control" id="nombreUsuario" placeholder="Introduce nombre">
+        </div>
+        <div class="form-group">
+            <label>Contraseña:</label>
+            <input type="password" class="form-control" id="contraseñaUsuario" placeholder="Introduce contraseña">
+        </div>
+        <div>
+            <span>
+                <button class="btn btn-primary" id="aceptarLogin">Aceptar</button>
+            </span>
+            <span>
+                <button class="btn btn-secondary" id="nuevoUsuario">Nuevo usuario</button>
+            </span>
+        </div>
     </div>
 
-	<div id="menu">
-        <ul>
-            <li class="seleccionada" id="misPartidas">Mis Partidas</li>
+	<div class="hidden" id="menu">
+        <ul class="nav nav-tabs" id="listaPartidas">
+            <li class="nav-item" id="misPartidas">
+                <a class="nav-link active" data-toggle="tab" href="#">Mis Partidas</a>
+            </li>
         </ul>
     </div>
 
-    <div id="crearPartida">
+    <div class="container col-sm-6 border border-secondary mt-4 hidden" id="crearPartida">
 
-        <label class="fuenteMedia">Crear una nueva partida</label>
-        <div>
-            <input class="fuenteMedia" id="nombreNuevaPartida" type="text" placeholder="Introduce aqui el nombre">
-            <button class="boton fuenteMedia" id="crear">Crear</button>
-        </div>
+            <label class="h5">Crear una nueva partida</label>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Introduce aqui el nombre" id="nombreNuevaPartida">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary" type="button" id="crear">Crear</button>
+                </span>
+            </div>
+
     </div>
 
-    <div id="unirsePartida">
+    <div class="container col-sm-6 border border-secondary mt-4 hidden" id="unirsePartida">
 
-        <label class="fuenteMedia">Unirse a una partida existente</label>
-        <div>
-            <input class="fuenteMedia" id="idUnirsePartida" type="text" placeholder="Introduce aqui el identificador de la partida">
-            <button class="boton fuenteMedia" id="unirse">Unirse</button>
-        </div>
+            <label class="h5">Unirse a una partida existente</label>
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Introduce aquí el identificador de la partida" id="idUnirsePartida">
+                <span class="input-group-btn">
+                  <button class="btn btn-primary" type="button" id="unirse">Unirse</button>
+                </span>
+            </div>
+
     </div>
 
 </body>

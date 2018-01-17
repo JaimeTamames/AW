@@ -1,187 +1,60 @@
 @charset "UTF-8";
 /* CSS Document */
 
-body{
-
-    margin: 0px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-}
-
 .header{
 
     background-color: #354248;
-    width: 100%;
-    height: 60px;
-
-    color: white;
-
-    display: flex;
-    flex-direction: row;
+    height: 50px;
     align-items: center;
 
-}
-
-.header>label{
-
-    margin: 20px;
-}
-
-#nombreJuego{
-
-    flex-grow: 1;
-}
-
-#sesion{
-
-    margin: 10px;
-    display: none;
+    color: white;
 }
 
 #bienvenido{
 
     background-color: #e0e0e0;
-    width: 100%;
-    height: 200px;
-
     color: #354248;
-
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+    height: 200px;
 
     border-radius: 10px;
 }
 
-#bienvenido>label{
+#bienvenido>div>div>img{
 
-    font-size: 50px;
-    margin: 40px;
+    height: 200px;
 
-    flex-grow: 1;
-}
-
-#bienvenido>img{
-
-    height: 260px;
-    margin: 20px;
 }
 
 #login{
 
     background-color: #354248;
-    width: 50%;
     height: 300px;
 
     color: white;
 
-    display: flex;
-    flex-direction: column;
-    align-items: left;   
-
-    justify-content: space-between;
-    
-    padding: 40px;
-    margin: 20px;
-
     border-radius: 10px;
 }
 
-#login>input{
 
-    width: 100%;
-    height: 30px;
-    border-radius: 5px;
-
-    padding: 5px;
-}
 
 #crearPartida{
 
-    display: none;
-
-    border-style: solid;
-    border-width: 1px;
     background-color: #f6f7f9;
-    border-color: #5e5d5d;
-    width: 40%;
-    height: 80px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: left; 
-
-    justify-content: space-between;
-    
-    padding: 30px;
-    margin: 20px;
-
+    height: 120px;
     border-radius: 10px;
-}
-
-#crearPartida>div{
-
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    align-items: left; 
-
-}
-
-#crearPartida>div>input{
-
-    width: 100%;
-    height: 30px;
-    border-radius: 5px;
-
-    padding: 5px;
 }
 
 #unirsePartida{
 
-    display: none;
-
-    border-style: solid;
-    border-width: 1px;
     background-color: #f6f7f9;
-    border-color: #5e5d5d;
-    width: 40%;
-    height: 80px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: left; 
+    height: 120px;
+    border-radius: 10px;
 
     justify-content: space-between;
-    
-    padding: 30px;
-    margin: 20px;
-
-    border-radius: 10px;
-}
-
-#unirsePartida>div{
-
-    width: 100%;
-
-    display: flex;
-    flex-direction: row;
-    align-items: left; 
 
 }
 
-#unirsePartida>div>input{
-
-    width: 100%;
-    height: 30px;
-    border-radius: 5px;
-
-    padding: 5px;
-}
+/*
 
 #menu{
 
@@ -221,8 +94,6 @@ body{
     border-width: 1px 1px 0px 1px;
     border-color: #5e5d5d;
 
-    
-		
 }
 
 .menu {
@@ -238,79 +109,4 @@ body{
 }
 
 
-.boton{
-
-    background-color:#0b59e1;
-    color: white;
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-color: #0b59e1;
-    border-radius: 5px;
-
-    height: 45px;
-
-    cursor: pointer;
-
-}
-
-.boton:hover{
-
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-color: white;
-}
-
-.boton:active {
-
-    transform: translateY(2px);
-}
-
-.boton2{
-
-    background-color:#354248;
-    color: #7a7d7e;
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-color: #7a7d7e;
-    border-radius: 5px;
-
-    height: 45px;
-
-    cursor: pointer;
-
-}
-
-.boton2:hover{
-
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-color: white;
-}
-
-.boton2:active {
-
-    transform: translateY(2px);
-}
-
-.fuenteGrande{
-
-    font-size: 30px;
-}
-
-.fuenteMedia{
-
-    font-size: 20px;
-}
-
-.fuentePequeña {
-
-    font-size: 15px;
-}
+*/
