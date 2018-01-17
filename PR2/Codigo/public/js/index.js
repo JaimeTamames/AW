@@ -205,11 +205,7 @@ function cargarPartida(event){
 
     let partida = $(event.target);
     let idPartida = event.currentTarget.id;
-    let nombrePartida;
-    let numParticipantes;
-    let arrayParticipantes;
-    let estadoPartida;
-
+   
     if(idPartida === "misPartidas"){
 
         ocultar();
@@ -241,11 +237,11 @@ function cargarPartida(event){
            
             success: (data, textStatus, jqXHR) => {
     
-                ocultar();
+                ocultar();                
 
-                if(data.numParticipantes < 4){
+                if(data.nParticipantes < 4){
                     data.mensaje = "Aun no hay suficientes participantes";
-                    $("#nombreyBoton").after(pintarInfoPartida(data));
+                    $("#nombreyBoton").after(pintarInfoPartida(data.mensaje, data.idPartida));
                 }
 
                 $("#sesion").show();
@@ -270,10 +266,12 @@ function cargarPartida(event){
     }
 }
 
-function pintarInfoPartida (data){
+function pintarInfoPartida (data1, data2){
 
-    let result = $("<div>").prop("id", "infoPartida").text(data.mensaje);
-    result += ($("<div>").prop("id", "numJugadores").text("El identificador de la partida es el: " + data.idPartida));
+    console.log(data1 + " " + data2);
+
+    let result = $("<div>").prop("id", "infoPartida").text(data1);
+    result.append($("<div>").prop("id", "idPartidaInfo").text("El identificador de la partida es el: " + data2));
     return result;
 
 }
