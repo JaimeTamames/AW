@@ -209,21 +209,39 @@ function cargarPartida(event){
 
     let idPartida = event.currentTarget.id;
 
-    ocultar();
+    if(idPartida === "misPartidas"){
 
-    $("#sesion").show();
+        ocultar();
 
-    $("a.active").removeClass("active");
+        $("#sesion").show();
+        $("a.active").removeClass("active");
 
-    let pestaña = document.getElementById(idPartida);
-    $(pestaña).children().addClass("active");
+        let pestaña = document.getElementById(idPartida);
+        $(pestaña).children().addClass("active");
+        $("#menu").show();
+        $("#crearPartida").show();
+        $("#unirsePartida").show();
+        
 
-    $("#menu").show();
+    }else{
 
-    $("#nombrePartida").text(partida.text());
-    //$("#idPartida").text(idPartida);
+        ocultar();
 
-    $("#partida").show();
+        $("#sesion").show();
+
+        $("a.active").removeClass("active");
+
+        let pestaña = document.getElementById(idPartida);
+        $(pestaña).children().addClass("active");
+
+        $("#menu").show();
+
+        $("#nombrePartida").text(partida.text());
+        //$("#idPartida").text(idPartida);
+
+        $("#partida").show();
+
+    }
 
 }
 
