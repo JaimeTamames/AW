@@ -29,8 +29,8 @@
 
     <!-- Header -->
 
-    <div class="container-fluid header">
-        <div class="row align-items-center">
+    <div class="container-fluid header ">
+        <div class="row p-2">
             <div class="col-10">
                 <label class="h3" id="nombreJuego">Juego del mentiroso</label>
             </div>
@@ -56,17 +56,17 @@
 
     <!-- Login -->
 
-    <div class="container col-sm-6 mt-4 redondeado" id="login">
-        <label class="h2">Identificarse</label>
-        <div class="form-group">
+    <div class="container col-sm-6 mt-4 rounded" id="login">
+        <label class="h2 mt-4">Identificarse</label>
+        <div class="form-group mt-2">
             <label>Nombre de usuario:</label>
             <input type="text" class="form-control" id="nombreUsuario" placeholder="Introduce nombre">
         </div>
-        <div class="form-group">
+        <div class="form-group mt-2">
             <label>Contraseña:</label>
             <input type="password" class="form-control" id="contraseñaUsuario" placeholder="Introduce contraseña">
         </div>
-        <div>
+        <div class="mb-4 mt-2">
             <span>
                 <button class="btn btn-primary" id="aceptarLogin">Aceptar</button>
             </span>
@@ -78,8 +78,7 @@
 
     <!-- Menu partidas -->
 
-	<div class="hidden" id="menu">
-        
+	<div class="hidden" id="menu">     
         <ul class="nav nav-tabs" role="tablist" id="listaPartidas">
             <li class="nav-item" id="misPartidas">
                 <a data-toggle="tab" class="nav-link active" role="tab" href="#misPartidas">Mis Partidas</a>
@@ -89,23 +88,22 @@
 
     <!-- Form crear a una partida -->
 
-    <div class="container col-sm-6 border border-secondary mt-4 fondoGris redondeado hidden" id="crearPartida">
-
-        <label class="h5">Crear una nueva partida</label>
-        <div class="input-group">
+    <div class="container col-sm-6 border border-secondary mt-4 fondoGris rounded hidden" id="crearPartida">
+        <label class="h5 mt-4">Crear una nueva partida</label>
+        <div class="input-group mb-4">
             <input type="text" class="form-control" placeholder="Introduce aqui el nombre" id="nombreNuevaPartida">
             <span class="input-group-btn">
                 <button class="btn btn-primary" type="button" id="crear">Crear</button>
             </span>
         </div>
+        
     </div>
 
     <!-- Form unirse a una partida -->
 
-    <div class="container col-sm-6 border border-secondary mt-4 fondoGris redondeado hidden" id="unirsePartida">
-
-        <label class="h5">Unirse a una partida existente</label>
-        <div class="input-group">
+    <div class="container col-sm-6 border border-secondary mt-4 fondoGris rounded hidden" id="unirsePartida">
+        <label class="h5 mt-4">Unirse a una partida existente</label>
+        <div class="input-group mb-4">
             <input type="text" class="form-control" placeholder="Introduce aquí el identificador de la partida" id="idUnirsePartida">
             <span class="input-group-btn">
                 <button class="btn btn-primary" type="button" id="unirse">Unirse</button>
@@ -121,12 +119,21 @@
 
                     <!-- Estado partida -->
 
+<<<<<<< HEAD
                     <div class="column" id="nombreyBoton">
                         <div class="border border-secondary fondoGris redondeado">
 
                             <label class="h4" id="nombrePartida"></label>
                             <span class="input-group-btn" id="botonActualizar">
                                 <button class="btn btn-primary" type="button" id="actualiarPartida">Actualizar partida</button>
+=======
+                    <div class="column">
+                        <div class="border border-secondary fondoGris rounded align-items-center p-2">
+
+                            <label class="h4" id="nombrePartida"></label>
+                            <span class="input-group-btn">
+                                <button class="btn btn-primary float-right" type="button" id="actualiarPartida">Actualizar partida</button>
+>>>>>>> adca85c534ca51cd25fafdc96d0b85a8589f739d
                             </span>
                         </div>
                     </div>
@@ -134,19 +141,19 @@
                     <!-- Cartas en la mesa -->
 
                     <div class="column mt-4" id="mesa">
-                        <div class="border border-secondary fondoGris redondeadoUp">
+                        <div class="border border-secondary fondoGris rounded-top p-2">
                             <label class="h4">Cartas en la mesa</label>
                         </div>
-                        <div class="border border-secondary redondeadoDown"></div>
+                        <div class="border border-secondary rounded-bottom"></div>
                     </div>
                     
                     <!-- Tus cartas -->
 
                     <div class="column mt-4" id="mano">
-                        <div class="border border-secondary fondoGris redondeadoUp">
+                        <div class="border border-secondary fondoGris rounded-top p-2">
                             <label class="h4">Tus cartas</label>
                         </div>
-                        <div class="border border-secondary redondeadoDown"></div>
+                        <div class="border border-secondary rounded-bottom"></div>
                     </div>
 
                 </div>
@@ -154,10 +161,10 @@
                 <!-- Tabla jugadores -->
 
                 <div class="col-md-3">
-                    <div class="border border-secondary fondoGris redondeadoUp">
+                    <div class="border border-secondary fondoGris rounded-top  p-2">
                         <label class="h4">Jugadores</label>
                     </div>
-                    <div class="border border-secondary redondeadoDown">
+                    <div class="border border-secondary rounded-bottom p-2">
                         <table class="table table-striped" id="jugadores">
                             <thead>
                                 <tr>
