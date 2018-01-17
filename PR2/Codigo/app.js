@@ -247,8 +247,6 @@ app.get("/participaEnPartidas", passport.authenticate('basic', { failureRedirect
 
                 response.status(200);
                 response.json(callback);
-
-
             }
         }
     });
@@ -257,7 +255,7 @@ app.get("/participaEnPartidas", passport.authenticate('basic', { failureRedirect
 //Devuelve los participantes de una partida
 app.get("/participantesDePartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
-    var idPartida = request.body.idUsuario;
+    var idPartida = request.query.idUsuario;
 
     daoP.participantesDePartida(idPartida, (err, callback) => {
 
@@ -284,8 +282,8 @@ app.get("/participantesDePartida", passport.authenticate('basic', { failureRedir
 //Devuelve el estado de una partida
 app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
-    var idPartida = request.body.idUsuario;
-    var nombrePartida = request.body.nombrePartida;
+    var idPartida = request.query.idPartida;
+    var nombrePartida = request.query.nombrePartida;
 
     let partida = {
         idPartida: idPartida,

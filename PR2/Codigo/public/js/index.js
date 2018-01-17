@@ -259,8 +259,6 @@ function cargarPartida(event){
         
                 $("#partida").show();
 
-
-    
             },
             error: (jqXHR, textStatus, errorThrown) =>{
     
