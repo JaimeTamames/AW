@@ -28,8 +28,8 @@ class DAOPartidas {
             }
             connection.query(
                     "INSERT INTO partidas (nombre, estado) " +
-                    "VALUES (?, ?)",
-                    [nombrePartida, "creada"],
+                    "VALUES (?)",
+                    [nombrePartida],
                     (err, result) => {
                 if (err) {
                     callback(err);
@@ -113,7 +113,7 @@ class DAOPartidas {
         });
     }
 
-    //Comprobar el numero de inscritos en una partida
+    //Devuelve el numero de inscritos en una partida
     numeroJugadoresPartida(idPartida, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -141,7 +141,7 @@ class DAOPartidas {
         });
     }
 
-    //Comprobar en que partidas juega
+    //Devuelve en que partidas juega el usuario
     participaEnPartidas(idUsuario, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -168,7 +168,7 @@ class DAOPartidas {
         });
     }
 
-    //Comprueba los participantes de una partida
+    //Devuelve un array con los participantes de una partida
     participantesDePartida(idPartida, callback) {
         this.pool.getConnection((err, connection) => {
             if (err) {
@@ -190,6 +190,33 @@ class DAOPartidas {
                     callback(null, undefined);
                 } else {
                     callback(null, rows);
+                }
+            });
+        });
+    }
+
+    //Devuelve el estado de una partida
+    estadoPartida(idPartida, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                "SELECT  estado " +
+                "FROM partidas " +
+                "WHERE id = ?",
+                    [idPartida],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, undefined);
+                } else {
+                    callback(null, rows[0]);
                 }
             });
         });

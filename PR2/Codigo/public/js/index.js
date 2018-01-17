@@ -178,8 +178,6 @@ function muestraMenu(){
         },
         success: (data, textStatus, jqXHR) => {
 
-            //Copiado, ahora hay que insertar tantas pestañas como elementos devuelva en el menu
-            //elem.idPartida, elem.nombrePartida
             data.forEach(elem => {
                 
                 $("#misPartidas").after(nombrePartidaToDOMElement(elem));
@@ -225,24 +223,51 @@ function cargarPartida(event){
 
     }else{
 
-        ocultar();
+        $.ajax({
+            type: 'GET',
+            url: '/estadoPartida', 
+            beforeSend: function(req) {
+                // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+                req.setRequestHeader("Authorization",
+                "Basic " + cadenaBase64);
+            },
+            data: {
+                idPartida: idPartida,
+                nombrePartida: partida.text(),
+            },
+            success: (data, textStatus, jqXHR) => {
+    
+                //Pintar los jugadores
+                //data.arrayParticipantes.forEach(elem => {
+                    
+                    //$("#misPartidas").after(nombrePartidaToDOMElement(elem));
+                //});
 
-        $("#sesion").show();
+                ocultar();
 
-        $("a.active").removeClass("active");
+                $("#sesion").show();
+        
+                $("a.active").removeClass("active");
+        
+                let pestaña = document.getElementById(idPartida);
+                $(pestaña).children().addClass("active");
+        
+                $("#menu").show();
+        
+                $("#nombrePartida").text(partida.text());
+                //$("#idPartida").text(idPartida);
+        
+                $("#partida").show();
 
-        let pestaña = document.getElementById(idPartida);
-        $(pestaña).children().addClass("active");
 
-        $("#menu").show();
-
-        $("#nombrePartida").text(partida.text());
-        //$("#idPartida").text(idPartida);
-
-        $("#partida").show();
-
+    
+            },
+            error: (jqXHR, textStatus, errorThrown) =>{
+    
+                alert("Se ha producido un error: " + errorThrown);
+            }
+        });
     }
-
 }
 
 //Funcion que oculta todos los elementos

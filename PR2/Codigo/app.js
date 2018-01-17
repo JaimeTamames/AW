@@ -275,7 +275,87 @@ app.get("/participantesDePartida", passport.authenticate('basic', { failureRedir
             } else {
 
                 response.status(200);
-                response.json(Object.keys(callback));
+                response.json(callback);
+            }
+        }
+    });
+});
+
+//Devuelve el estado de una partida
+app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
+    
+    var idPartida = request.body.idUsuario;
+    var nombrePartida = request.body.nombrePartida;
+
+    let partida = {
+        idPartida: idPartida,
+        nombrePartida: nombrePartida,
+        nParticipantes: null,
+        arrayParticipantes: null,
+        estado: null,
+    }
+
+    daoP.numeroJugadoresPartida(idPartida, (err, nParicipantes) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else {
+
+            if (nParicipantes === undefined) {
+
+                response.status(404);
+                response.end("Esta partida no tiene jugadores");
+
+            } else {
+
+                response.status(200);
+                partida.nParticipantes = nParicipantes.num;
+
+                daoP.participantesDePartida(idPartida, (err, arrayParticipantes) => {
+
+                    if (err) {
+            
+                        console.log(err);
+                        response.end();
+                    } else {
+            
+                        if (arrayParticipantes === undefined) {
+            
+                            response.status(404);
+                            response.end("Esta partida no tiene jugadores");
+            
+                        } else {
+            
+                            response.status(200);
+                            partida.arrayParticipantes = arrayParticipantes;
+            
+                            daoP.estadoPartida(idPartida, (err, estadoPartida) => {
+
+                                if (err) {
+                        
+                                    console.log(err);
+                                    response.end();
+                                } else {
+                        
+                                    if (estadoPartida === undefined) {
+                        
+                                        response.status(404);
+                                        response.end("Este identificador no corresponde a ninguna partida");
+                        
+                                    } else {
+
+                                        partida.estado = estadoPartida;
+
+                                        response.status(200);
+                                        response.json(partida);
+                                    }
+                                }
+                            });   
+                        }
+                    }
+                });
             }
         }
     });
