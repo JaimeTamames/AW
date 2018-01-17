@@ -4,7 +4,7 @@
 .header{
 
     background-color: #354248;
-    height: 50px;
+    height: 58px;
     align-items: center;
 
     color: white;
@@ -28,43 +28,14 @@
 #login{
 
     background-color: #354248;
-    height: 300px;
+    height: 310px;
 
     color: white;
-}
-
-
-
-#crearPartida{
-
-    height: 120px;
-}
-
-#unirsePartida{
-
-    height: 120px;
 }
 
 .fondoGris{
 
     background-color: #f6f7f9;
-}
-
-.redondeado{
-
-    border-radius: 10px;
-}
-
-.redondeadoUp{
-
-    border-top-left-radius:  10px;
-    border-top-right-radius: 10px;
-}
-
-.redondeadoDown{
-
-    border-bottom-left-radius:  10px;
-    border-bottom-right-radius:  10px;
 }
 
 /*
