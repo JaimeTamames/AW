@@ -69,7 +69,7 @@
     padding: 0px;	
 }
 
-#menu>ul>li{
+#menu>ul>li>button{
     
     float: left;
     text-align: center;

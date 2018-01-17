@@ -13,7 +13,7 @@ $(document).ready(() => {
     $("#desconectarSesion").on("click", desconectar);
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
-
+    //$("#familiar").on("click", familiar);
     $("#listaPartidas").on("click", "li", cargarPartida);
 });
 
