@@ -291,7 +291,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
     let partida = {
         idPartida: idPartida,
         nombrePartida: nombrePartida,
-        nParticipantes: null,
+        nParticipantes: 0,
         arrayParticipantes: null,
         estado: null,
     }

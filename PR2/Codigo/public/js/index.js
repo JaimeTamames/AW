@@ -204,8 +204,11 @@ function nombrePartidaToDOMElement(partida) {
 function cargarPartida(event){
 
     let partida = $(event.target);
-
     let idPartida = event.currentTarget.id;
+    let nombrePartida;
+    let numParticipantes;
+    let arrayParticipantes;
+    let estadoPartida;
 
     if(idPartida === "misPartidas"){
 
@@ -235,9 +238,15 @@ function cargarPartida(event){
                 idPartida: idPartida,
                 nombrePartida: partida.text(),
             },
+           
             success: (data, textStatus, jqXHR) => {
     
                 ocultar();
+
+                if(data.numParticipantes < 4){
+                    data.mensaje = "Aun no hay suficientes participantes";
+                    $("#nombreyBoton").after(pintarInfoPartida(data));
+                }
 
                 $("#sesion").show();
         
@@ -249,7 +258,6 @@ function cargarPartida(event){
                 $("#menu").show();
         
                 $("#nombrePartida").text(partida.text());
-                //$("#idPartida").text(idPartida);
         
                 $("#partida").show();
 
@@ -260,6 +268,14 @@ function cargarPartida(event){
             }
         });
     }
+}
+
+function pintarInfoPartida (data){
+
+    let result = $("<div>").prop("id", "infoPartida").text(data.mensaje);
+    result += ($("<div>").prop("id", "numJugadores").text("El identificador de la partida es el: " + data.idPartida));
+    return result;
+
 }
 
 //Funcion que oculta todos los elementos
