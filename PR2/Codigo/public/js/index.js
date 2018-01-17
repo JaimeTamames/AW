@@ -207,12 +207,15 @@ function cargarPartida(event){
 
     let partida = $(event.target);
 
+    let idPartida = event.currentTarget.id;
+
     ocultar();
 
     $("#sesion").show();
     $("#menu").show();
 
     $("#nombrePartida").text(partida.text());
+    $("#idPartida").text(idPartida);
 
     $("#partida").show();
 
