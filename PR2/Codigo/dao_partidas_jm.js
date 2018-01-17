@@ -28,8 +28,8 @@ class DAOPartidas {
             }
             connection.query(
                     "INSERT INTO partidas (nombre, estado) " +
-                    "VALUES (?)",
-                    [nombrePartida],
+                    "VALUES (?, ?)",
+                    [nombrePartida, "creada"],
                     (err, result) => {
                 if (err) {
                     callback(err);
