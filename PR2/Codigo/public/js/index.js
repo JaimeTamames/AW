@@ -197,8 +197,8 @@ function muestraMenu(){
 
 //Convierte las partidas en pestañas
 function nombrePartidaToDOMElement(partida) {
-    let result = $("<li>").addClass("nav-item").prop("id", partida.idPartida);
-    result.append($("<a>").addClass("nav-link").prop("data-toggle", "tab").prop("href", "#").text(partida.nombrePartida));
+    let result = $("<li>").prop("id", partida.idPartida);
+    result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#"+partida.idPartida).text(partida.nombrePartida));
     return result;
 }
 
@@ -212,10 +212,16 @@ function cargarPartida(event){
     ocultar();
 
     $("#sesion").show();
+
+    $("a.active").removeClass("active");
+
+    let pestaña = document.getElementById(idPartida);
+    $(pestaña).children().addClass("active");
+
     $("#menu").show();
 
     $("#nombrePartida").text(partida.text());
-    $("#idPartida").text(idPartida);
+    //$("#idPartida").text(idPartida);
 
     $("#partida").show();
 
