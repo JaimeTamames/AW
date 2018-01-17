@@ -50,7 +50,13 @@
     height: 120px;
     border-radius: 10px;
 
-    justify-content: space-between;
+}
+
+#partida{
+
+    background-color: #f6f7f9;
+    height: 120px;
+    border-radius: 10px;
 
 }
 

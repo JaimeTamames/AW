@@ -27,6 +27,7 @@
 
     <script src="js/index.js"></script>
 
+    <!-- Header -->
 
     <div class="container-fluid header">
         <div class="row align-items-center">
@@ -38,7 +39,9 @@
                 <button class="btn btn-danger" id="desconectarSesion">Desconectar</button>
             </div>
         </div>
-    </div>   
+    </div>
+
+    <!-- Div bienvenido -->
 
     <div class="container-fluid bienvenido" id="bienvenido">
         <div class="row align-items-center">
@@ -50,6 +53,8 @@
             </div>
         </div>
     </div> 
+
+    <!-- Login -->
 
     <div class="container col-sm-6 mt-4" id="login">
         <label class="h2">Identificarse</label>
@@ -71,6 +76,8 @@
         </div>
     </div>
 
+    <!-- Menu partidas -->
+
 	<div class="hidden" id="menu">
         <ul class="nav nav-tabs" id="listaPartidas">
             <li class="nav-item" id="misPartidas">
@@ -79,25 +86,40 @@
         </ul>
     </div>
 
+    <!-- Form crear a una partida -->
+
     <div class="container col-sm-6 border border-secondary mt-4 hidden" id="crearPartida">
 
-            <label class="h5">Crear una nueva partida</label>
-            <div class="input-group">
-                <input type="text" class="form-control" placeholder="Introduce aqui el nombre" id="nombreNuevaPartida">
-                <span class="input-group-btn">
-                  <button class="btn btn-primary" type="button" id="crear">Crear</button>
-                </span>
-            </div>
-
+        <label class="h5">Crear una nueva partida</label>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Introduce aqui el nombre" id="nombreNuevaPartida">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button" id="crear">Crear</button>
+            </span>
+        </div>
     </div>
+
+    <!-- Form unirse a una partida -->
 
     <div class="container col-sm-6 border border-secondary mt-4 hidden" id="unirsePartida">
 
-            <label class="h5">Unirse a una partida existente</label>
+        <label class="h5">Unirse a una partida existente</label>
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Introduce aquí el identificador de la partida" id="idUnirsePartida">
+            <span class="input-group-btn">
+                <button class="btn btn-primary" type="button" id="unirse">Unirse</button>
+            </span>
+        </div>
+    </div>
+
+    <!-- Vista de una partida -->
+
+    <div class="container col-sm-6 border border-secondary mt-4 hidden" id="partida">
+
             <div class="input-group">
-                <input type="text" class="form-control" placeholder="Introduce aquí el identificador de la partida" id="idUnirsePartida">
+                <label class="h5" id="nombrePartida"></label>
                 <span class="input-group-btn">
-                  <button class="btn btn-primary" type="button" id="unirse">Unirse</button>
+                  <button class="btn btn-primary" type="button" id="actualiarPartida">Actualizar partida</button>
                 </span>
             </div>
 

@@ -204,9 +204,18 @@ function nombrePartidaToDOMElement(partida) {
 
 //Carga la vista de una partida
 function cargarPartida(event){
+
     let partida = $(event.target);
 
-    alert(partida.text());
+    ocultar();
+
+    $("#sesion").show();
+    $("#menu").show();
+
+    $("#nombrePartida").text(partida.text());
+
+    $("#partida").show();
+
 }
 
 //Funcion que oculta todos los elementos
@@ -217,6 +226,7 @@ function ocultar(){
     $("#sesion").hide();
     $("#crearPartida").hide();
     $("#unirsePartida").hide();
-	$("#menu").hide();
+    $("#menu").hide();
+    $("#partida").hide();
 
 }
