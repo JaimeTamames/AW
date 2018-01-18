@@ -39,15 +39,6 @@ let pool = mysql.createPool({
 let daoU = new daoUsers.DAOUsers(pool);
 let daoP = new daoPartidas.DAOPartidas(pool);
 
-//Middleware sesion
-const middlewareSession = express_session({
-    saveUninitialized: false,
-    secret: "foobar34",
-    resave: false,
-    store: sessionStore
-});
-app.use(middlewareSession);
-
 //Middelware passport
 app.use(passport.initialize());
 
@@ -83,10 +74,6 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(bodyParser.json());
-
-app.get("/", (request, response) => {
-    response.redirect("/index.html");
-});
 
 //Comprueba que exista el usuario, si es asi se loguea
 app.post("/login", function(request, response) {

@@ -4,8 +4,6 @@
 .header{
 
     background-color: #354248;
-    height: 58px;
-    align-items: center;
 
     color: white;
 }
@@ -28,7 +26,6 @@
 #login{
 
     background-color: #354248;
-    height: 310px;
 
     color: white;
 }

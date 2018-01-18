@@ -44,7 +44,7 @@ function acceder(){
             login = data.nombre;
             loginId = data.id;
 
-            cadenaBase64 = btoa(usuario + ":" + contraseña)
+            cadenaBase64 = btoa(usuario + ":" + contraseña);
 
             $("#nombreUsuario").prop("value", "");
             $("#contraseñaUsuario").prop("value", "");
