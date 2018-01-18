@@ -60,7 +60,15 @@ function acceder(){
         },
         error: (jqXHR, textStatus, errorThrown) => {
 
-            alert("Se ha producido un error: " + errorThrown);
+            if(jqXHR.status === 400){
+                borrarmsg();
+                $("#login").after(pintarError3());
+            }
+            if(jqXHR.status === 401){
+                borrarmsg();
+                $("#login").after(pintarError2());
+            }
+
         }
     });
 }
@@ -80,14 +88,59 @@ function nuevoUsuario(){
             contraseña: contraseña,
         }),
         success: (data, textStatus, jqXHR) => {
-
-            alert("Usuario " + data.nombre + " creado correctamente, logueate!");     
+            borrarmsg();
+            $("#login").after(pintarInfo(data));     
         },
         error: (jqXHR, textStatus, errorThrown) =>{
-
-            alert("Se ha producido un error: " + errorThrown);
+            if(jqXHR.status === 400){
+                borrarmsg();
+                $("#login").after(pintarError());
+            }
+            if(jqXHR.status === 401){
+                borrarmsg();
+                $("#login").after(pintarError2());
+            }           
         }
     });
+}
+
+function pintarError() {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("errorLogin").text("El usuario ya existe en la BBDD"));
+    return result;
+
+}
+
+function pintarError2() {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("errorLogin").text("Los campos de login y contraseña no están correctamente rellenos"));
+    return result;
+
+}
+
+
+function pintarError3() {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("errorLogin").text("El usuario y/o contraseña introducidos son incorrectos"));
+    return result;
+
+}
+
+function borrarmsg() {
+
+    $("#msgLogin").remove();    
+
+}
+
+function pintarInfo(data) {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("msgLogin").text("Usuario " + data.nombre + " creado correctamente, logueate!"));
+    return result;
+
 }
 
 //Funcion que desconecta al usuario y finaliza la sesion

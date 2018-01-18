@@ -80,27 +80,33 @@ app.post("/login", function(request, response) {
 
     var usuario = request.body.usuario;
     var contraseña = request.body.contraseña;
+    if(usuario === "" || contraseña === ""){
 
-    daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
+        response.status(401);
+        response.end();
+    }
+    else {
+        daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
-        if (err) {
+            if (err) {
 
-            console.log(err);
-            response.end();
-        } else {
-
-            if (!callback) {
-
-                response.status(400);
-                response.end("Este usuario y/o contraseña no existe");
-
+                console.log(err);
+                response.end();
             } else {
 
-                response.status(200);
-                response.json({"nombre": callback.login, "id": callback.id});
+                if (!callback) {
+
+                    response.status(400);
+                    response.end("Este usuario y/o contraseña no existe");
+
+                } else {
+
+                    response.status(200);
+                    response.json({"nombre": callback.login, "id": callback.id});
+                }
             }
-        }
-    });
+        });
+    }
 });
 
 //Da de alta un nuevo usuario
@@ -109,27 +115,56 @@ app.post("/nuevoUsuario", function(request, response) {
     var usuario = request.body.usuario;
     var contraseña = request.body.contraseña;
 
-    daoU.nuevoUsuario(usuario, contraseña, (err, callback) => {
+    if(usuario === "" || contraseña === ""){
 
-        if (err) {
+        response.status(401);
+        response.end();
 
-            console.log(err);
-            response.end();
-        } else {
+    }
+    else {
+        daoU.existeUsuario(usuario, (err, callback) => {
 
-            if (callback) {
+            if (err) {
 
-                response.status(201);
-                response.json({"nombre": usuario});
-
-
+                console.log(err);
+                response.end();
             } else {
 
-                response.status(400);
-                response.end("Este usuario ya existe");
+                if (callback) {
+
+                    response.status(400);
+                    response.end();
+
+                } else {
+
+                    daoU.nuevoUsuario(usuario, contraseña, (err, callback) => {
+
+                        if (err) {
+                
+                            console.log(err);
+                            response.end();
+                        } else {
+                
+                            if (callback) {
+                
+                                response.status(201);
+                                response.json({"nombre": usuario});
+                
+                
+                            } else {
+                
+                                response.status(400);
+
+                            }
+                        }
+                    });
+
+                }
             }
-        }
-    });
+        });
+
+    }
+    
 });
 
 //Crea una partida con el nombre y añade al jugador a ella

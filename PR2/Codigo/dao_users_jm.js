@@ -85,6 +85,35 @@ class DAOUsers {
         });
     }
 
+
+    //Añade un usuario
+    existeUsuario(usuario, callback) {
+
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "SELECT * " +
+                    "FROM usuarios " +
+                    "WHERE login = ?",
+                    [usuario],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, false);
+                } else {
+                    callback(null, true);
+                }
+            });
+        });
+    }
+
     /** ___________________________________________________________________________________________ */
 
     /**

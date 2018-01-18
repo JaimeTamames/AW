@@ -8,6 +8,11 @@
     color: white;
 }
 
+.errorLogin {
+
+    color:red;
+}
+
 #bienvenido{
 
     background-color: #e0e0e0;
