@@ -14,6 +14,7 @@ $(document).ready(() => {
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
     $("#listaPartidas").on("click", "li", muestraPartida);
+    $("#actualiarPartida").on("click", actualizaPartida);
 });
 
 //Funcion que carga las vistas principales
@@ -203,22 +204,33 @@ function nombrePartidaToDOMElement(partida) {
 //Funcion que maneja las pestañas de partidas
 function muestraPartida(event){
 
-    let partida = $(event.target);
+    let nombrePartida = $(event.target);
     let idPartida = event.currentTarget.id;
 
     vaciarInfoPartida();
 
     if(idPartida === "misPartidas"){
 
-        muestraMisPartidas();
+        muestraMisPartidas(idPartida);
     }else{
 
-        cargarPartida(idPartida, partida);
+        cargarPartida(idPartida, nombrePartida.text());
     }
 }
 
+//Funcion que actualiza la partida
+function actualizaPartida(event){
+
+    let nombrePartida = $("#nombrePartidaInfo").text();
+    let idPartida = $("a.active").parent().prop("id");
+
+    vaciarInfoPartida();
+
+    cargarPartida(idPartida, nombrePartida);
+}
+
 //Muestra la pestaña mis partidas
-function muestraMisPartidas(){
+function muestraMisPartidas(idPartida){
 
     ocultar();
 
@@ -233,7 +245,7 @@ function muestraMisPartidas(){
 }
 
 //Carga la vista de una partida
-function cargarPartida(idPartida, partida){
+function cargarPartida(idPartida, nombrePartida){
 
     $.ajax({
         type: 'GET',
@@ -245,7 +257,7 @@ function cargarPartida(idPartida, partida){
         },
         data: {
             idPartida: idPartida,
-            nombrePartida: partida.text(),
+            nombrePartida: nombrePartida,
         },
            
         success: (data, textStatus, jqXHR) => {
@@ -253,7 +265,7 @@ function cargarPartida(idPartida, partida){
             ocultar();
            
             //Pinta nombre partida
-            $("#nombrePartidaInfo").text(partida.text());
+            $("#nombrePartidaInfo").text(nombrePartida);
 
             //Pinta info partida
             if(data.nParticipantes < 4){
