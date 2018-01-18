@@ -222,6 +222,33 @@ class DAOPartidas {
         });
     }
 
+    //Guarda el estado de una partida
+    guardarPartida(idPartida, estado, callback) {
+        
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                    "UPDATE partidas SET " +
+                    "estado = ? " +
+                    "WHERE id = ?",
+                    [estado, idPartida],
+                    (err, result) => {
+                if (err) {
+                    callback(err);
+                    return;
+                } else {
+
+                    connection.release();
+                    callback(null, true);
+                }
+            }
+            );
+        });
+    }
+
 
     /** ___________________________________________________________________________________________ */
 

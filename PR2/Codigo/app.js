@@ -166,6 +166,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
     
     var idPartida = request.body.idPartida;
     var idUsuario = request.body.idUsuario;
+    var nParticipantes = null;
 
     daoP.numeroJugadoresPartida(idPartida, (err, callback) => {
 
@@ -182,7 +183,10 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
 
             } else {
 
-                if(callback.num >= 4){
+                nParticipantes = callback.num;
+
+                //Partida llena
+                if(nParticipantes >= 4){
 
                     response.status(400);
                     response.end("La partida esta llena");
@@ -201,6 +205,13 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                             if (callback.ok) {
                 
                                 response.status(201);
+
+                                //Si se une el cuarto jugador se comienza la partida
+                                if(nParticipantes === 3){
+
+                                    comenzarPartida(callback.idPartida);
+                                }
+                                
                                 response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida});
                 
                             } else {
@@ -349,6 +360,141 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
     });
 });
 
+function comenzarPartida(idPartida){
+
+    let estado = "empezada . ";
+    let jugador1 = "jugador1 : ";
+    let jugador2 = "jugador2 : ";
+    let jugador3 = "jugador3 : ";
+    let jugador4 = "jugador4 : ";
+
+    daoP.participantesDePartida(idPartida, (err, jugadores) => {
+
+        if (err) {
+
+            console.log(err);
+            //response.end();
+        } else {
+
+            if (jugadores === undefined) {
+
+                //response.status(404);
+                //response.end("Este identificador no corresponde a ninguna partida");
+
+            } else {
+
+                //response.status(200);
+
+                let i = 0;
+
+                //Orden de jugadores aleatorio
+                while(jugadores.length) {
+                    
+                    var index = Math.floor( Math.random()*jugadores.length );
+                    //console.log( baraja[index] ); // Muestra la carta elegida                    
+            
+                    switch (i) {
+                        case 0:
+                            jugador1 = jugador1 + jugadores[index].nombre + " , ";
+                            break;
+                        case 1:
+                            jugador2 = jugador2 + jugadores[index].nombre + " , ";
+                            break;
+                        case 2:
+                            jugador3 = jugador3 + jugadores[index].nombre + " , ";
+                            break;
+                        case 3:
+                         jugador4 = jugador4 + jugadores[index].nombre + " , ";
+                            break;
+                    }
+
+                    //Siguiente jugador
+                    i++;
+            
+                    // Elimina una carta del array
+                    jugadores.splice( index, 1 );
+                }
+
+                let aux = repartirCartas(jugador1, jugador2, jugador3, jugador4);
+                
+                //repartimos cartas aleatoriamente
+                let partida = estado + aux;
+
+                //Añadir turno
+                partida = partida + " turno: , ";
+
+                //Añadir mesa
+                partida = partida + " mesa: , ";
+
+                //Añadir palo
+                partida = partida + " palo: , ";
+
+                //Añadir jugada anterior
+                partida = partida + " jugadaAnterior: , ";
+
+                console.log(partida);
+
+                //Guadar estado de partida
+                daoP.guardarPartida(idPartida, partida, (err, callback) => {
+
+                    if (err) {
+            
+                        console.log(err);
+                        //response.end();
+                    } else {
+                        
+            
+                    }
+                });
+
+            } //fin del else final
+        }
+    });
+}
+
+//Funcion que reparte las cartas aleatoriamente entre los jugadores
+function repartirCartas(jugador1, jugador2, jugador3, jugador4){
+
+    let baraja = cartas;
+    let i = 0;
+
+    while(baraja.length) {
+                    
+        var index = Math.floor( Math.random()*baraja.length );
+        //console.log( baraja[index] ); // Muestra la carta elegida                    
+
+        switch (i) {
+            case 0:
+                jugador1 = jugador1 + baraja[index] + " , ";
+                break;
+            case 1:
+                jugador2 = jugador2 + baraja[index] + " , ";
+                break;
+            case 2:
+                jugador3 = jugador3 + baraja[index] + " , ";
+                break;
+            case 3:
+             jugador4 = jugador4 + baraja[index] + " , ";
+                break;
+        }
+
+        //Siguiente jugador
+        i++;
+
+        //Si llegamos al ultimo jugador volvemos al primero
+        if(i === 4){
+            i = 0;
+        }
+
+        // Elimina una carta del array
+        baraja.splice( index, 1 );
+    }
+
+    let aux = jugador1 + jugador2 + jugador3 + jugador4;
+
+    return aux;
+}
+
 //Declaracion del middelware para las paginas no encontradas
 app.use((request, response, next) => {
     response.status(404);
@@ -364,3 +510,5 @@ app.listen(config.mysqlConfig.port, function (err) {
         console.log(`Servidor escuchando en puerto ${config.mysqlConfig.port}.`);
     }
 });
+
+const cartas = [ "2_C", "2_D", "2_H", "2_S", "3_C", "3_D", "3_H", "3_S", "4_C", "4_D", "4_H", "4_S", "5_C", "5_D", "5_H", "5_S", "6_C", "6_D", "6_H", "6_S", "7_C", "7_D", "7_H", "7_S", "8_C", "8_D", "8_H", "8_S", "9_C", "9_D", "9_H", "9_S", "10_C", "10_D", "10_H", "10_S", "J_C", "J_D", "J_H", "J_S", "Q_C", "Q_D", "Q_H", "Q_S", "K_C", "K_D", "K_H", "K_S", "A_C", "A_D", "A_H", "A_S"];
