@@ -40,7 +40,8 @@ function acceder(){
             contraseña: contraseña,
         }),
         success: (data, textStatus, jqXHR) => {
-
+           
+            borrarmsg();
             login = data.nombre;
             loginId = data.id;
 
