@@ -34,7 +34,7 @@
             <div class="col-10">
                 <label class="h3" id="nombreJuego">Juego del mentiroso</label>
             </div>
-            <div class="hidden col-2" id="sesion">
+            <div class="col-2 hidden" id="sesion">
                 <label class="h3" id="usuario"></label>
                 <button class="btn btn-danger" id="desconectarSesion">Desconectar</button>
             </div>
@@ -119,16 +119,13 @@
 
                     <!-- Estado partida -->
 
-                    <div class="container">
-                        <div class="row border border-secondary fondoGris rounded align-items-center flex-row p-2" >
-                            <div class="col-6 pl-0">
-                                <label class="h4" id="nombrePartidaInfo"></label>
-                                <label class="h7" id="noJugadoresInfo"></label>
-                                <label class="h7" id="idPartidaInfo"></label>
-                            </div>                         
-                            <div class="input-group-btn col-6">
+                    <div class="column">
+                        <div class="border border-secondary fondoGris rounded align-items-center p-2" >
+
+                            <label class="h4" id="nombrePartida"></label>
+                            <span class="input-group-btn" id="nombreyBoton">
                                 <button class="btn btn-primary float-right" type="button" id="actualiarPartida">Actualizar partida</button>
-                            </div>
+                            </span>
                         </div>
                     </div>
 
@@ -159,29 +156,25 @@
                         <label class="h4">Jugadores</label>
                     </div>
                     <div class="border border-secondary rounded-bottom p-2">
-                        <table class="table table-striped" id="jugadores">
+                        <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
                                     <th>Nº Cartas</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="jugadores">
                                 <tr>
-                                    <td id="nombreJugadorInfo1">--</td>
-                                    <td id="nCartasJugadorInfo1">--</td>
+                                    <td>John</td>
+                                    <td>10</td>
                                 </tr>
                                 <tr>
-                                    <td id="nombreJugadorInfo2">--</td>
-                                    <td id="nCartasJugadorInfo2">--</td>
+                                    <td>Mary</td>
+                                    <td>23</td>
                                 </tr>
                                 <tr>
-                                    <td id="nombreJugadorInfo3">--</td>
-                                    <td id="nCartasJugadorInfo3">--</td>
-                                </tr>
-                                <tr>
-                                    <td id="nombreJugadorInfo4">--</td>
-                                    <td id="nCartasJugadorInfo4">--</td>
+                                    <td></td>
+                                    <td></td>
                                 </tr>
                             </tbody>
                         </table>

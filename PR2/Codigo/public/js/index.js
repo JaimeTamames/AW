@@ -13,7 +13,7 @@ $(document).ready(() => {
     $("#desconectarSesion").on("click", desconectar);
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
-    $("#listaPartidas").on("click", "li", cargarPartida);
+    $("#listaPartidas").on("click", "li", muestraPartida);
 });
 
 //Funcion que carga las vistas principales
@@ -54,7 +54,7 @@ function acceder(){
             $("#crearPartida").show();
             $("#unirsePartida").show();
             $("#usuario").text(usuario);
-            muestraMenu();
+            cargaMenu();
             
         },
         error: (jqXHR, textStatus, errorThrown) => {
@@ -162,8 +162,8 @@ function unirsePartida(){
     });
 }
 
-//Funcion que muestra el menu
-function muestraMenu(){
+//Carga el menu
+function cargaMenu(){
 
     $.ajax({
         type: 'GET',
@@ -193,87 +193,122 @@ function muestraMenu(){
     $("#menu").show();
 }
 
-//Convierte las partidas en pestañas
+//Convierte partidas en pestañas
 function nombrePartidaToDOMElement(partida) {
     let result = $("<li>").prop("id", partida.idPartida);
     result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#"+partida.idPartida).text(partida.nombrePartida));
     return result;
 }
 
-//Carga la vista de una partida
-function cargarPartida(event){
+//Funcion que maneja las pestañas de partidas
+function muestraPartida(event){
 
     let partida = $(event.target);
     let idPartida = event.currentTarget.id;
-   
+
+    vaciarInfoPartida();
+
     if(idPartida === "misPartidas"){
 
-        ocultar();
-
-        $("#sesion").show();
-        $("a.active").removeClass("active");
-
-        let pestaña = document.getElementById(idPartida);
-        $(pestaña).children().addClass("active");
-        $("#menu").show();
-        $("#crearPartida").show();
-        $("#unirsePartida").show();
-        
-
+        muestraMisPartidas();
     }else{
 
-        $.ajax({
-            type: 'GET',
-            url: '/estadoPartida', 
-            beforeSend: function(req) {
-                // Añadimos la cabecera 'Authorization' con los datos de autenticación.
-                req.setRequestHeader("Authorization",
-                "Basic " + cadenaBase64);
-            },
-            data: {
-                idPartida: idPartida,
-                nombrePartida: partida.text(),
-            },
-           
-            success: (data, textStatus, jqXHR) => {
-    
-                ocultar();                
-
-                if(data.nParticipantes < 4){
-                    data.mensaje = "Aun no hay suficientes participantes";
-                    $("#nombreyBoton").after(pintarInfoPartida(data.mensaje, data.idPartida));
-                }
-
-                $("#sesion").show();
-        
-                $("a.active").removeClass("active");
-        
-                let pestaña = document.getElementById(idPartida);
-                $(pestaña).children().addClass("active");
-        
-                $("#menu").show();
-        
-                $("#nombrePartida").text(partida.text());
-        
-                $("#partida").show();
-
-            },
-            error: (jqXHR, textStatus, errorThrown) =>{
-    
-                alert("Se ha producido un error: " + errorThrown);
-            }
-        });
+        cargarPartida(idPartida, partida);
     }
 }
 
-function pintarInfoPartida (data1, data2){
+//Muestra la pestaña mis partidas
+function muestraMisPartidas(){
 
-    console.log(data1 + " " + data2);
+    ocultar();
 
-    let result = $("<div>").prop("id", "infoPartida").text(data1);
-    result.append($("<div>").prop("id", "idPartidaInfo").text("El identificador de la partida es el: " + data2));
-    return result;
+    $("#sesion").show();
+    $("a.active").removeClass("active");
 
+    let pestaña = document.getElementById(idPartida);
+    $(pestaña).children().addClass("active");
+    $("#menu").show();
+    $("#crearPartida").show();
+    $("#unirsePartida").show();
+}
+
+//Carga la vista de una partida
+function cargarPartida(idPartida, partida){
+
+    $.ajax({
+        type: 'GET',
+        url: '/estadoPartida', 
+        beforeSend: function(req) {
+            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+            req.setRequestHeader("Authorization",
+            "Basic " + cadenaBase64);
+        },
+        data: {
+            idPartida: idPartida,
+            nombrePartida: partida.text(),
+        },
+           
+        success: (data, textStatus, jqXHR) => {
+    
+            ocultar();
+           
+            //Pinta nombre partida
+            $("#nombrePartidaInfo").text(partida.text());
+
+            //Pinta info partida
+            if(data.nParticipantes < 4){
+                
+                $("#noJugadoresInfo").text("Aun no hay suficientes participantes");
+                $("#idPartidaInfo").text("El identificador de la partida es el: " + data.idPartida);
+            }
+
+            let i = 1;
+
+            //Pinta info jugadores
+            data.arrayParticipantes.forEach(elem => {
+
+                $("#nombreJugadorInfo" + i).text(elem.nombre);
+                i++;
+            });
+
+
+            $("#sesion").show();      
+            $("a.active").removeClass("active");
+        
+            let pestaña = document.getElementById(data.idPartida);
+            $(pestaña).children().addClass("active");
+        
+            $("#menu").show();    
+            $("#partida").show();
+
+        },
+        error: (jqXHR, textStatus, errorThrown) =>{
+    
+            alert("Se ha producido un error: " + errorThrown);
+        }
+    });        
+}
+
+//Vacia la informacion de la partida
+function vaciarInfoPartida(){
+
+    //Datos partida
+    $("#nombrePartidaInfo").empty();
+    $("#noJugadoresInfo").empty();
+    $("#idPartidaInfo").empty();
+
+    //Datos jugadores
+    $("#nombreJugadorInfo1").empty();
+    $("#nCartasJugadorInfo1").empty();
+
+    $("#nombreJugadorInfo2").empty();
+    $("#nCartasJugadorInfo2").empty();
+
+    $("#nombreJugadorInfo3").empty();
+    $("#nCartasJugadorInfo3").empty();
+
+    $("#nombreJugadorInfo4").empty();
+    $("#nCartasJugadorInfo4").empty();
 }
 
 //Funcion que oculta todos los elementos
