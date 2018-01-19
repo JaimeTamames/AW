@@ -227,7 +227,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
 
                         } else {
 
-                            nParticipantes = callback.num;
+                            nParticipantes = callback;
 
                             //Partida llena
                             if(nParticipantes >= 4){
@@ -357,13 +357,18 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
     
     var idPartida = request.query.idPartida;
     var nombrePartida = request.query.nombrePartida;
+    var nombreJugador = request.query.nombreJugador;
 
     let partida = {
         idPartida: idPartida,
         nombrePartida: nombrePartida,
         nParticipantes: 0,
         arrayParticipantes: [{"nombre": null}, {"nombre": null}, {"nombre": null}, {"nombre": null}],
-        arrayMisCartas: null,
+        arrayMisCartas: [],
+        turno: null,
+        mesa: null,
+        palo: null,
+        jugadaAnterior: null,
         estado: null,
     }
 
@@ -383,7 +388,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
             } else {
 
                 response.status(200);
-                partida.nParticipantes = nParicipantes.num;
+                partida.nParticipantes = nParicipantes;
 
                 daoP.participantesDePartida(idPartida, (err, arrayParticipantes) => {
 
@@ -417,11 +422,8 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                         
                                     } else {
 
-                                        //var temp = estadoPartida;
-                                        // this will return an array with strings
+                                        //Convierte el string en un array, con cada palabra en un indice
                                         var array = estadoPartida.split(',');
-
-                                        console.log(array[0]);
 
                                         //Si la partida ha empezado
                                         if(array[0] === "empezada"){
@@ -437,20 +439,84 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                                 switch (array[i]) {
                                                     case "jugador1":
                                                         partida.arrayParticipantes[0].nombre = array[i + 1];
-                                                        console.log(array[i + 1]);
+                                                        
+                                                        if(nombreJugador === array[i + 1]){
+
+                                                            i = i + 2;
+
+                                                            while(array[i + 1] !== "jugador2"){
+
+                                                                console.log(array[i]);
+                                                                partida.arrayMisCartas.push(array[i]);
+                                                                i++;
+                                                            }
+                                                            partida.arrayMisCartas.push(array[i]);         
+                                                        }
+
                                                         break;
                                                     case "jugador2":
                                                         partida.arrayParticipantes[1].nombre = array[i + 1];
-                                                        console.log(array[i + 1]);
+
+                                                        if(nombreJugador === array[i + 1]){
+
+                                                            i = i + 2;
+
+                                                            while(array[i + 1] !== "jugador3"){
+
+                                                                console.log(array[i]);
+                                                                partida.arrayMisCartas.push(array[i]);
+                                                                i++;
+                                                            }
+                                                            partida.arrayMisCartas.push(array[i]);
+                                                        }
+
                                                         break;
                                                     case "jugador3":
                                                         partida.arrayParticipantes[2].nombre = array[i + 1];
-                                                        console.log(array[i + 1]);
+
+                                                        if(nombreJugador === array[i + 1]){
+
+                                                            i = i + 2;
+
+                                                            while(array[i + 1] !== "jugador4"){
+
+                                                                console.log(array[i]);
+                                                                partida.arrayMisCartas.push(array[i]);
+                                                                i++;
+                                                            }
+                                                            partida.arrayMisCartas.push(array[i]);
+                                                        }
+
                                                         break;
                                                     case "jugador4":
                                                         partida.arrayParticipantes[3].nombre = array[i + 1];
-                                                        console.log(array[i + 1]);
+
+                                                        if(nombreJugador === array[i + 1]){
+
+                                                            i = i + 2;
+
+                                                            while(array[i + 1] !== "turno"){
+
+                                                                console.log(array[i]);
+                                                                partida.arrayMisCartas.push(array[i]);
+                                                                i++;
+                                                            }
+                                                            partida.arrayMisCartas.push(array[i]);
+                                                        }
+
                                                         break;
+                                                    case "turno":
+                                                        partida.turno = array[i + 1];
+                                                        break;
+                                                    case "mesa":
+                                                        partida.mesa = array[i + 1];
+                                                        break;
+                                                    case "palo":
+                                                        partida.palo = array[i + 1];
+                                                        break;
+                                                    case "jugadaAnterior":
+                                                        partida.jugadaAnterior = array[i + 1];
+                                                        break;                
                                                 }
                                             }
                                         }else{
@@ -535,20 +601,20 @@ function comenzarPartida(idPartida){
 
                 let aux = repartirCartas(jugador1, jugador2, jugador3, jugador4);
                 
-                //repartimos cartas aleatoriamente
+                //Repartimos cartas aleatoriamente
                 let partida = estado + aux;
 
                 //Añadir turno
                 partida = partida + turno;
 
                 //Añadir mesa
-                partida = partida + "mesa,";
+                partida = partida + "mesa,null,";
 
                 //Añadir palo
-                partida = partida + "palo,";
+                partida = partida + "palo,null,";
 
                 //Añadir jugada anterior
-                partida = partida + "jugadaAnterior,";
+                partida = partida + "jugadaAnterior,null,";
 
                 //Guadar estado de partida
                 daoP.guardarPartida(idPartida, partida, (err, callback) => {
@@ -562,7 +628,6 @@ function comenzarPartida(idPartida){
             
                     }
                 });
-
             } //fin del else final
         }
     });

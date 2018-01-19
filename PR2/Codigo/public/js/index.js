@@ -286,6 +286,7 @@ function cargarPartida(idPartida, nombrePartida){
         data: {
             idPartida: idPartida,
             nombrePartida: nombrePartida,
+            nombreJugador: login,
         },
            
         success: (data, textStatus, jqXHR) => {
