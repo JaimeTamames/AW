@@ -64,11 +64,11 @@ function acceder(){
 
             if(jqXHR.status === 400){
                 borrarmsg();
-                $("#login").after(pintarError3());
+                $("#login").after(pintarError("El usuario y/o contraseña introducidos son incorrectos"));
             }
             if(jqXHR.status === 401){
                 borrarmsg();
-                $("#login").after(pintarError2());
+                $("#login").after(pintarError("Los campos de login y contraseña no están correctamente rellenos"));
             }
 
         }
@@ -91,90 +91,19 @@ function nuevoUsuario(){
         }),
         success: (data, textStatus, jqXHR) => {
             borrarmsg();
-            $("#login").after(pintarInfo(data));     
+            $("#login").after(pintarInfo("Usuario " + data.nombre + " creado correctamente, logueate!"));     
         },
         error: (jqXHR, textStatus, errorThrown) =>{
             if(jqXHR.status === 400){
                 borrarmsg();
-                $("#login").after(pintarError());
+                $("#login").after(pintarError("El usuario ya existe en la BBDD"));
             }
             if(jqXHR.status === 401){
                 borrarmsg();
-                $("#login").after(pintarError2());
+                $("#login").after(pintarError("Los campos de login y contraseña no están correctamente rellenos"));
             }           
         }
     });
-}
-
-function pintarError() {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("errorLogin").text("El usuario ya existe en la BBDD"));
-    return result;
-
-}
-
-function pintarError2() {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("errorLogin").text("Los campos de login y contraseña no están correctamente rellenos"));
-    return result;
-
-}
-
-
-function pintarError3() {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("errorLogin").text("El usuario y/o contraseña introducidos son incorrectos"));
-    return result;
-
-}
-
-function pintarError4() {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("errorLogin").text("Ya perteneces a esta partida"));
-    return result;
-
-}
-
-function pintarError5() {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("errorLogin").text("La partida no existe"));
-    return result;
-
-}
-
-function pintarError6() {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("errorLogin").text("La partida está llena"));
-    return result;
-
-}
-
-function borrarmsg() {
-
-    $("#msgLogin").remove();    
-
-}
-
-function pintarInfo(data) {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("msgLogin").text("Usuario " + data.nombre + " creado correctamente, logueate!"));
-    return result;
-
-}
-
-function pintarInfo1(data) {
-
-    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("msgLogin").text("Te has unido a la partida con id " + data.idPartida));
-    return result;
-
 }
 
 //Funcion que desconecta al usuario y finaliza la sesion
@@ -206,8 +135,9 @@ function crearPartida(){
         }),
         success: (data, textStatus, jqXHR) => {
 
-            alert("Partida " + data.nombrePartida + " creada correctamente!");
-
+            borrarmsg();
+            $("#unirsePartida").after(pintarInfo("Partida " + data.nombrePartida + " creada correctamente!"));
+            
             $("#nombreNuevaPartida").prop("value", "");
             $("#misPartidas").after(nombrePartidaToDOMElement(data));
         },
@@ -238,7 +168,7 @@ function unirsePartida(){
         }),
         success: (data, textStatus, jqXHR) => {
             borrarmsg();
-            $("#unirsePartida").after(pintarInfo1(data));
+            $("#unirsePartida").after(pintarInfo("Te has unido a la partida con id " + data.idPartida));
 
             $("#idUnirsePartida").prop("value", "");
             $("#misPartidas").after(nombrePartidaToDOMElement(data));
@@ -247,15 +177,15 @@ function unirsePartida(){
         error: (jqXHR, textStatus, errorThrown) =>{
             if(jqXHR.status === 400){
                 borrarmsg();
-                $("#unirsePartida").after(pintarError4());
+                $("#unirsePartida").after(pintarError("Ya perteneces a esta partida"));
             }
             if(jqXHR.status === 402){
                 borrarmsg();
-                $("#unirsePartida").after(pintarError6());
+                $("#unirsePartida").after(pintarError("La partida está llena"));
             }
             if(jqXHR.status === 403){
                 borrarmsg();
-                $("#unirsePartida").after(pintarError5());
+                $("#unirsePartida").after(pintarError("La partida no existe"));
             }
         }
     });
@@ -419,6 +349,31 @@ function vaciarInfoPartida(){
 
     $("#nombreJugadorInfo4").empty();
     $("#nCartasJugadorInfo4").empty();
+}
+
+//Funcion que muestra un error
+function pintarError(mensaje) {
+
+    let result = $("<div>").addClass("container d-flex justify-content-center mt-1 pl-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("text-danger").text(mensaje));
+    return result;
+
+}
+
+//Funcion que borra los mensajes
+function borrarmsg() {
+
+    $("#msgLogin").remove();    
+
+}
+
+//Funcion que muestra mensajes
+function pintarInfo(mensaje) {
+
+    let result = $("<div>").addClass("container d-flex justify-content-center mt-1 pl-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("text-success").text(mensaje));
+    return result;
+
 }
 
 //Funcion que oculta todos los elementos
