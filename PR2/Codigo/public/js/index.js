@@ -236,7 +236,8 @@ function muestraPartida(event){
     let idPartida = event.currentTarget.id;
 
     vaciarInfoPartida();
-    vaciarCartasPartida()
+    vaciarCartasPartida();
+    vaciarCartasMano();
 
     if(idPartida === "misPartidas"){
         borrarmsg();
@@ -254,7 +255,8 @@ function actualizaPartida(event){
     let idPartida = $("a.active").parent().prop("id");
 
     vaciarInfoPartida();
-    vaciarCartasPartida()
+    vaciarCartasPartida();
+    vaciarCartasMano();
 
     cargarPartida(idPartida, nombrePartida);
 }
@@ -319,15 +321,15 @@ function cargarPartida(idPartida, nombrePartida){
             data.arrayMisCartas.forEach(elem => {
 
                 $("#cartas-mano").append(pintarCarta(elem));
-
             });
 
             //Pinta las cartas de la mesa
-            data.mesa.forEach(elem => {
+            if(data.palo !== "null"){
+                data.mesa.forEach(elem => {
 
-                $("#cartas-mano").append(pintarMesa(elem));
-
-            });
+                    $("#cartas-mesa").append(pintarMesa(data.palo));
+                });
+            }
 
 
             $("#sesion").show();      
@@ -355,21 +357,24 @@ function pintarCarta(carta){
 
 }
 
-function pintarMesa(){
+function pintarMesa(palo){
 
-    let result = $("<span src='img/" + carta + ".png'>").addClass("m-2");
+    let result = $("<span>").addClass("d-inline-block bg-warning");
+    result.append($("<h3>").text(palo));
     return result;
 }
 
-card-block
 //Vacia cartas de la partida
 function vaciarCartasPartida(){
 
-    //Datos partida
-    $("#card-block").empty();
+    $("#cartas-mano").empty();
 }
 
+//Vacia cartas de la partida
+function vaciarCartasMano(){
 
+    $("#cartas-mesa").empty();
+}
 
 //Vacia la informacion de la partida
 function vaciarInfoPartida(){
