@@ -8,11 +8,6 @@
     color: white;
 }
 
-.errorLogin {
-
-    color:red;
-}
-
 #bienvenido{
 
     background-color: #e0e0e0;
@@ -34,65 +29,3 @@
 
     color: white;
 }
-
-.fondoGris{
-
-    background-color: #f6f7f9;
-}
-
-/*
-
-#menu{
-
-    width: 100%;
-    align-items: center;
-}
-
-#menu>ul{
-
-    list-style: none;
-    margin: 0px 10px 0px 10px;
-    padding: 0px;	
-}
-
-#menu>ul>li>button{
-    
-    float: left;
-    text-align: center;
-    padding: 10px;
-}
-
-#menu>ul>li:hover{
-    
-    cursor: pointer;	
-}
-
-#menu>ul>li:active{
-
-
-}
-
-.seleccionada {
-    
-    font-weight: bold;
-    border-style: solid;
-    border-radius: 5px;
-    border-width: 1px 1px 0px 1px;
-    border-color: #5e5d5d;
-
-}
-
-.menu {
-	
-	width: 100%;
-    height: 60px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-	border-bottom: 2px solid black;		
-	display: none;
-	
-}
-
-
-*/
