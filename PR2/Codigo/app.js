@@ -173,27 +173,34 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
     var nombrePartida = request.body.nombrePartida;
     var idUsuario = request.body.idUsuario;
 
-    daoP.crearPartida(nombrePartida, idUsuario, (err, callback) => {
+    if (nombrePartida === "") {
 
-        if (err) {
+        response.status(400);
+        response.end("No se pudo crear la partida");
 
-            console.log(err);
-            response.end();
-        } else {
+    }
+    else {
+        daoP.crearPartida(nombrePartida, idUsuario, (err, callback) => {
 
-            if (callback.ok) {
+            if (err) {
 
-                response.status(201);
-                response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida });
-
+                console.log(err);
+                response.end();
             } else {
 
-                response.status(400);
-                response.end("No se pudo crear la partida");
-            }
-        }
-    });
+                if (callback.ok) {
 
+                    response.status(201);
+                    response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida });
+
+                } else {
+
+                    response.status(400);
+                    response.end("No se pudo crear la partida");
+                }
+            }
+        });
+    }
 });
 
 //Une al jugador a la partida si no esta llena

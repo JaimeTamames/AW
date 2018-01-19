@@ -309,6 +309,7 @@ function cargarPartida(idPartida, nombrePartida){
             data.arrayParticipantes.forEach(elem => {
 
                 $("#nombreJugadorInfo" + i).text(elem.nombre);
+                $("#nCartasJugadorInfo" + i).text(elem.nCartas);
                 i++;
             });
 
