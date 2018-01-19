@@ -112,6 +112,7 @@ function desconectar(){
         login = null;
         cadenaBase64 = null;
         borrarmsg();
+        vaciarMenu();
         cargarPricipal();
 }
 
@@ -207,6 +208,8 @@ function cargaMenu(){
         },
         success: (data, textStatus, jqXHR) => {
 
+            $("#listaPartidas").prepend(misPartidas());
+
             data.forEach(elem => {
                 
                 $("#misPartidas").after(nombrePartidaToDOMElement(elem));
@@ -222,9 +225,16 @@ function cargaMenu(){
     $("#menu").show();
 }
 
+//Muestra la pestaña mis partidas
+function misPartidas() {
+    let result = $("<li>").addClass("nav-item").prop("id", "misPartidas");
+    result.append($("<a data-toggle='tab'>").addClass("nav-link active").prop("role", "tab").prop("href", "#misPartidas").text("Mis partidas"));
+    return result;
+}
+
 //Convierte partidas en pestañas
 function nombrePartidaToDOMElement(partida) {
-    let result = $("<li>").prop("id", partida.idPartida);
+    let result = $("<li>").addClass("nav-item").prop("id", partida.idPartida);
     result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#"+partida.idPartida).text(partida.nombrePartida));
     return result;
 }
@@ -268,6 +278,7 @@ function muestraMisPartidas(idPartida){
 
     $("#sesion").show();
     $("a.active").removeClass("active");
+    $("li.active").removeClass("active show");
 
     let pestaña = document.getElementById(idPartida);
     $(pestaña).children().addClass("active");
@@ -334,6 +345,7 @@ function cargarPartida(idPartida, nombrePartida){
 
             $("#sesion").show();      
             $("a.active").removeClass("active");
+            $("li.active").removeClass("active show");
         
             let pestaña = document.getElementById(data.idPartida);
             $(pestaña).children().addClass("active");
@@ -357,6 +369,7 @@ function pintarCarta(carta){
 
 }
 
+//Funcion que muestra las cartas de la mesa
 function pintarMesa(palo){
 
     let result = $("<span>").addClass("d-inline-block bg-warning");
@@ -374,6 +387,12 @@ function vaciarCartasPartida(){
 function vaciarCartasMano(){
 
     $("#cartas-mesa").empty();
+}
+
+//Vacia cartas de la partida
+function vaciarMenu(){
+
+    $("#listaPartidas").empty();
 }
 
 //Vacia la informacion de la partida
