@@ -222,6 +222,33 @@ class DAOPartidas {
         });
     }
 
+    //comprueba si un usuario pertenece a la partida
+    perteneceAPartida(idPartida, idUsuario, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                "SELECT  idUsuario " +
+                "FROM juega_en " +
+                "WHERE idUsuario = ? AND idPartida = ?",
+                    [idUsuario, idPartida],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, false);
+                } else {
+                    callback(null, true);
+                }
+            });
+        });
+    }
+
     //Devuelve el estado de una partida
     estadoPartida(idPartida, callback) {
         this.pool.getConnection((err, connection) => {

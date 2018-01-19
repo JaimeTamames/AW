@@ -235,30 +235,48 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                                 response.end("La partida esta llena");
 
                             }else{
-                        
-                                daoP.unirsePartida(idPartida, idUsuario, (err, callback) => {
+                                
+                                daoP.perteneceAPartida(idPartida, idUsuario, (err, callback) => {
 
                                     if (err) {
-                            
+                                    
                                         console.log(err);
                                         response.end();
                                         
                                     } else {
                             
-                                        if (callback.ok) {
-                            
-                                            response.status(201);
+                                        if (!callback) {
+                                            daoP.unirsePartida(idPartida, idUsuario, (err, callback) => {
 
-                                            //Si se une el cuarto jugador se comienza la partida
-                                            if(nParticipantes === 3){
+                                                if (err) {
+                                        
+                                                    console.log(err);
+                                                    response.end();
+                                                    
+                                                } else {
+                                        
+                                                    if (callback.ok) {
+                                        
+                                                        response.status(201);
 
-                                                comenzarPartida(callback.idPartida);
-                                            }
-                                            
-                                            response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida});
-                            
-                                        } else {
-                            
+                                                        //Si se une el cuarto jugador se comienza la partida
+                                                        if(nParticipantes === 3){
+
+                                                            comenzarPartida(callback.idPartida);
+                                                        }
+                                                        
+                                                        response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida});
+                                        
+                                                    } else {
+                                        
+                                                        response.status(400);
+                                                        response.end();
+                                                    }
+                                                }
+                                            });
+                                        }
+                                        else {
+                                        
                                             response.status(400);
                                             response.end("No se pudo unir a la partida");
                                         }
