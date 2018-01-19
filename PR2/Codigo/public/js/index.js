@@ -14,6 +14,7 @@ $(document).ready(() => {
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
     $("#listaPartidas").on("click", "li", muestraPartida);
+    $("#cartas-mano").on("click", "a", selecionarCarta);
     $("#actualiarPartida").on("click", actualizaPartida);
 });
 
@@ -239,6 +240,18 @@ function nombrePartidaToDOMElement(partida) {
     return result;
 }
 
+//Tratamiento de las cartas
+function selecionarCarta(event){
+
+    let idCarta = $(event.target.currentTarget.attributes.id);
+
+    console.log(idCarta);
+
+    //$("#"+idCarta).addClass("cartaSelecionada");
+
+
+}
+
 //Funcion que maneja las pestañas de partidas
 function muestraPartida(event){
 
@@ -364,7 +377,8 @@ function cargarPartida(idPartida, nombrePartida){
 //Funcion que pinta una carta
 function pintarCarta(carta){
 
-    let result = $("<img src='img/" + carta + ".png'>").addClass("m-2");
+    let result = $("<a data-toggle='tab'>").prop("href", "#" + carta).prop("id", carta);;
+    result.append($("<img src='img/" + carta + ".png'>").addClass("m-2"));
     return result;
 
 }

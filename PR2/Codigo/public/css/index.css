@@ -17,6 +17,12 @@
     border-radius: 10px;
 }
 
+.cartaSelecionada {
+
+    box-shadow: 10px 10px 10px rgb(99, 99, 99);
+
+}
+
 #bienvenido>div>div>img{
 
     height: 200px;
