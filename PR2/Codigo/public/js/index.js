@@ -20,6 +20,7 @@ $(document).ready(() => {
 //Funcion que carga las vistas principales
 function cargarPricipal(){
 
+    borrarmsg();
     ocultar();
     $("#login").show();
     $("#bienvenido").show();
@@ -130,6 +131,30 @@ function pintarError3() {
 
 }
 
+function pintarError4() {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("errorLogin").text("Ya perteneces a esta partida"));
+    return result;
+
+}
+
+function pintarError5() {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("errorLogin").text("La partida no existe"));
+    return result;
+
+}
+
+function pintarError6() {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("errorLogin").text("La partida está llena"));
+    return result;
+
+}
+
 function borrarmsg() {
 
     $("#msgLogin").remove();    
@@ -144,12 +169,20 @@ function pintarInfo(data) {
 
 }
 
+function pintarInfo1(data) {
+
+    let result = $("<div>").addClass("container col-sm-6 mt-4 rounded p-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("msgLogin").text("Te has unido a la partida con id " + data.idPartida));
+    return result;
+
+}
+
 //Funcion que desconecta al usuario y finaliza la sesion
 function desconectar(){
 
         login = null;
         cadenaBase64 = null;
-
+        borrarmsg();
         cargarPricipal();
 }
 
@@ -204,15 +237,26 @@ function unirsePartida(){
             idUsuario: loginId,
         }),
         success: (data, textStatus, jqXHR) => {
-
-            alert("Te has unido a la partida con id " + data.idPartida);
+            borrarmsg();
+            $("#unirsePartida").after(pintarInfo1(data));
 
             $("#idUnirsePartida").prop("value", "");
             $("#misPartidas").after(nombrePartidaToDOMElement(data));
+
         },
         error: (jqXHR, textStatus, errorThrown) =>{
-
-            alert("Se ha producido un error: " + errorThrown);
+            if(jqXHR.status === 400){
+                borrarmsg();
+                $("#unirsePartida").after(pintarError4());
+            }
+            if(jqXHR.status === 402){
+                borrarmsg();
+                $("#unirsePartida").after(pintarError6());
+            }
+            if(jqXHR.status === 403){
+                borrarmsg();
+                $("#unirsePartida").after(pintarError5());
+            }
         }
     });
 }
@@ -264,10 +308,10 @@ function muestraPartida(event){
     vaciarInfoPartida();
 
     if(idPartida === "misPartidas"){
-
+        borrarmsg();
         muestraMisPartidas(idPartida);
     }else{
-
+        borrarmsg();
         cargarPartida(idPartida, nombrePartida.text());
     }
 }

@@ -141,6 +141,33 @@ class DAOPartidas {
         });
     }
 
+     //Cpmprueba si existe la partida en la BBDD
+     existePartida(idPartida, callback) {
+        this.pool.getConnection((err, connection) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+            connection.query(
+                "SELECT id " +
+                "FROM partidas " +
+                "WHERE id = ? ",
+                    [idPartida],
+                    (err, rows) => {
+                if (err) {
+                    callback(err);
+                    return;
+                }
+                connection.release();
+                if (rows.length === 0) {
+                    callback(null, false);
+                } else {
+                    callback(null, true);
+                }
+            });
+        });
+    }
+
     //Devuelve en que partidas juega el usuario
     participaEnPartidas(idUsuario, callback) {
         this.pool.getConnection((err, connection) => {
