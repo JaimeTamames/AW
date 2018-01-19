@@ -363,7 +363,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
         idPartida: idPartida,
         nombrePartida: nombrePartida,
         nParticipantes: 0,
-        arrayParticipantes: [{"nombre": null}, {"nombre": null}, {"nombre": null}, {"nombre": null}],
+        arrayParticipantes: [{"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}],
         arrayMisCartas: [],
         turno: null,
         mesa: null,
@@ -429,7 +429,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                         if(array[0] === "empezada"){
 
                                             let i = 1;
-                                            //let elem = null;
+                                            let nCartas = 0;
 
                                             //Extraemos el orden de los jugadores
                                             for(i; i < array.length; i++){
@@ -440,22 +440,40 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                                     case "jugador1":
                                                         partida.arrayParticipantes[0].nombre = array[i + 1];
                                                         
+                                                        nCartas = 0;
+
                                                         if(nombreJugador === array[i + 1]){
 
                                                             i = i + 2;
 
                                                             while(array[i + 1] !== "jugador2"){
 
-                                                                console.log(array[i]);
                                                                 partida.arrayMisCartas.push(array[i]);
+                                                                nCartas++;
                                                                 i++;
                                                             }
-                                                            partida.arrayMisCartas.push(array[i]);         
+                                                            partida.arrayMisCartas.push(array[i]);
+                                                            nCartas++;
+                                                            partida.arrayParticipantes[0].nCartas = nCartas;         
+                                                        }else{
+
+                                                            i = i + 2;
+                                                            
+                                                            while(array[i + 1] !== "jugador2"){
+
+                                                                nCartas++;
+                                                                i++;
+                                                            }
+                                                            nCartas++;
+
+                                                            partida.arrayParticipantes[0].nCartas = nCartas;
                                                         }
 
                                                         break;
                                                     case "jugador2":
                                                         partida.arrayParticipantes[1].nombre = array[i + 1];
+
+                                                        nCartas = 0;
 
                                                         if(nombreJugador === array[i + 1]){
 
@@ -463,16 +481,32 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
 
                                                             while(array[i + 1] !== "jugador3"){
 
-                                                                console.log(array[i]);
                                                                 partida.arrayMisCartas.push(array[i]);
+                                                                nCartas++;
                                                                 i++;
                                                             }
                                                             partida.arrayMisCartas.push(array[i]);
+                                                            nCartas++;
+                                                            partida.arrayParticipantes[1].nCartas = nCartas; 
+                                                        }else{
+
+                                                            i = i + 2;
+
+                                                            while(array[i + 1] !== "jugador3"){
+
+                                                                nCartas++
+                                                                i++;
+                                                            }
+                                                            nCartas++;
+
+                                                            partida.arrayParticipantes[1].nCartas = nCartas;
                                                         }
 
                                                         break;
                                                     case "jugador3":
                                                         partida.arrayParticipantes[2].nombre = array[i + 1];
+
+                                                        nCartas = 0;
 
                                                         if(nombreJugador === array[i + 1]){
 
@@ -480,16 +514,32 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
 
                                                             while(array[i + 1] !== "jugador4"){
 
-                                                                console.log(array[i]);
                                                                 partida.arrayMisCartas.push(array[i]);
+                                                                nCartas++;
                                                                 i++;
                                                             }
                                                             partida.arrayMisCartas.push(array[i]);
+                                                            nCartas++;
+                                                            partida.arrayParticipantes[2].nCartas = nCartas; 
+                                                        }else{
+
+                                                            i = i + 2;
+
+                                                            while(array[i + 1] !== "jugador4"){
+
+                                                                nCartas++
+                                                                i++;
+                                                            }
+                                                            nCartas++;
+
+                                                            partida.arrayParticipantes[2].nCartas = nCartas;
                                                         }
 
                                                         break;
                                                     case "jugador4":
                                                         partida.arrayParticipantes[3].nombre = array[i + 1];
+
+                                                        nCartas = 0;
 
                                                         if(nombreJugador === array[i + 1]){
 
@@ -497,11 +547,25 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
 
                                                             while(array[i + 1] !== "turno"){
 
-                                                                console.log(array[i]);
                                                                 partida.arrayMisCartas.push(array[i]);
+                                                                nCartas++;
                                                                 i++;
                                                             }
                                                             partida.arrayMisCartas.push(array[i]);
+                                                            nCartas++;
+                                                            partida.arrayParticipantes[3].nCartas = nCartas; 
+                                                        }else{
+
+                                                            i = i + 2;
+
+                                                            while(array[i + 1] !== "turno"){
+
+                                                                nCartas++
+                                                                i++;
+                                                            }
+                                                            nCartas++;
+
+                                                            partida.arrayParticipantes[3].nCartas = nCartas;
                                                         }
 
                                                         break;
