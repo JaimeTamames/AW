@@ -313,6 +313,12 @@ function cargarPartida(idPartida, nombrePartida){
                 i++;
             });
 
+            data.arrayMisCartas.forEach(elem => {
+
+                $("#card-block").append(pintarCarta(elem));
+
+            });
+
 
             $("#sesion").show();      
             $("a.active").removeClass("active");
@@ -329,6 +335,13 @@ function cargarPartida(idPartida, nombrePartida){
             alert("Se ha producido un error: " + errorThrown);
         }
     });        
+}
+
+function pintarCarta(carta){
+
+    let result = $("<img src='img/" + carta + ".png'>").addClass("m-2");
+    return result;
+
 }
 
 //Vacia la informacion de la partida
