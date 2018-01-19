@@ -202,6 +202,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
     var idPartida = request.body.idPartida;
     var idUsuario = request.body.idUsuario;
     var nParticipantes = null;
+
     daoP.existePartida(idPartida, (err, callback) => {
         if (err) {
 
@@ -361,7 +362,8 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
         idPartida: idPartida,
         nombrePartida: nombrePartida,
         nParticipantes: 0,
-        arrayParticipantes: null,
+        arrayParticipantes: [{"nombre": null}, {"nombre": null}, {"nombre": null}, {"nombre": null}],
+        arrayMisCartas: null,
         estado: null,
     }
 
@@ -399,7 +401,6 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                         } else {
             
                             response.status(200);
-                            partida.arrayParticipantes = arrayParticipantes;
             
                             daoP.estadoPartida(idPartida, (err, estadoPartida) => {
 
@@ -416,6 +417,48 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                         
                                     } else {
 
+                                        //var temp = estadoPartida;
+                                        // this will return an array with strings
+                                        var array = estadoPartida.split(',');
+
+                                        console.log(array[0]);
+
+                                        //Si la partida ha empezado
+                                        if(array[0] === "empezada"){
+
+                                            let i = 1;
+                                            //let elem = null;
+
+                                            //Extraemos el orden de los jugadores
+                                            for(i; i < array.length; i++){
+
+                                                //console.log(array[i + 1]);
+
+                                                switch (array[i]) {
+                                                    case "jugador1":
+                                                        partida.arrayParticipantes[0].nombre = array[i + 1];
+                                                        console.log(array[i + 1]);
+                                                        break;
+                                                    case "jugador2":
+                                                        partida.arrayParticipantes[1].nombre = array[i + 1];
+                                                        console.log(array[i + 1]);
+                                                        break;
+                                                    case "jugador3":
+                                                        partida.arrayParticipantes[2].nombre = array[i + 1];
+                                                        console.log(array[i + 1]);
+                                                        break;
+                                                    case "jugador4":
+                                                        partida.arrayParticipantes[3].nombre = array[i + 1];
+                                                        console.log(array[i + 1]);
+                                                        break;
+                                                }
+                                            }
+                                        }else{
+
+                                            partida.arrayParticipantes = arrayParticipantes;
+                                            
+                                        }
+
                                         partida.estado = estadoPartida;
 
                                         response.status(200);
@@ -431,13 +474,16 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
     });
 });
 
+//.split(",").length;
+
 function comenzarPartida(idPartida){
 
-    let estado = "empezada . ";
-    let jugador1 = "jugador1 : ";
-    let jugador2 = "jugador2 : ";
-    let jugador3 = "jugador3 : ";
-    let jugador4 = "jugador4 : ";
+    let estado = "empezada,";
+    let jugador1 = "jugador1,";
+    let jugador2 = "jugador2,";
+    let jugador3 = "jugador3,";
+    let jugador4 = "jugador4,";
+    let turno = "turno,";
 
     daoP.participantesDePartida(idPartida, (err, jugadores) => {
 
@@ -466,23 +512,24 @@ function comenzarPartida(idPartida){
             
                     switch (i) {
                         case 0:
-                            jugador1 = jugador1 + jugadores[index].nombre + " , ";
+                            jugador1 = jugador1 + jugadores[index].nombre + ",";
+                            turno = turno + jugadores[index].nombre + ",";
                             break;
                         case 1:
-                            jugador2 = jugador2 + jugadores[index].nombre + " , ";
+                            jugador2 = jugador2 + jugadores[index].nombre + ",";
                             break;
                         case 2:
-                            jugador3 = jugador3 + jugadores[index].nombre + " , ";
+                            jugador3 = jugador3 + jugadores[index].nombre + ",";
                             break;
                         case 3:
-                         jugador4 = jugador4 + jugadores[index].nombre + " , ";
+                         jugador4 = jugador4 + jugadores[index].nombre + ",";
                             break;
                     }
 
                     //Siguiente jugador
                     i++;
             
-                    // Elimina una carta del array
+                    // Elimina un jugador del array
                     jugadores.splice( index, 1 );
                 }
 
@@ -492,18 +539,16 @@ function comenzarPartida(idPartida){
                 let partida = estado + aux;
 
                 //Añadir turno
-                partida = partida + " turno: , ";
+                partida = partida + turno;
 
                 //Añadir mesa
-                partida = partida + " mesa: , ";
+                partida = partida + "mesa,";
 
                 //Añadir palo
-                partida = partida + " palo: , ";
+                partida = partida + "palo,";
 
                 //Añadir jugada anterior
-                partida = partida + " jugadaAnterior: , ";
-
-                console.log(partida);
+                partida = partida + "jugadaAnterior,";
 
                 //Guadar estado de partida
                 daoP.guardarPartida(idPartida, partida, (err, callback) => {
@@ -536,16 +581,16 @@ function repartirCartas(jugador1, jugador2, jugador3, jugador4){
 
         switch (i) {
             case 0:
-                jugador1 = jugador1 + baraja[index] + " , ";
+                jugador1 = jugador1 + baraja[index] + ",";
                 break;
             case 1:
-                jugador2 = jugador2 + baraja[index] + " , ";
+                jugador2 = jugador2 + baraja[index] + ",";
                 break;
             case 2:
-                jugador3 = jugador3 + baraja[index] + " , ";
+                jugador3 = jugador3 + baraja[index] + ",";
                 break;
             case 3:
-             jugador4 = jugador4 + baraja[index] + " , ";
+             jugador4 = jugador4 + baraja[index] + ",";
                 break;
         }
 
@@ -582,4 +627,5 @@ app.listen(config.mysqlConfig.port, function (err) {
     }
 });
 
+//Constante de la baraja
 const cartas = [ "2_C", "2_D", "2_H", "2_S", "3_C", "3_D", "3_H", "3_S", "4_C", "4_D", "4_H", "4_S", "5_C", "5_D", "5_H", "5_S", "6_C", "6_D", "6_H", "6_S", "7_C", "7_D", "7_H", "7_S", "8_C", "8_D", "8_H", "8_S", "9_C", "9_D", "9_H", "9_S", "10_C", "10_D", "10_H", "10_S", "J_C", "J_D", "J_H", "J_S", "Q_C", "Q_D", "Q_H", "Q_S", "K_C", "K_D", "K_H", "K_S", "A_C", "A_D", "A_H", "A_S"];

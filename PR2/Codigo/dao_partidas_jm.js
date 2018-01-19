@@ -270,7 +270,7 @@ class DAOPartidas {
                 if (rows.length === 0) {
                     callback(null, undefined);
                 } else {
-                    callback(null, rows[0]);
+                    callback(null, rows[0].estado);
                 }
             });
         });

@@ -293,7 +293,7 @@ function cargarPartida(idPartida, nombrePartida){
             ocultar();
            
             //Pinta nombre partida
-            $("#nombrePartidaInfo").text(nombrePartida);
+            $("#nombrePartidaInfo").text(data.nombrePartida);
 
             //Pinta info partida
             if(data.nParticipantes < 4){
