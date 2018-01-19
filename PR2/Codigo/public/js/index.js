@@ -236,6 +236,7 @@ function muestraPartida(event){
     let idPartida = event.currentTarget.id;
 
     vaciarInfoPartida();
+    vaciarCartasPartida()
 
     if(idPartida === "misPartidas"){
         borrarmsg();
@@ -253,6 +254,7 @@ function actualizaPartida(event){
     let idPartida = $("a.active").parent().prop("id");
 
     vaciarInfoPartida();
+    vaciarCartasPartida()
 
     cargarPartida(idPartida, nombrePartida);
 }
@@ -313,9 +315,17 @@ function cargarPartida(idPartida, nombrePartida){
                 i++;
             });
 
+            //Pinta las cartas del jugador
             data.arrayMisCartas.forEach(elem => {
 
-                $("#card-block").append(pintarCarta(elem));
+                $("#cartas-mano").append(pintarCarta(elem));
+
+            });
+
+            //Pinta las cartas de la mesa
+            data.mesa.forEach(elem => {
+
+                $("#cartas-mano").append(pintarMesa(elem));
 
             });
 
@@ -337,12 +347,29 @@ function cargarPartida(idPartida, nombrePartida){
     });        
 }
 
+//Funcion que pinta una carta
 function pintarCarta(carta){
 
     let result = $("<img src='img/" + carta + ".png'>").addClass("m-2");
     return result;
 
 }
+
+function pintarMesa(){
+
+    let result = $("<span src='img/" + carta + ".png'>").addClass("m-2");
+    return result;
+}
+
+card-block
+//Vacia cartas de la partida
+function vaciarCartasPartida(){
+
+    //Datos partida
+    $("#card-block").empty();
+}
+
+
 
 //Vacia la informacion de la partida
 function vaciarInfoPartida(){
