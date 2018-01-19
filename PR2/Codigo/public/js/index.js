@@ -229,6 +229,12 @@ function nombrePartidaToDOMElement(partida) {
     return result;
 }
 
+function borrarMenu(partida) {
+    let result = $("<li>").prop("id", partida.idPartida);
+    result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#"+partida.idPartida).text(partida.nombrePartida));
+    return result;
+}
+
 //Funcion que maneja las pestañas de partidas
 function muestraPartida(event){
 
