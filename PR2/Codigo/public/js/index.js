@@ -243,11 +243,13 @@ function nombrePartidaToDOMElement(partida) {
 //Tratamiento de las cartas
 function selecionarCarta(event){
 
-    //let idCarta = event.target.currentTarget.attributes.id;
+    let idCarta = event.currentTarget.id;
 
-    console.log(event.currentTarget);
-
-    //$("#"+idCarta).addClass("cartaSelecionada");
+    //Criterios de seleccion y deselección
+    if($("#" + idCarta + "img").hasClass("cartaSelecionada"))
+        $("#" + idCarta + "img").removeClass("cartaSelecionada");
+    else
+        $("#" + idCarta + "img").addClass("cartaSelecionada");
 
 
 }
@@ -377,8 +379,8 @@ function cargarPartida(idPartida, nombrePartida){
 //Funcion que pinta una carta
 function pintarCarta(carta){
 
-    let result = $("<a data-toggle='tab'>").prop("href", "#" + carta).prop("id", carta);;
-    result.append($("<img src='img/" + carta + ".png'>").addClass("m-2"));
+    let result = $("<a data-toggle='tab'>").prop("href", "#" + carta).prop("id", carta);
+    result.append($("<img src='img/" + carta + ".png'>").addClass("m-2").prop("id", carta + "img"));
     return result;
 
 }
