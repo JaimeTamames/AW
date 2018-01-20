@@ -243,9 +243,9 @@ function nombrePartidaToDOMElement(partida) {
 //Tratamiento de las cartas
 function selecionarCarta(event){
 
-    let idCarta = $(event.target.currentTarget.attributes.id);
+    //let idCarta = event.target.currentTarget.attributes.id;
 
-    console.log(idCarta);
+    console.log(event.currentTarget);
 
     //$("#"+idCarta).addClass("cartaSelecionada");
 
