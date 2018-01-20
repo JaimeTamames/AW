@@ -19,7 +19,8 @@
 
 .cartaSelecionada {
 
-    box-shadow: 10px 10px 10px rgb(99, 99, 99);
+    box-shadow: 10px 10px 10px rgb(17, 180, 66);
+    transform: translateY(-5px);
 
 }
 

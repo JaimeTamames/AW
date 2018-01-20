@@ -80,33 +80,27 @@ app.post("/login", function(request, response) {
 
     var usuario = request.body.usuario;
     var contraseña = request.body.contraseña;
-    if(usuario === "" || contraseña === ""){
 
-        response.status(401);
-        response.end();
-    }
-    else {
-        daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
+    daoU.usuarioCorrecto(usuario, contraseña, (err, callback) => {
 
-            if (err) {
+        if (err) {
 
-                console.log(err);
-                response.end();
+            console.log(err);
+            response.end();
+        } else {
+
+            if (!callback) {
+
+                response.status(400);
+                response.end("Este usuario y/o contraseña no existe");
+
             } else {
 
-                if (!callback) {
-
-                    response.status(400);
-                    response.end("Este usuario y/o contraseña no existe");
-
-                } else {
-
-                    response.status(200);
-                    response.json({"nombre": callback.login, "id": callback.id});
-                }
+                response.status(200);
+                response.json({"nombre": callback.login, "id": callback.id});
             }
-        });
-    }
+            }
+    });
 });
 
 //Da de alta un nuevo usuario
@@ -115,56 +109,46 @@ app.post("/nuevoUsuario", function(request, response) {
     var usuario = request.body.usuario;
     var contraseña = request.body.contraseña;
 
-    if(usuario === "" || contraseña === ""){
+    daoU.existeUsuario(usuario, (err, callback) => {
 
-        response.status(401);
-        response.end();
+        if (err) {
 
-    }
-    else {
-        daoU.existeUsuario(usuario, (err, callback) => {
+            console.log(err);
+            response.end();
+        } else {
 
-            if (err) {
+            if (callback) {
 
-                console.log(err);
+                response.status(400);
                 response.end();
+
             } else {
 
-                if (callback) {
+                daoU.nuevoUsuario(usuario, contraseña, (err, callback) => {
 
-                    response.status(400);
-                    response.end();
-
-                } else {
-
-                    daoU.nuevoUsuario(usuario, contraseña, (err, callback) => {
-
-                        if (err) {
+                    if (err) {
                 
-                            console.log(err);
-                            response.end();
+                        console.log(err);
+                        response.end();
+                    } else {
+                
+                        if (callback) {
+                
+                            response.status(201);
+                            response.json({"nombre": usuario});
+                
+                
                         } else {
                 
-                            if (callback) {
-                
-                                response.status(201);
-                                response.json({"nombre": usuario});
-                
-                
-                            } else {
-                
-                                response.status(400);
+                            response.status(400);
 
-                            }
                         }
-                    });
+                    }
+                });
 
-                }
             }
-        });
-
-    }
-    
+        }
+    });
 });
 
 //Crea una partida con el nombre y añade al jugador a ella
@@ -173,34 +157,26 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
     var nombrePartida = request.body.nombrePartida;
     var idUsuario = request.body.idUsuario;
 
-    if (nombrePartida === "") {
+    daoP.crearPartida(nombrePartida, idUsuario, (err, callback) => {
 
-        response.status(400);
-        response.end("No se pudo crear la partida");
+        if (err) {
 
-    }
-    else {
-        daoP.crearPartida(nombrePartida, idUsuario, (err, callback) => {
+            console.log(err);
+            response.end();
+        } else {
 
-            if (err) {
+            if (callback.ok) {
 
-                console.log(err);
-                response.end();
+                response.status(201);
+                response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida });
+
             } else {
 
-                if (callback.ok) {
-
-                    response.status(201);
-                    response.json({"nombrePartida": callback.nombrePartida, "idPartida": callback.idPartida });
-
-                } else {
-
-                    response.status(400);
-                    response.end("No se pudo crear la partida");
-                }
+                response.status(400);
+                response.end("No se pudo crear la partida");
             }
-        });
-    }
+        }
+    });
 });
 
 //Une al jugador a la partida si no esta llena
@@ -299,8 +275,6 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
            
                 response.status(403); //la partida no existe
                 response.end();
-
-            
            }
         } 
     });

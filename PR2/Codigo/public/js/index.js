@@ -33,47 +33,50 @@ function acceder(){
     let usuario = $("#nombreUsuario").val();
     let contraseña = $("#contraseñaUsuario").val();
 
-    $.ajax({
-        type: 'POST',
-        url: '/login',
-        contentType: "application/json",
-        data: JSON.stringify ({
-            usuario: usuario,
-            contraseña: contraseña,
-        }),
-        success: (data, textStatus, jqXHR) => {
+    if(usuario.length > 0 && contraseña.length > 0){
+
+        $.ajax({
+            type: 'POST',
+            url: '/login',
+            contentType: "application/json",
+            data: JSON.stringify ({
+                usuario: usuario,
+                contraseña: contraseña,
+            }),
+            success: (data, textStatus, jqXHR) => {
            
-            borrarmsg();
-            login = data.nombre;
-            loginId = data.id;
+                borrarmsg();
+                login = data.nombre;
+                loginId = data.id;
 
-            cadenaBase64 = btoa(usuario + ":" + contraseña);
+                cadenaBase64 = btoa(usuario + ":" + contraseña);
 
-            $("#nombreUsuario").prop("value", "");
-            $("#contraseñaUsuario").prop("value", "");
+                $("#nombreUsuario").prop("value", "");
+                $("#contraseñaUsuario").prop("value", "");
 
-            ocultar();
+                ocultar();
 
-            $("#sesion").show();
-            $("#crearPartida").show();
-            $("#unirsePartida").show();
-            $("#usuario").text(usuario);
-            cargaMenu();
+                $("#sesion").show();
+                $("#crearPartida").show();
+                $("#unirsePartida").show();
+                $("#usuario").text(usuario);
+                cargaMenu();
             
-        },
-        error: (jqXHR, textStatus, errorThrown) => {
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
 
-            if(jqXHR.status === 400){
-                borrarmsg();
-                $("#login").after(pintarError("El usuario y/o contraseña introducidos son incorrectos"));
-            }
-            if(jqXHR.status === 401){
-                borrarmsg();
-                $("#login").after(pintarError("Los campos de login y contraseña no están correctamente rellenos"));
-            }
+                if(jqXHR.status === 400){
+                    borrarmsg();
+                    $("#login").after(pintarError("El usuario y/o contraseña introducidos son incorrectos"));
+                }
 
-        }
-    });
+            }
+        });
+    }else{
+
+        borrarmsg();
+        $("#login").after(pintarError("Los campos de login y contraseña no están correctamente rellenos"));
+    }
 }
 
 //Funcion que da de alta un nuevo usuario
@@ -82,29 +85,36 @@ function nuevoUsuario(){
     let usuario = $("#nombreUsuario").val();
     let contraseña = $("#contraseñaUsuario").val();
 
-    $.ajax({
-        type: 'POST',
-        url: '/nuevoUsuario', 
-        contentType: "application/json",
-        data: JSON.stringify ({
-            usuario: usuario,
-            contraseña: contraseña,
-        }),
-        success: (data, textStatus, jqXHR) => {
-            borrarmsg();
-            $("#login").after(pintarInfo("Usuario " + data.nombre + " creado correctamente, logueate!"));     
-        },
-        error: (jqXHR, textStatus, errorThrown) =>{
-            if(jqXHR.status === 400){
+    if(usuario.length > 0 && contraseña.length > 0){
+
+        $.ajax({
+            type: 'POST',
+            url: '/nuevoUsuario', 
+            contentType: "application/json",
+            data: JSON.stringify ({
+                usuario: usuario,
+                contraseña: contraseña,
+            }),
+            success: (data, textStatus, jqXHR) => {
                 borrarmsg();
-                $("#login").after(pintarError("El usuario ya existe en la BBDD"));
+                $("#login").after(pintarInfo("Usuario " + data.nombre + " creado correctamente, logueate!"));     
+            },
+            error: (jqXHR, textStatus, errorThrown) =>{
+                if(jqXHR.status === 400){
+                    borrarmsg();
+                    $("#login").after(pintarError("El usuario ya existe en la BBDD"));
+                }
+                if(jqXHR.status === 401){
+                    borrarmsg();
+                    $("#login").after(pintarError("Los campos de login y contraseña no están correctamente rellenos"));
+                }           
             }
-            if(jqXHR.status === 401){
-                borrarmsg();
-                $("#login").after(pintarError("Los campos de login y contraseña no están correctamente rellenos"));
-            }           
-        }
-    });
+        });
+    }else{
+
+        borrarmsg();
+        $("#login").after(pintarError("Los campos de login y contraseña no están correctamente rellenos"));
+    }
 }
 
 //Funcion que desconecta al usuario y finaliza la sesion
@@ -122,32 +132,39 @@ function crearPartida(){
 
     let nombrePartida = $("#nombreNuevaPartida").val();
 
-    $.ajax({
-        type: 'POST',
-        url: '/crearPartida', 
-        beforeSend: function(req) {
-            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
-            req.setRequestHeader("Authorization",
-            "Basic " + cadenaBase64);
-        },
-        contentType: "application/json",
-        data: JSON.stringify ({
-            nombrePartida: nombrePartida,
-            idUsuario: loginId,
-        }),
-        success: (data, textStatus, jqXHR) => {
+    if(nombrePartida.length > 0){
 
-            borrarmsg();
-            $("#unirsePartida").after(pintarInfo("Partida " + data.nombrePartida + " creada correctamente!"));
+        $.ajax({
+            type: 'POST',
+            url: '/crearPartida', 
+            beforeSend: function(req) {
+                // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+                req.setRequestHeader("Authorization",
+                "Basic " + cadenaBase64);
+            },
+            contentType: "application/json",
+            data: JSON.stringify ({
+                nombrePartida: nombrePartida,
+                idUsuario: loginId,
+            }),
+            success: (data, textStatus, jqXHR) => {
+
+                borrarmsg();
+                $("#unirsePartida").after(pintarInfo("Partida " + data.nombrePartida + " creada correctamente!"));
             
-            $("#nombreNuevaPartida").prop("value", "");
-            $("#misPartidas").after(nombrePartidaToDOMElement(data));
-        },
-        error: (jqXHR, textStatus, errorThrown) =>{
+                $("#nombreNuevaPartida").prop("value", "");
+                $("#misPartidas").after(nombrePartidaToDOMElement(data));
+            },
+            error: (jqXHR, textStatus, errorThrown) =>{
 
-            alert("Se ha producido un error: " + errorThrown);
-        }
-    });
+                alert("Se ha producido un error: " + errorThrown);
+            }
+        });
+    }else{
+
+        borrarmsg();
+        $("#unirsePartida").after(pintarError("El nombre de partida no puede estar vacio"));
+    }
 }
 
 //Funcion que une al usuario a una partida existente
@@ -155,42 +172,49 @@ function unirsePartida(){
 
     let idPartida = $("#idUnirsePartida").val();
 
-    $.ajax({
-        type: 'POST',
-        url: '/unirsePartida', 
-        beforeSend: function(req) {
-            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
-            req.setRequestHeader("Authorization",
-            "Basic " + cadenaBase64);
-        },
-        contentType: "application/json",
-        data: JSON.stringify ({
-            idPartida: idPartida,
-            idUsuario: loginId,
-        }),
-        success: (data, textStatus, jqXHR) => {
-            borrarmsg();
-            $("#unirsePartida").after(pintarInfo("Te has unido a la partida con id " + data.idPartida));
+    if(idPartida.length > 0){
 
-            $("#idUnirsePartida").prop("value", "");
-            $("#misPartidas").after(nombrePartidaToDOMElement(data));
+        $.ajax({
+            type: 'POST',
+            url: '/unirsePartida', 
+            beforeSend: function(req) {
+                // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+                req.setRequestHeader("Authorization",
+                "Basic " + cadenaBase64);
+            },
+            contentType: "application/json",
+            data: JSON.stringify ({
+                idPartida: idPartida,
+                idUsuario: loginId,
+            }),
+            success: (data, textStatus, jqXHR) => {
+                borrarmsg();
+                $("#unirsePartida").after(pintarInfo("Te has unido a la partida con id " + data.idPartida));
 
-        },
-        error: (jqXHR, textStatus, errorThrown) =>{
-            if(jqXHR.status === 400){
-                borrarmsg();
-                $("#unirsePartida").after(pintarError("Ya perteneces a esta partida"));
+                $("#idUnirsePartida").prop("value", "");
+                $("#misPartidas").after(nombrePartidaToDOMElement(data));
+
+            },
+            error: (jqXHR, textStatus, errorThrown) =>{
+                if(jqXHR.status === 400){
+                    borrarmsg();
+                    $("#unirsePartida").after(pintarError("Ya perteneces a esta partida"));
+                }
+                if(jqXHR.status === 402){
+                    borrarmsg();
+                    $("#unirsePartida").after(pintarError("La partida está llena"));
+                }
+                if(jqXHR.status === 403){
+                    borrarmsg();
+                    $("#unirsePartida").after(pintarError("La partida no existe"));
+                }
             }
-            if(jqXHR.status === 402){
-                borrarmsg();
-                $("#unirsePartida").after(pintarError("La partida está llena"));
-            }
-            if(jqXHR.status === 403){
-                borrarmsg();
-                $("#unirsePartida").after(pintarError("La partida no existe"));
-            }
-        }
-    });
+        });
+    }else{
+
+        borrarmsg();
+        $("#unirsePartida").after(pintarError("El id de partida no puede estar vacio"));
+    }
 }
 
 //Carga el menu
@@ -246,11 +270,12 @@ function selecionarCarta(event){
     let idCarta = event.currentTarget.id;
 
     //Criterios de seleccion y deselección
-    if($("#" + idCarta + "img").hasClass("cartaSelecionada"))
+    if($("#" + idCarta + "img").hasClass("cartaSelecionada")){
         $("#" + idCarta + "img").removeClass("cartaSelecionada");
-    else
+    }
+    else{
         $("#" + idCarta + "img").addClass("cartaSelecionada");
-
+    }
 
 }
 
@@ -357,6 +382,24 @@ function cargarPartida(idPartida, nombrePartida){
                 });
             }
 
+            //Quita elturno
+            $("#jugadores").find(".bg-success").removeClass("bg-success");
+
+            let aux;
+            //Pinta el turno
+            for(let i = 1; i < 5; i++){
+
+                aux = $("#nombreJugadorInfo" + i).text();
+                if(aux === data.turno){
+                    $("#nombreJugadorInfo" + i).parent().addClass("bg-success");
+                }
+            }
+
+            //Pinta las opciones de juego
+            if(data.turno === login){
+
+                $("#turno").show();
+            }
 
             $("#sesion").show();      
             $("a.active").removeClass("active");
@@ -468,5 +511,6 @@ function ocultar(){
     $("#unirsePartida").hide();
     $("#menu").hide();
     $("#partida").hide();
+    $("#turno").hide();
 
 }
