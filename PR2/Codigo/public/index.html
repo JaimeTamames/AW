@@ -155,7 +155,31 @@
 
                     <div class="card mt-4" id="mano">
                         <div class="card-header">
-                            <h4>Tus cartas</h4>
+                            <div class="row">
+                            <div class="col-9">
+                                <h4>Tus cartas</h4>
+                            </div>
+                            <div class="col-3"  id="seleccionarPalo" >
+                                <select class="form-control form-control-sm hidden" id="paloInput">
+                                    <option selected>Elige palo</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                    <option value="9">9</option>
+                                    <option value="10">10</option>
+                                    <option value="J">J</option>
+                                    <option value="Q">Q</option>
+                                    <option value="K">K</option>
+                                    <option value="A">A</option>
+                                </select>
+
+                            </div>
+                            </div>
                         </div>
                         <div class="card-block p-2" id="cartas-mano"></div>
                         <div class="pl-3 pb-3 hidden" id="turno">
@@ -170,19 +194,6 @@
 
                     <!-- Elegir Palo -->
 
-                    <div class="container col-7 mt-4 hidden" id="palo">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Elección de palo a jugar</h5>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Introduce aquí el palo" id="paloInput">
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-primary" type="button" id="paloButton">Jugar Palo</button>
-                                    </span>
-                                </div>
-                            </div>
-                        </div> 
-                    </div>
                 
 
                 </div>

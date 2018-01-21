@@ -18,7 +18,6 @@ $(document).ready(() => {
     $("#actualiarPartida").on("click", actualizaPartida);
     $("#jugarCartas").on("click", jugarCartas);
     $("#mentiroso").on("click", mentiroso);
-    $("#paloButton").on("click", jugarPalo);
 });
 
 //Funcion que carga las vistas principales
@@ -375,17 +374,18 @@ function cargarPartida(idPartida, nombrePartida){
             data.arrayMisCartas.forEach(elem => {
 
                 $("#cartas-mano").append(pintarCarta(elem));
-               
-
             });
 
 
-            //Pinta las cartas de la mesa
+            //Pinta las cartas de la mesa. Si no hay cartas en la mesa y es tu turno te muestra el selector del palo
             if(data.palo !== "null"){
                 for(let i = 0; i < data.nCartasMesa; i++){
 
                     $("#cartas-mesa").append(pintarMesa(data.palo));
                 };
+            }else if(data.turno === login){
+
+                $("#seleccionarPalo").show();
             }
 
             //Quita elturno
@@ -426,75 +426,76 @@ function cargarPartida(idPartida, nombrePartida){
 }
 
 //Juega las cartas seleccionadas
-function jugarCartas(){
-    
-    let vCartasMesa = [];
+function jugarCartas() {
+
+    let vCartas = [];
+    let nCartasMesa = 0;
 
     //Obtenemos el numero de cartas en la mesa
     $(".cartaMesa").each(function (index, value) { 
        
-        vCartasMesa.push($(this).attr('id'));
-
+        nCartasMesa++;
     });
 
-    if(vCartasMesa.length === 0){
+    let palo = null;
 
-        $("#palo").show();
+    //Obtenemos el palo seleccionado
+    if(nCartasMesa === 0){
 
-    }   
-    else {
-
-        jugarPalo();
-    
+        palo = $("#paloInput :selected").text();
+        //alert(palo);
     }
-    
-}
-
-function jugarPalo() {
-
-    let vCartas = [];
-    let palo = $("#paloInput").val();
-
-    
+ 
     //Obtenemos las cartas seleccionadas
     $(".cartaSeleccionada").each(function (index, value) { 
         
         vCartas.push($(this).attr('id'));
-
     });
 
     //Si hay cartas seleccionadas se juega
     if (vCartas.length > 0){
 
-        let idPartida = $("a.active").parent().prop("id");
+        if(palo !== null && palo !== "Elige palo"){
 
-        $.ajax({
-            type: 'POST',
-            url: '/jugarCartas', 
-            beforeSend: function(req) {
-                // Añadimos la cabecera 'Authorization' con los datos de autenticación.
-                req.setRequestHeader("Authorization",
-                "Basic " + cadenaBase64);
-            },
-            contentType: "application/json",
-            data: JSON.stringify ({
-                vCartas: vCartas,
-                nombreUsuario: login,
-                idPartida: idPartida,
-                palo: palo,
-            }),
-            success: (data, textStatus, jqXHR) => {
+            let idPartida = $("a.active").parent().prop("id");
+
+            $.ajax({
+                type: 'POST',
+                url: '/jugarCartas', 
+                beforeSend: function(req) {
+                    // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+                    req.setRequestHeader("Authorization",
+                    "Basic " + cadenaBase64);
+                },
+                contentType: "application/json",
+                data: JSON.stringify ({
+                    vCartas: vCartas,
+                    nombreUsuario: login,
+                    idPartida: idPartida,
+                    palo: palo,
+                }),
+                success: (data, textStatus, jqXHR) => {
 
                 
                 
-            },
-            error: (jqXHR, textStatus, errorThrown) =>{
+                },
+                error: (jqXHR, textStatus, errorThrown) =>{
 
-                alert("Se ha producido un error: " + errorThrown);
-            }
-        });
+                    alert("Se ha producido un error: " + errorThrown);
+                }
+            });
+
+        }else{
+
+            borrarmsg();
+            $("#partida").after(pintarError("No hay palo seleccionado"));
+        }
+
+    }else{
+
+        borrarmsg();
+        $("#partida").after(pintarError("No hay cartas seleccionadas"));
     }
-
 }
 
 function mentiroso(){
@@ -510,8 +511,6 @@ function pintarCarta(carta){
 
 }
 
-
-
 //Funcion que muestra las cartas de la mesa
 function pintarMesa(palo){
 
@@ -519,8 +518,6 @@ function pintarMesa(palo){
     result.append($("<h3>").text(palo));
     return result;
 }
-
-
 
 //Vacia cartas de la partida
 function vaciarCartasPartida(){
@@ -598,6 +595,7 @@ function ocultar(){
     $("#menu").hide();
     $("#partida").hide();
     $("#turno").hide();
-    $("#palo").hide();
+    $("#seleccionarPalo").hide();
+    borrarmsg();
 
 }
