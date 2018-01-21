@@ -296,7 +296,7 @@ function muestraPartida(event){
         muestraMisPartidas(idPartida);
     }else{
         borrarmsg();
-        cargarPartida(idPartida, nombrePartida.text());
+        cargarPartida(idPartida);
     }
 }
 
@@ -310,7 +310,7 @@ function actualizaPartida(){
     vaciarCartasPartida();
     vaciarCartasMano();
 
-    cargarPartida(idPartida, nombrePartida);
+    cargarPartida(idPartida);
 }
 
 //Muestra la pestaña mis partidas
@@ -330,7 +330,7 @@ function muestraMisPartidas(idPartida){
 }
 
 //Carga la vista de una partida
-function cargarPartida(idPartida, nombrePartida){
+function cargarPartida(idPartida){
 
     $.ajax({
         type: 'GET',
@@ -342,16 +342,12 @@ function cargarPartida(idPartida, nombrePartida){
         },
         data: {
             idPartida: idPartida,
-            nombrePartida: nombrePartida,
             nombreJugador: login,
         },
            
         success: (data, textStatus, jqXHR) => {
     
             ocultar();
-           
-            //Pinta nombre partida
-            $("#nombrePartidaInfo").text(data.nombrePartida);
 
             //Pinta info partida
             if(data.nParticipantes < 4){
@@ -407,12 +403,28 @@ function cargarPartida(idPartida, nombrePartida){
                 $("#turno").show();
             }
 
+            
+            //Pinta la ultima jugada
+            if(data.ultimaJugada === null){
+
+                $("#jugadaAnterior").text("Aun no se han jugado cartas").show();
+            }else{
+
+                $("#jugadaAnterior").text(data.jugadaAnterior).show();
+            }
+            
+
             $("#sesion").show();      
             $("a.active").removeClass("active");
             $("li.active").removeClass("active show");
         
             let pestaña = document.getElementById(data.idPartida);
             $(pestaña).children().addClass("active");
+
+            let nombrePartida = $("a.active").text();
+
+            //Pinta nombre partida
+            $("#nombrePartidaInfo").text(nombrePartida);
         
             $("#menu").show();    
             $("#partida").show();
@@ -430,6 +442,7 @@ function jugarCartas() {
 
     let vCartas = [];
     let nCartasMesa = 0;
+    let idPartida = $("a.active").parent().prop("id");
 
     //Obtenemos el numero de cartas en la mesa
     $(".cartaMesa").each(function (index, value) { 
@@ -443,9 +456,26 @@ function jugarCartas() {
     if(nCartasMesa === 0){
 
         palo = $("#paloInput :selected").text();
-        //alert(palo);
+
+        if(palo === "Elige palo"){
+
+            borrarmsg();
+            $("#partida").after(pintarError("No hay palo seleccionado"));
+        }else{
+
+            juega (vCartas, login, idPartida, palo);
+        }
+
+    }else{
+
+        palo = "noCambia";
+
+        juega (vCartas, login, idPartida, palo);
     }
- 
+}
+
+function juega(vCartas, login, idPartida, palo){
+
     //Obtenemos las cartas seleccionadas
     $(".cartaSeleccionada").each(function (index, value) { 
         
@@ -455,41 +485,35 @@ function jugarCartas() {
     //Si hay cartas seleccionadas se juega
     if (vCartas.length > 0){
 
-        if(palo !== null && palo !== "Elige palo"){
+        let idPartida = $("a.active").parent().prop("id");
 
-            let idPartida = $("a.active").parent().prop("id");
+        $.ajax({
+            type: 'POST',
+            url: '/jugarCartas', 
+            beforeSend: function(req) {
+                // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+                req.setRequestHeader("Authorization",
+                "Basic " + cadenaBase64);
+            },
+            contentType: "application/json",
+            data: JSON.stringify ({
+                vCartas: vCartas,
+                nombreUsuario: login,
+                idPartida: idPartida,
+                palo: palo,
+            }),
+            success: (data, textStatus, jqXHR) => {
 
-            $.ajax({
-                type: 'POST',
-                url: '/jugarCartas', 
-                beforeSend: function(req) {
-                    // Añadimos la cabecera 'Authorization' con los datos de autenticación.
-                    req.setRequestHeader("Authorization",
-                    "Basic " + cadenaBase64);
-                },
-                contentType: "application/json",
-                data: JSON.stringify ({
-                    vCartas: vCartas,
-                    nombreUsuario: login,
-                    idPartida: idPartida,
-                    palo: palo,
-                }),
-                success: (data, textStatus, jqXHR) => {
-
+                vaciarCartasMano();
+                vaciarCartasPartida();
+                cargarPartida(idPartida);
                 
-                
-                },
-                error: (jqXHR, textStatus, errorThrown) =>{
+            },
+            error: (jqXHR, textStatus, errorThrown) =>{
 
-                    alert("Se ha producido un error: " + errorThrown);
-                }
-            });
-
-        }else{
-
-            borrarmsg();
-            $("#partida").after(pintarError("No hay palo seleccionado"));
-        }
+                alert("Se ha producido un error: " + errorThrown);
+            }
+        });
 
     }else{
 
@@ -499,8 +523,7 @@ function jugarCartas() {
 }
 
 function mentiroso(){
-
-    
+   
 }
 
 //Funcion que pinta una carta
@@ -514,21 +537,21 @@ function pintarCarta(carta){
 //Funcion que muestra las cartas de la mesa
 function pintarMesa(palo){
 
-    let result = $("<span>").addClass("d-inline-block bg-warning");
-    result.append($("<h3>").text(palo));
+    let result = $("<span>").addClass("d-inline-block bg-warning cartaMesa m-1 p-1");
+    result.append($("<h4>").text(palo));
     return result;
 }
 
 //Vacia cartas de la partida
 function vaciarCartasPartida(){
 
-    $("#cartas-mano").empty();
+    $("#cartas-mesa").empty();
 }
 
 //Vacia cartas de la partida
 function vaciarCartasMano(){
 
-    $("#cartas-mesa").empty();
+    $("#cartas-mano").empty();
 }
 
 //Vacia cartas de la partida
@@ -596,6 +619,7 @@ function ocultar(){
     $("#partida").hide();
     $("#turno").hide();
     $("#seleccionarPalo").hide();
+    $("#jugadaAnterior").hide();
     borrarmsg();
 
 }

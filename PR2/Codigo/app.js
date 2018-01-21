@@ -337,12 +337,10 @@ app.get("/participantesDePartida", passport.authenticate('basic', { failureRedir
 app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
     var idPartida = request.query.idPartida;
-    var nombrePartida = request.query.nombrePartida;
     var nombreJugador = request.query.nombreJugador;
 
     let partida = {
         idPartida: idPartida,
-        nombrePartida: nombrePartida,
         nParticipantes: 0,
         arrayParticipantes: [{"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}],
         arrayMisCartas: [],
@@ -592,27 +590,13 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
     });
 });
 
-//Juega las cartas seleccionadas
+//Juega las cartas seleccionadas, actualiza el estado de la partida
 app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
     let vCartas = request.body.vCartas;
     let nombreUsuario = request.body.nombreUsuario;
     let idPartida = request.body.idPartida;
     let palo = request.body.palo;
-
-    let partida = {
-        idPartida: idPartida,
-        nombrePartida: null,
-        nParticipantes: 0,
-        arrayParticipantes: [{"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}],
-        arrayMisCartas: [],
-        turno: null,
-        mesa: [],
-        palo: palo,
-        jugadaAnterior: null,
-        estado: null,
-    }
-
 
     daoP.estadoPartida(idPartida, (err, estado) => {
 
@@ -629,101 +613,65 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
 
             } else {
 
-                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno   
+                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno, actualizar ultima jugada   
 
                 //Convierte el string en un array, con cada palabra en un indice
                 var array = estado.split(',');
                 
-                //Elimina las cartas seleccionadas de la mano del jugador
+                //Elimina las cartas seleccionadas de la mano del jugador y meterlas en la mesa
                 for(let j = 0; j < vCartas.length; j++){
             
                     //Splice(position, numberOfItemsToRemove, itemInsert)
+                    //Quita de la mano
                     array.splice(array.indexOf(vCartas[j]), 1);
-                    array.splice(array.indexOf("mesa") + j + 1, 0, vCartas[j]);
+                    //Pone en la mesa
+                    array.splice(array.indexOf("mesa") + 1, 0, vCartas[j]);
                 }
 
-                partida.estado = array[0];
+                //Introduce palo
+                if(palo !== "noCambia"){
 
-                let nombreJugador1;
-                let nombreJugador2;
-                let nombreJugador3;
-                let nombreJugador4;
-
-                let cartasJugador1 = [];
-                let cartasJugador2 = [];
-                let cartasJugador3 = [];
-                let cartasJugador4 = [];
-
-                nombreJugador1 = array[2];
-
-                let a = 3;
-
-                //guardamos las cartas del jugador1
-                
-                while(array[a] !== "jugador2"){
-
-                    cartasJugador1.push(array[a]);
-                    a++;
-
-                }
-                
-                //avanzamos "jugador2"
-                a++;
-
-                //guardamos el nombre de jugador2
-                nombreJugador2 = array[a];
-                a++;
-
-                //guardamos las cartas del jugador2
-
-                while(array[a] !== "jugador3"){
-
-                    cartasJugador2.push(array[a]);
-                    a++;
-
+                    array.splice(array.indexOf("palo") + 1, 1, palo);
                 }
 
-                 //avanzamos "jugador3"
-                 a++;
+                //Cambia el turno
+                switch (array[array.indexOf(nombreUsuario) - 1]) {
+                    case "jugador1":
+                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador2") + 1]);
+                    break;
+                    case "jugador2":
+                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador3") + 1]);
+                    break;
+                    case "jugador3":
+                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador4") + 1]);
+                    break;
+                    case "jugador4":
+                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador1") + 1]);
+                    break;
+                }
 
-                 //guardamos el nombre de jugador3
-                 nombreJugador3 = array[a];
-                 a++;
- 
-                 //guardamos las cartas del jugador3
- 
-                 while(array[a] !== "jugador4"){
- 
-                     cartasJugador3.push(array[a]);
-                     a++;
- 
-                 }
+                //Actualizar ultima jugada
+                array.splice(array.indexOf("jugadaAnterior") + 1, 1, nombreUsuario + " dice que ha colocado " + vCartas.length + " " + array[array.indexOf("palo") + 1] + "'s");
 
-                 //avanzamos "jugador4"
-                 a++;
+                //Pasar el array a string
+                let partida = array.toString();
 
-                 //guardamos el nombre de jugador4
-                 nombreJugador4 = array[a];
-                 a++;
- 
-                 //guardamos las cartas del jugador4
- 
-                 while(array[a] !== "turno"){
- 
-                     cartasJugador4.push(array[a]);
-                     a++;
- 
-                 }
+                //Guadar estado de partida
+                daoP.guardarPartida(idPartida, partida, (err, callback) => {
 
+                    if (err) {
+            
+                        console.log(err);
+                        response.end();
+                    } else {                      
+            
+                    }
+                });
 
-
-
-                
                 console.log(array);
 
-
                 response.status(200);
-                response.json(partida);
+                response.end();
             }
 
         }
