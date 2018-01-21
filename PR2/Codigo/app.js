@@ -347,7 +347,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
         arrayParticipantes: [{"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}],
         arrayMisCartas: [],
         turno: null,
-        mesa: [],
+        nCartasMesa: null,
         palo: null,
         jugadaAnterior: null,
         estado: null,
@@ -553,7 +553,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                                         partida.turno = array[i + 1];
                                                         break;
                                                     case "mesa":
-                                                        partida.mesa = array[i + 1];
+                                                        partida.nCartasMesa = 0;
                                                         break;
                                                     case "palo":
                                                         partida.palo = array[i + 1];
@@ -569,6 +569,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                             
                                         }
 
+                                        //Esto hay que quitarlo
                                         partida.estado = estadoPartida;
 
                                         response.status(200);

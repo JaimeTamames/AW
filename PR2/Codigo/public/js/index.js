@@ -378,10 +378,10 @@ function cargarPartida(idPartida, nombrePartida){
 
             //Pinta las cartas de la mesa
             if(data.palo !== "null"){
-                data.mesa.forEach(elem => {
+                for(let i = 0; i < data.nCartasMesa; i++){
 
                     $("#cartas-mesa").append(pintarMesa(data.palo));
-                });
+                };
             }
 
             //Quita elturno
