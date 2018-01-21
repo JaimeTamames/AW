@@ -553,7 +553,14 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                                         partida.turno = array[i + 1];
                                                         break;
                                                     case "mesa":
+
                                                         partida.nCartasMesa = 0;
+
+                                                        while(array[i + 1] !== "palo"){
+
+                                                            partida.nCartasMesa++;
+                                                            i++;
+                                                        }
                                                         break;
                                                     case "palo":
                                                         partida.palo = array[i + 1];
