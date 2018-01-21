@@ -556,7 +556,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
 
                                                         partida.nCartasMesa = 0;
 
-                                                        while(array[i + 1] !== "palo"){
+                                                        while(array[i + 1] !== "palo" && array[i + 1] !== "null"){
 
                                                             partida.nCartasMesa++;
                                                             i++;
