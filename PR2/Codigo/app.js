@@ -595,9 +595,25 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
 //Juega las cartas seleccionadas
 app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
     
-    var vCartas = request.body.vCartas;
-    var nombreUsuario = request.body.nombreUsuario;
-    var idPartida = request.body.idPartida;
+    let vCartas = request.body.vCartas;
+    let nombreUsuario = request.body.nombreUsuario;
+    let idPartida = request.body.idPartida;
+    let palo = request.body.palo;
+
+    let partida = {
+        idPartida: idPartida,
+        nombrePartida: nombrePartida,
+        nParticipantes: 0,
+        arrayParticipantes: [{"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}],
+        arrayMisCartas: [],
+        turno: null,
+        mesa: [],
+        palo: palo,
+        jugadaAnterior: null,
+        estado: null,
+    }
+
+    console.log(partida);
 
     daoP.estadoPartida(idPartida, (err, estado) => {
 
@@ -607,24 +623,28 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
             response.end();
         } else{ 
             
-            if (estadoPartida === undefined) {
+            if (estado === undefined) {
                         
                 response.status(404);
                 response.end("Este identificador no corresponde a ninguna partida");
-            }else{
+
+            } else {
 
                 //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno
+                
 
                 //Convierte el string en un array, con cada palabra en un indice
-                var array = estadoPartida.split(',');
+                var array = estado.split(',');
 
                 //Elimina las cartas seleccionadas de la mano del jugador
                 for(let j = 0; j < vCartas.length; j++){
             
                     //Splice(position, numberOfItemsToRemove, itemInsert)
                     array.splice(array.indexOf(vCartas[j]), 1);
-                    array.splice(array.indexOf("mesa") + i + 1, 0, vCartas[j]);
+                    array.splice(array.indexOf("mesa") + j + 1, 0, vCartas[j]);
                 }
+
+                
 
 
                 response.status(200);

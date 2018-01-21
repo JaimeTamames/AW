@@ -18,6 +18,7 @@ $(document).ready(() => {
     $("#actualiarPartida").on("click", actualizaPartida);
     $("#jugarCartas").on("click", jugarCartas);
     $("#mentiroso").on("click", mentiroso);
+    $("#paloButton").on("click", jugarPalo);
 });
 
 //Funcion que carga las vistas principales
@@ -301,7 +302,7 @@ function muestraPartida(event){
 }
 
 //Funcion que actualiza la partida
-function actualizaPartida(event){
+function actualizaPartida(){
 
     let nombrePartida = $("#nombrePartidaInfo").text();
     let idPartida = $("a.active").parent().prop("id");
@@ -374,7 +375,10 @@ function cargarPartida(idPartida, nombrePartida){
             data.arrayMisCartas.forEach(elem => {
 
                 $("#cartas-mano").append(pintarCarta(elem));
+               
+
             });
+
 
             //Pinta las cartas de la mesa
             if(data.palo !== "null"){
@@ -423,14 +427,40 @@ function cargarPartida(idPartida, nombrePartida){
 
 //Juega las cartas seleccionadas
 function jugarCartas(){
+    
+    let vCartasMesa = [];
 
-    /*
-   let vCartas = [];
+    //Obtenemos el numero de cartas en la mesa
+    $(".cartaMesa").each(function (index, value) { 
+       
+        vCartasMesa.push($(this).attr('id'));
 
+    });
+
+    if(vCartasMesa.length === 0){
+
+        $("#palo").show();
+
+    }   
+    else {
+
+        jugarPalo();
+    
+    }
+    
+}
+
+function jugarPalo() {
+
+    let vCartas = [];
+    let palo = $("#paloInput").val();
+
+    
     //Obtenemos las cartas seleccionadas
     $(".cartaSeleccionada").each(function (index, value) { 
-       
+        
         vCartas.push($(this).attr('id'));
+
     });
 
     //Si hay cartas seleccionadas se juega
@@ -451,9 +481,11 @@ function jugarCartas(){
                 vCartas: vCartas,
                 nombreUsuario: login,
                 idPartida: idPartida,
+                palo: palo,
             }),
             success: (data, textStatus, jqXHR) => {
 
+                
                 
             },
             error: (jqXHR, textStatus, errorThrown) =>{
@@ -463,7 +495,6 @@ function jugarCartas(){
         });
     }
 
-    */
 }
 
 function mentiroso(){
@@ -479,6 +510,8 @@ function pintarCarta(carta){
 
 }
 
+
+
 //Funcion que muestra las cartas de la mesa
 function pintarMesa(palo){
 
@@ -486,6 +519,8 @@ function pintarMesa(palo){
     result.append($("<h3>").text(palo));
     return result;
 }
+
+
 
 //Vacia cartas de la partida
 function vaciarCartasPartida(){
@@ -563,5 +598,6 @@ function ocultar(){
     $("#menu").hide();
     $("#partida").hide();
     $("#turno").hide();
+    $("#palo").hide();
 
 }
