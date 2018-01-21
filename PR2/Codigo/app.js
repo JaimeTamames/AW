@@ -602,7 +602,7 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
 
     let partida = {
         idPartida: idPartida,
-        nombrePartida: nombrePartida,
+        nombrePartida: null,
         nParticipantes: 0,
         arrayParticipantes: [{"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}, {"nombre": null, "nCartas": null}],
         arrayMisCartas: [],
@@ -613,7 +613,6 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
         estado: null,
     }
 
-    console.log(partida);
 
     daoP.estadoPartida(idPartida, (err, estado) => {
 
@@ -630,12 +629,11 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
 
             } else {
 
-                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno
-                
+                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno   
 
                 //Convierte el string en un array, con cada palabra en un indice
                 var array = estado.split(',');
-
+                
                 //Elimina las cartas seleccionadas de la mano del jugador
                 for(let j = 0; j < vCartas.length; j++){
             
@@ -644,7 +642,84 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                     array.splice(array.indexOf("mesa") + j + 1, 0, vCartas[j]);
                 }
 
+                partida.estado = array[0];
+
+                let nombreJugador1;
+                let nombreJugador2;
+                let nombreJugador3;
+                let nombreJugador4;
+
+                let cartasJugador1 = [];
+                let cartasJugador2 = [];
+                let cartasJugador3 = [];
+                let cartasJugador4 = [];
+
+                nombreJugador1 = array[2];
+
+                let a = 3;
+
+                //guardamos las cartas del jugador1
                 
+                while(array[a] !== "jugador2"){
+
+                    cartasJugador1.push(array[a]);
+                    a++;
+
+                }
+                
+                //avanzamos "jugador2"
+                a++;
+
+                //guardamos el nombre de jugador2
+                nombreJugador2 = array[a];
+                a++;
+
+                //guardamos las cartas del jugador2
+
+                while(array[a] !== "jugador3"){
+
+                    cartasJugador2.push(array[a]);
+                    a++;
+
+                }
+
+                 //avanzamos "jugador3"
+                 a++;
+
+                 //guardamos el nombre de jugador3
+                 nombreJugador3 = array[a];
+                 a++;
+ 
+                 //guardamos las cartas del jugador3
+ 
+                 while(array[a] !== "jugador4"){
+ 
+                     cartasJugador3.push(array[a]);
+                     a++;
+ 
+                 }
+
+                 //avanzamos "jugador4"
+                 a++;
+
+                 //guardamos el nombre de jugador4
+                 nombreJugador4 = array[a];
+                 a++;
+ 
+                 //guardamos las cartas del jugador4
+ 
+                 while(array[a] !== "turno"){
+ 
+                     cartasJugador4.push(array[a]);
+                     a++;
+ 
+                 }
+
+
+
+
+                
+                console.log(array);
 
 
                 response.status(200);
@@ -738,8 +813,7 @@ function comenzarPartida(idPartida){
             
                         console.log(err);
                         //response.end();
-                    } else {
-                        
+                    } else {                      
             
                     }
                 });
