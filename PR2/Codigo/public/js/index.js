@@ -14,8 +14,10 @@ $(document).ready(() => {
     $("#crear").on("click", crearPartida);
     $("#unirse").on("click", unirsePartida);
     $("#listaPartidas").on("click", "li", muestraPartida);
-    $("#cartas-mano").on("click", "a", selecionarCarta);
+    $("#cartas-mano").on("click", "img", selecionarCarta);
     $("#actualiarPartida").on("click", actualizaPartida);
+    $("#jugarCartas").on("click", jugarCartas);
+    $("#mentiroso").on("click", mentiroso);
 });
 
 //Funcion que carga las vistas principales
@@ -270,11 +272,11 @@ function selecionarCarta(event){
     let idCarta = event.currentTarget.id;
 
     //Criterios de seleccion y deselección
-    if($("#" + idCarta + "img").hasClass("cartaSelecionada")){
-        $("#" + idCarta + "img").removeClass("cartaSelecionada");
+    if($("#" + idCarta).hasClass("cartaSeleccionada")){
+        $("#" + idCarta).removeClass("cartaSeleccionada");
     }
     else{
-        $("#" + idCarta + "img").addClass("cartaSelecionada");
+        $("#" + idCarta).addClass("cartaSeleccionada");
     }
 
 }
@@ -419,11 +421,60 @@ function cargarPartida(idPartida, nombrePartida){
     });        
 }
 
+//Juega las cartas seleccionadas
+function jugarCartas(){
+
+    /*
+   let vCartas = [];
+
+    //Obtenemos las cartas seleccionadas
+    $(".cartaSeleccionada").each(function (index, value) { 
+       
+        vCartas.push($(this).attr('id'));
+    });
+
+    //Si hay cartas seleccionadas se juega
+    if (vCartas.length > 0){
+
+        let idPartida = $("a.active").parent().prop("id");
+
+        $.ajax({
+            type: 'POST',
+            url: '/jugarCartas', 
+            beforeSend: function(req) {
+                // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+                req.setRequestHeader("Authorization",
+                "Basic " + cadenaBase64);
+            },
+            contentType: "application/json",
+            data: JSON.stringify ({
+                vCartas: vCartas,
+                nombreUsuario: login,
+                idPartida: idPartida,
+            }),
+            success: (data, textStatus, jqXHR) => {
+
+                
+            },
+            error: (jqXHR, textStatus, errorThrown) =>{
+
+                alert("Se ha producido un error: " + errorThrown);
+            }
+        });
+    }
+
+    */
+}
+
+function mentiroso(){
+
+    
+}
+
 //Funcion que pinta una carta
 function pintarCarta(carta){
 
-    let result = $("<a data-toggle='tab'>").prop("href", "#" + carta).prop("id", carta);
-    result.append($("<img src='img/" + carta + ".png'>").addClass("m-2").prop("id", carta + "img"));
+    let result = ($("<img src='img/" + carta + ".png'>").addClass("m-2").prop("id", carta));
     return result;
 
 }

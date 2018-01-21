@@ -409,11 +409,10 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                         //Si la partida ha empezado
                                         if(array[0] === "empezada"){
 
-                                            let i = 1;
                                             let nCartas = 0;
 
                                             //Extraemos el orden de los jugadores
-                                            for(i; i < array.length; i++){
+                                            for(let i = 1; i < array.length; i++){
 
                                                 //console.log(array[i + 1]);
 
@@ -585,8 +584,51 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
     });
 });
 
-//.split(",").length;
+//Juega las cartas seleccionadas
+app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
+    
+    var vCartas = request.body.vCartas;
+    var nombreUsuario = request.body.nombreUsuario;
+    var idPartida = request.body.idPartida;
 
+    daoP.estadoPartida(idPartida, (err, estado) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else{ 
+            
+            if (estadoPartida === undefined) {
+                        
+                response.status(404);
+                response.end("Este identificador no corresponde a ninguna partida");
+            }else{
+
+                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno
+
+                //Convierte el string en un array, con cada palabra en un indice
+                var array = estadoPartida.split(',');
+
+                //Elimina las cartas seleccionadas de la mano del jugador
+                for(let j = 0; j < vCartas.length; j++){
+            
+                    //Splice(position, numberOfItemsToRemove, itemInsert)
+                    array.splice(array.indexOf(vCartas[j]), 1);
+                    array.splice(array.indexOf("mesa") + i + 1, 0, vCartas[j]);
+                }
+
+
+                response.status(200);
+                response.json(partida);
+            }
+
+        }
+    });
+});
+
+
+//Comienza una partida, repartiendo las cartas y los turnos
 function comenzarPartida(idPartida){
 
     let estado = "empezada,";
