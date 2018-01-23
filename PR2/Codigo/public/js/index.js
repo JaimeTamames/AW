@@ -1,5 +1,7 @@
 "use strict";
 
+/*--SESION--*/
+
 let login;
 let loginId;
 let cadenaBase64;
@@ -7,6 +9,8 @@ let cadenaBase64;
 $(document).ready(() => {
 
     cargarPricipal();
+
+    /*-----------LISTENERS-----------*/
 
     $("#aceptarLogin").on("click", acceder);
     $("#nuevoUsuario").on("click", nuevoUsuario);
@@ -20,14 +24,7 @@ $(document).ready(() => {
     $("#mentiroso").on("click", mentiroso);
 });
 
-//Funcion que carga las vistas principales
-function cargarPricipal(){
-
-    borrarmsg();
-    ocultar();
-    $("#login").show();
-    $("#bienvenido").show();
-}
+/*-----------------------CONTROL USUARIO-----------------------*/
 
 //Funcion que valida el usuario introducido e inicia la sesion
 function acceder(){
@@ -129,6 +126,8 @@ function desconectar(){
         cargarPricipal();
 }
 
+/*-----------------------CONTROL PARTIDA-----------------------*/
+
 //Funcion que crea una nueva partida
 function crearPartida(){
 
@@ -155,7 +154,7 @@ function crearPartida(){
                 $("#unirsePartida").after(pintarInfo("Partida " + data.nombrePartida + " creada correctamente!"));
             
                 $("#nombreNuevaPartida").prop("value", "");
-                $("#misPartidas").after(nombrePartidaToDOMElement(data));
+                $("#misPartidas").after(pintarPestañas(data));
             },
             error: (jqXHR, textStatus, errorThrown) =>{
 
@@ -194,7 +193,7 @@ function unirsePartida(){
                 $("#unirsePartida").after(pintarInfo("Te has unido a la partida con id " + data.idPartida));
 
                 $("#idUnirsePartida").prop("value", "");
-                $("#misPartidas").after(nombrePartidaToDOMElement(data));
+                $("#misPartidas").after(pintarPestañas(data));
 
             },
             error: (jqXHR, textStatus, errorThrown) =>{
@@ -217,53 +216,6 @@ function unirsePartida(){
         borrarmsg();
         $("#unirsePartida").after(pintarError("El id de partida no puede estar vacio"));
     }
-}
-
-//Carga el menu
-function cargaMenu(){
-
-    $.ajax({
-        type: 'GET',
-        url: '/participaEnPartidas', 
-        beforeSend: function(req) {
-            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
-            req.setRequestHeader("Authorization",
-            "Basic " + cadenaBase64);
-        },
-        data: {
-            idUsuario: loginId,
-        },
-        success: (data, textStatus, jqXHR) => {
-
-            $("#listaPartidas").prepend(misPartidas());
-
-            data.forEach(elem => {
-                
-                $("#misPartidas").after(nombrePartidaToDOMElement(elem));
-            });
-
-        },
-        error: (jqXHR, textStatus, errorThrown) =>{
-
-            alert("Se ha producido un error: " + errorThrown);
-        }
-    });
-
-    $("#menu").show();
-}
-
-//Muestra la pestaña mis partidas
-function misPartidas() {
-    let result = $("<li>").addClass("nav-item").prop("id", "misPartidas");
-    result.append($("<a data-toggle='tab'>").addClass("nav-link active").prop("role", "tab").prop("href", "#misPartidas").text("Mis partidas"));
-    return result;
-}
-
-//Convierte partidas en pestañas
-function nombrePartidaToDOMElement(partida) {
-    let result = $("<li>").addClass("nav-item").prop("id", partida.idPartida);
-    result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#"+partida.idPartida).text(partida.nombrePartida));
-    return result;
 }
 
 //Tratamiento de las cartas
@@ -298,143 +250,6 @@ function muestraPartida(event){
         borrarmsg();
         cargarPartida(idPartida);
     }
-}
-
-//Funcion que actualiza la partida
-function actualizaPartida(){
-
-    let nombrePartida = $("#nombrePartidaInfo").text();
-    let idPartida = $("a.active").parent().prop("id");
-
-    vaciarInfoPartida();
-    vaciarCartasPartida();
-    vaciarCartasMano();
-
-    cargarPartida(idPartida);
-}
-
-//Muestra la pestaña mis partidas
-function muestraMisPartidas(idPartida){
-
-    ocultar();
-
-    $("#sesion").show();
-    $("a.active").removeClass("active");
-    $("li.active").removeClass("active show");
-
-    let pestaña = document.getElementById(idPartida);
-    $(pestaña).children().addClass("active");
-    $("#menu").show();
-    $("#crearPartida").show();
-    $("#unirsePartida").show();
-}
-
-//Carga la vista de una partida
-function cargarPartida(idPartida){
-
-    $.ajax({
-        type: 'GET',
-        url: '/estadoPartida', 
-        beforeSend: function(req) {
-            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
-            req.setRequestHeader("Authorization",
-            "Basic " + cadenaBase64);
-        },
-        data: {
-            idPartida: idPartida,
-            nombreJugador: login,
-        },
-           
-        success: (data, textStatus, jqXHR) => {
-    
-            ocultar();
-
-            //Pinta info partida
-            if(data.nParticipantes < 4){
-                
-                $("#noJugadoresInfo").text("Aun no hay suficientes participantes");
-                $("#idPartidaInfo").text("El identificador de la partida es el: " + data.idPartida);
-            }
-
-            let i = 1;
-
-            //Pinta info jugadores
-            data.arrayParticipantes.forEach(elem => {
-
-                $("#nombreJugadorInfo" + i).text(elem.nombre);
-                $("#nCartasJugadorInfo" + i).text(elem.nCartas);
-                i++;
-            });
-
-            //Pinta las cartas del jugador
-            data.arrayMisCartas.forEach(elem => {
-
-                $("#cartas-mano").append(pintarCarta(elem));
-            });
-
-
-            //Pinta las cartas de la mesa. Si no hay cartas en la mesa y es tu turno te muestra el selector del palo
-            if(data.palo !== "null"){
-                for(let i = 0; i < data.nCartasMesa; i++){
-
-                    $("#cartas-mesa").append(pintarMesa(data.palo));
-                };
-            }else if(data.turno === login){
-
-                $("#seleccionarPalo").show();
-            }
-
-            //Quita elturno
-            $("#jugadores").find(".bg-success").removeClass("bg-success");
-
-            let aux;
-            //Pinta el turno
-            for(let i = 1; i < 5; i++){
-
-                aux = $("#nombreJugadorInfo" + i).text();
-                if(aux === data.turno){
-                    $("#nombreJugadorInfo" + i).parent().addClass("bg-success");
-                }
-            }
-
-            //Pinta las opciones de juego
-            if(data.turno === login){
-
-                $("#turno").show();
-            }
-
-            
-            //Pinta la ultima jugada
-            if(data.ultimaJugada === null){
-
-                $("#jugadaAnterior").text("Aun no se han jugado cartas").show();
-            }else{
-
-                $("#jugadaAnterior").text(data.jugadaAnterior).show();
-            }
-            
-
-            $("#sesion").show();      
-            $("a.active").removeClass("active");
-            $("li.active").removeClass("active show");
-        
-            let pestaña = document.getElementById(data.idPartida);
-            $(pestaña).children().addClass("active");
-
-            let nombrePartida = $("a.active").text();
-
-            //Pinta nombre partida
-            $("#nombrePartidaInfo").text(nombrePartida);
-        
-            $("#menu").show();    
-            $("#partida").show();
-
-        },
-        error: (jqXHR, textStatus, errorThrown) =>{
-    
-            alert("Se ha producido un error: " + errorThrown);
-        }
-    });        
 }
 
 //Juega las cartas seleccionadas
@@ -526,6 +341,220 @@ function mentiroso(){
    
 }
 
+/*-----------------------MOSTRAR-----------------------*/
+
+//Funcion que carga las vistas principales
+function cargarPricipal(){
+
+    borrarmsg();
+    ocultar();
+    $("#login").show();
+    $("#bienvenido").show();
+}
+
+//Carga el menu
+function cargaMenu(){
+
+    $.ajax({
+        type: 'GET',
+        url: '/participaEnPartidas', 
+        beforeSend: function(req) {
+            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+            req.setRequestHeader("Authorization",
+            "Basic " + cadenaBase64);
+        },
+        data: {
+            idUsuario: loginId,
+        },
+        success: (data, textStatus, jqXHR) => {
+
+            $("#listaPartidas").prepend(pintarPestañamisPartidas());
+
+            data.forEach(elem => {
+                
+                $("#misPartidas").after(pintarPestañas(elem));
+            });
+
+        },
+        error: (jqXHR, textStatus, errorThrown) =>{
+
+            alert("Se ha producido un error: " + errorThrown);
+        }
+    });
+
+    $("#menu").show();
+}
+
+//Muestra la pestaña mis partidas
+function muestraMisPartidas(idPartida){
+
+    ocultar();
+
+    $("#sesion").show();
+    $("a.active").removeClass("active");
+    $("li.active").removeClass("active show");
+
+    let pestaña = document.getElementById(idPartida);
+    $(pestaña).children().addClass("active");
+    $("#menu").show();
+    $("#crearPartida").show();
+    $("#unirsePartida").show();
+}
+
+//Carga la vista de una partida
+function cargarPartida(idPartida){
+
+    $.ajax({
+        type: 'GET',
+        url: '/estadoPartida', 
+        beforeSend: function(req) {
+            // Añadimos la cabecera 'Authorization' con los datos de autenticación.
+            req.setRequestHeader("Authorization",
+            "Basic " + cadenaBase64);
+        },
+        data: {
+            idPartida: idPartida,
+            nombreJugador: login,
+        },
+           
+        success: (data, textStatus, jqXHR) => {
+    
+            ocultar();
+
+            //Pinta info partida
+            pintaInfoMesa(data.nParticipantes, data.idPartida);
+            
+            //Pinta info jugadores
+            pintaInfoJugadores(data.arrayParticipantes);
+
+            //Pinta las cartas del jugador
+            pintaCartasMano(data.arrayMisCartas);
+            
+            //Pinta las cartas de la mesa. Si no hay cartas en la mesa y es tu turno te muestra el selector del palo
+            pintaCartasMesa(data.palo, data.turno, data.nCartasMesa);
+            
+            //Pinta el turno actual
+            pintaTurno(data.turno);
+
+            //Pinta las opciones de juego
+            pintaOpcionesJuego(data.turno);
+
+            //Pinta la ultima jugada
+            pintaUltimaJugada(data.ultimaJugada, data.jugadaAnterior);
+            
+            //Activa la pestaña seleccionada
+            let pestaña = document.getElementById(data.idPartida);
+            $(pestaña).children().addClass("active");
+
+            //Obtiene el nombre de la partida
+            let nombrePartida = $("a.active").text();
+
+            //Pinta nombre partida
+            $("#nombrePartidaInfo").text(nombrePartida);
+        
+            $("#sesion").show();
+            $("#menu").show();    
+            $("#partida").show();
+
+        },
+        error: (jqXHR, textStatus, errorThrown) =>{
+    
+            alert("Se ha producido un error: " + errorThrown);
+        }
+    });        
+}
+
+//Funcion que actualiza la partida
+function actualizaPartida(){
+
+    let nombrePartida = $("#nombrePartidaInfo").text();
+    let idPartida = $("a.active").parent().prop("id");
+
+    vaciarInfoPartida();
+    vaciarCartasPartida();
+    vaciarCartasMano();
+
+    cargarPartida(idPartida);
+}
+
+/*-----------------------PINTAR-----------------------*/
+
+//Pinta la pestaña mis partidas
+function pintarPestañamisPartidas() {
+    let result = $("<li>").addClass("nav-item").prop("id", "misPartidas");
+    result.append($("<a data-toggle='tab'>").addClass("nav-link active").prop("role", "tab").prop("href", "#misPartidas").text("Mis partidas"));
+    return result;
+}
+
+//Convierte partidas en pestañas
+function pintarPestañas(partida) {
+    let result = $("<li>").addClass("nav-item").prop("id", partida.idPartida);
+    result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#"+partida.idPartida).text(partida.nombrePartida));
+    return result;
+}
+
+//Funcion que pinta la informacion de la mesa si esta aun no ha empezado
+function pintaInfoMesa(nParticipantes, idPartida){
+
+    if(nParticipantes < 4){
+                
+        $("#noJugadoresInfo").text("Aun no hay suficientes participantes");
+        $("#idPartidaInfo").text("El identificador de la partida es el: " + idPartida);
+    }
+}
+
+//Funcion que pinta el nombre y las cartas de cada jugador
+function pintaInfoJugadores(arrayParticipantes){
+
+    let i = 1;
+
+    arrayParticipantes.forEach(elem => {
+
+        $("#nombreJugadorInfo" + i).text(elem.nombre);
+        $("#nCartasJugadorInfo" + i).text(elem.nCartas);
+        i++;
+    });
+}
+
+//Funcion que resalta el turno actual
+function pintaTurno(turno){
+
+    $("#jugadores").find(".bg-success").removeClass("bg-success");
+
+    let aux;
+
+    for(let i = 1; i < 5; i++){
+
+        aux = $("#nombreJugadorInfo" + i).text();
+        if(aux === turno){
+            $("#nombreJugadorInfo" + i).parent().addClass("bg-success");
+        }
+    }
+}
+
+//Funcion que pinta las cartas de la mano del jugador
+function pintaCartasMano(arrayMisCartas){
+
+    arrayMisCartas.forEach(elem => {
+
+        $("#cartas-mano").append(pintarCarta(elem));
+    });
+}
+
+//Funcion que pinta las cartas de la mesa, si es tu turno y no hay cartas en la mesa muestra el selector de palo
+function pintaCartasMesa(palo, turno, nCartasMesa){
+
+    if(palo !== "null"){
+        for(let i = 0; i < nCartasMesa; i++){
+
+            $("#cartas-mesa").append(pintarMesa(palo));
+        };
+    }else if(turno === login){
+
+        $("#seleccionarPalo").show();
+    }
+}
+
 //Funcion que pinta una carta
 function pintarCarta(carta){
 
@@ -541,6 +570,47 @@ function pintarMesa(palo){
     result.append($("<h4>").text(palo));
     return result;
 }
+
+//Funcion que pinta la jugada del turno anterior
+function pintaUltimaJugada(ultimaJugada, jugadaAnterior){
+
+    if(ultimaJugada === null){
+
+        $("#jugadaAnterior").text("Aun no se han jugado cartas").show();
+    }else{
+
+        $("#jugadaAnterior").text(jugadaAnterior).show();
+    }
+}
+
+//Funcion que pinta las opciones de juego si es tu turno
+function pintaOpcionesJuego(turno){
+
+    if(turno === login){
+
+        $("#turno").show();
+    }
+}
+
+//Funcion que muestra un error
+function pintarError(mensaje) {
+
+    let result = $("<div>").addClass("container d-flex justify-content-center mt-1 pl-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("text-danger").text(mensaje));
+    return result;
+
+}
+
+//Funcion que muestra mensajes
+function pintarInfo(mensaje) {
+
+    let result = $("<div>").addClass("container d-flex justify-content-center mt-1 pl-4").prop("id", "msgLogin");
+    result.append($("<h5>").addClass("text-success").text(mensaje));
+    return result;
+
+}
+
+/*-----------------------VACIAR-----------------------*/
 
 //Vacia cartas de la partida
 function vaciarCartasPartida(){
@@ -582,29 +652,10 @@ function vaciarInfoPartida(){
     $("#nCartasJugadorInfo4").empty();
 }
 
-//Funcion que muestra un error
-function pintarError(mensaje) {
-
-    let result = $("<div>").addClass("container d-flex justify-content-center mt-1 pl-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("text-danger").text(mensaje));
-    return result;
-
-}
-
 //Funcion que borra los mensajes
 function borrarmsg() {
 
     $("#msgLogin").remove();    
-
-}
-
-//Funcion que muestra mensajes
-function pintarInfo(mensaje) {
-
-    let result = $("<div>").addClass("container d-flex justify-content-center mt-1 pl-4").prop("id", "msgLogin");
-    result.append($("<h5>").addClass("text-success").text(mensaje));
-    return result;
-
 }
 
 //Funcion que oculta todos los elementos
@@ -621,5 +672,6 @@ function ocultar(){
     $("#seleccionarPalo").hide();
     $("#jugadaAnterior").hide();
     borrarmsg();
-
+    $("a.active").removeClass("active");
+    $("li.active").removeClass("active show");
 }
