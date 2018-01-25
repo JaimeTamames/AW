@@ -348,6 +348,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
         nCartasMesa: null,
         palo: null,
         jugadaAnterior: null,
+        nJugadaAnterior: null,
         estado: null,
     }
 
@@ -564,7 +565,8 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                                                         partida.palo = array[i + 1];
                                                         break;
                                                     case "jugadaAnterior":
-                                                        partida.jugadaAnterior = array[i + 1];
+                                                        partida.nJugadaAnterior = array[i + 1];
+                                                        partida.jugadaAnterior = array[i + 2];
                                                         break;                
                                                 }
                                             }
@@ -621,7 +623,6 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                 //Elimina las cartas seleccionadas de la mano del jugador y meterlas en la mesa
                 for(let j = 0; j < vCartas.length; j++){
             
-                    //Splice(position, numberOfItemsToRemove, itemInsert)
                     //Quita de la mano
                     array.splice(array.indexOf(vCartas[j]), 1);
                     //Pone en la mesa
@@ -651,7 +652,125 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                 }
 
                 //Actualizar ultima jugada
-                array.splice(array.indexOf("jugadaAnterior") + 1, 1, nombreUsuario + " dice que ha colocado " + vCartas.length + " " + array[array.indexOf("palo") + 1] + "'s");
+                array.splice(array.indexOf("jugadaAnterior") + 1, 1, vCartas.length);
+                array.splice(array.indexOf("jugadaAnterior") + 2, 0, nombreUsuario + " dice que ha colocado " + vCartas.length + " " + array[array.indexOf("palo") + 1] + "'s");
+
+                //Pasar el array a string
+                let partida = array.toString();
+
+                //Guadar estado de partida
+                daoP.guardarPartida(idPartida, partida, (err, callback) => {
+
+                    if (err) {
+            
+                        console.log(err);
+                        response.end();
+                    } else {   
+                        
+                        response.status(200);
+                        response.end();
+                    }
+                });   
+            }
+        }
+    });
+});
+
+//Realiza las comprobaciones de mentiroso
+app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', failureFlash: true, session: false}), function(request, response) {
+ 
+    let idPartida = request.body.idPartida;
+    let nombreUsuario = request.body.nombreUsuario;
+    let nJugadaAnterior = 0;
+    let palo = null;
+    let vCartas = [];
+    let nCartasMesa = 0;
+    let mentiroso = false;
+
+    daoP.estadoPartida(idPartida, (err, estado) => {
+
+        if (err) {
+
+            console.log(err);
+            response.end();
+        } else{ 
+            
+            if (estado === undefined) {
+                        
+                response.status(404);
+                response.end("Este identificador no corresponde a ninguna partida");
+
+            } else {
+
+                //Convierte el string en un array, con cada palabra en un indice
+                var array = estado.split(',');
+                     
+                //Obtenemos el numero de cartas que se jugaron en el turno anterior
+                nJugadaAnterior = array[array.indexOf("jugadaAnterior") + 1];
+
+                //Obtenemos el palo que se esta jugando
+                palo = array[array.indexOf("palo") + 1];
+
+                //Eliminamos las cartas de la mesa
+                let i = array.indexOf("mesa");
+
+                while(array[i + 1] !== "palo" && array[i + 1] !== "null"){
+
+                    vCartas.push(array.splice(i + 1, 1));
+                    i++;
+                }
+
+                //Extraemos el jugador anterior
+                let juadorAnterior = null;
+                let aux = array[array.indexOf(nombreUsuario) - 1];
+
+                switch (aux) {
+                    case "jugador1":
+                        juadorAnterior = "jugador4";
+                    break;
+                    case "jugador2":
+                        juadorAnterior = "jugador1";
+                    break;
+                    case "jugador3":
+                        juadorAnterior = "jugador2";
+                    break;
+                    case "jugador4":
+                        juadorAnterior = "jugador3";
+                    break;
+                }
+
+                //Comprobamos si el jugador anterior mintio o no
+                for(let i = 0; i < nJugadaAnterior; i++){
+                    
+                    if(vCartas[i].toString().charAt(0) === palo){
+
+                        mentiroso = false;
+                    }else{
+                        mentiroso = true;
+                    }
+                }
+
+                //Si mintio le añadimos al jugador anterior todas las cartas, si no se las añadimos al jugador actual
+                if(mentiroso){
+
+                    vCartas.forEach(elem => {
+                
+                        array.splice(array.indexOf(juadorAnterior) + 2, 0, elem)
+                    });
+                }else{
+
+                    vCartas.forEach(elem => {
+                
+                        array.splice(array.indexOf(nombreUsuario) + 1, 0, elem)
+                    });
+                }
+
+                //Actualizar ultima jugada
+                array.splice(array.indexOf("jugadaAnterior") + 1, 1, 0);
+                array.splice(array.indexOf("jugadaAnterior") + 2, 1);
+
+                //Actualiza el palo
+                array.splice(array.indexOf("palo") + 1, 1, "null");
 
                 //Pasar el array a string
                 let partida = array.toString();
@@ -665,15 +784,11 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                         response.end();
                     } else {                      
             
+                        response.status(200);
+                        response.json({mentiroso: mentiroso});
                     }
                 });
-
-                console.log(array);
-
-                response.status(200);
-                response.end();
             }
-
         }
     });
 });
@@ -752,7 +867,7 @@ function comenzarPartida(idPartida){
                 partida = partida + "palo,null,";
 
                 //Añadir jugada anterior
-                partida = partida + "jugadaAnterior,null,";
+                partida = partida + "jugadaAnterior,0,null,";
 
                 //Guadar estado de partida
                 daoP.guardarPartida(idPartida, partida, (err, callback) => {
