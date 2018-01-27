@@ -147,14 +147,15 @@ function crearPartida(){
             data: JSON.stringify ({
                 nombrePartida: nombrePartida,
                 idUsuario: loginId,
+                nombreUsuario: login,
             }),
             success: (data, textStatus, jqXHR) => {
 
                 borrarmsg();
-                $("#unirsePartida").after(pintarInfo("Partida " + data.nombrePartida + " creada correctamente!"));
+                $("#unirsePartida").after(pintarInfo("Partida " + data.partida.nombre + " creada correctamente!"));
             
                 $("#nombreNuevaPartida").prop("value", "");
-                $("#misPartidas").after(pintarPestañas(data));
+                $("#misPartidas").after(pintarPestañas(data.partida));
             },
             error: (jqXHR, textStatus, errorThrown) =>{
 
@@ -187,10 +188,11 @@ function unirsePartida(){
             data: JSON.stringify ({
                 idPartida: idPartida,
                 idUsuario: loginId,
+                nombreUsuario: login,
             }),
             success: (data, textStatus, jqXHR) => {
                 borrarmsg();
-                $("#unirsePartida").after(pintarInfo("Te has unido a la partida con id " + data.idPartida));
+                $("#unirsePartida").after(pintarInfo("Te has unido a la partida con id " + data.id));
 
                 $("#idUnirsePartida").prop("value", "");
                 $("#misPartidas").after(pintarPestañas(data));
@@ -453,35 +455,32 @@ function cargarPartida(idPartida){
             ocultar();
 
             //Pinta info partida
-            pintaInfoMesa(data.nParticipantes, data.idPartida);
+            pintaInfoMesa(data.partida.nJugadores, data.partida.id);
             
             //Pinta info jugadores
-            pintaInfoJugadores(data.arrayParticipantes);
+            pintaInfoJugadores(data.partida.jugador);
 
             //Pinta las cartas del jugador
-            pintaCartasMano(data.arrayMisCartas);
+            pintaCartasMano(data.partida.jugador, login);
             
             //Pinta las cartas de la mesa. Si no hay cartas en la mesa y es tu turno te muestra el selector del palo
-            pintaCartasMesa(data.palo, data.turno, data.nCartasMesa);
+            pintaCartasMesa(data.partida.mesa.numeroJugado, data.partida.turno, data.partida.mesa.nCartasMesa);
             
             //Pinta el turno actual
-            pintaTurno(data.turno);
+            pintaTurno(data.partida.turno);
 
             //Pinta las opciones de juego
-            pintaOpcionesJuego(data.turno);
+            pintaOpcionesJuego(data.partida.turno);
 
             //Pinta la ultima jugada
-            pintaUltimaJugada(data.jugadaAnterior, data.nJugadaAnterior);
+            pintaUltimaJugada(data.partida.mesa.nCartasMesa);
             
             //Activa la pestaña seleccionada
-            let pestaña = document.getElementById(data.idPartida);
+            let pestaña = document.getElementById(data.partida.id);
             $(pestaña).children().addClass("active");
 
-            //Obtiene el nombre de la partida
-            let nombrePartida = $("a.active").text();
-
             //Pinta nombre partida
-            $("#nombrePartidaInfo").text(nombrePartida);
+            $("#nombrePartidaInfo").text(data.partida.nombre);
         
             $("#sesion").show();
             $("#menu").show();    
@@ -519,8 +518,8 @@ function pintarPestañamisPartidas() {
 
 //Convierte partidas en pestañas
 function pintarPestañas(partida) {
-    let result = $("<li>").addClass("nav-item").prop("id", partida.idPartida);
-    result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#"+partida.idPartida).text(partida.nombrePartida));
+    let result = $("<li>").addClass("nav-item").prop("id", partida.id);
+    result.append($("<a data-toggle='tab'>").addClass("nav-link").prop("role", "tab").prop("href", "#" + partida.id).text(partida.nombre));
     return result;
 }
 
@@ -535,11 +534,11 @@ function pintaInfoMesa(nParticipantes, idPartida){
 }
 
 //Funcion que pinta el nombre y las cartas de cada jugador
-function pintaInfoJugadores(arrayParticipantes){
+function pintaInfoJugadores(jugador){
 
     let i = 1;
 
-    arrayParticipantes.forEach(elem => {
+    jugador.forEach(elem => {
 
         $("#nombreJugadorInfo" + i).text(elem.nombre);
         $("#nCartasJugadorInfo" + i).text(elem.nCartas);
@@ -557,32 +556,40 @@ function pintaTurno(turno){
     for(let i = 1; i < 5; i++){
 
         aux = $("#nombreJugadorInfo" + i).text();
-        if(aux === turno){
+        if(aux === turno && turno.length > 0){
             $("#nombreJugadorInfo" + i).parent().addClass("bg-success");
         }
     }
 }
 
 //Funcion que pinta las cartas de la mano del jugador
-function pintaCartasMano(arrayMisCartas){
+function pintaCartasMano(arrayJugadores, nombre){
 
-    arrayMisCartas.forEach(elem => {
+    arrayJugadores.forEach(jugador => {
 
-        $("#cartas-mano").append(pintarCarta(elem));
+        if(jugador.nombre === nombre){
+
+            jugador.mano.forEach(carta => {
+
+                $("#cartas-mano").append(pintarCarta(carta));
+            });
+        }
     });
+
+    
 }
 
 //Funcion que pinta las cartas de la mesa, si es tu turno y no hay cartas en la mesa muestra el selector de palo
-function pintaCartasMesa(palo, turno, nCartasMesa){
+function pintaCartasMesa(numeroJugado, turno, nCartasMesa){
 
-    if(turno === login && (palo === null || palo === "null")){
+    if(turno === login && numeroJugado === 0){
 
         $("#seleccionarPalo").show();
     }
 
     for(let i = 0; i < nCartasMesa; i++){
 
-        $("#cartas-mesa").append(pintarMesa(palo));
+        $("#cartas-mesa").append(pintarMesa(numeroJugado));
     };
 }
 
@@ -595,17 +602,17 @@ function pintarCarta(carta){
 }
 
 //Funcion que muestra las cartas de la mesa
-function pintarMesa(palo){
+function pintarMesa(numeroJugado){
 
     let result = $("<span>").addClass("d-inline-block cartaMesa bg-warning m-1 p-1");
-    result.append($("<h4>").text(palo));
+    result.append($("<h4>").text(numeroJugado));
     return result;
 }
 
 //Funcion que pinta la jugada del turno anterior
-function pintaUltimaJugada(jugadaAnterior, nJugadaAnterior){
+function pintaUltimaJugada(nCartasMesa){
 
-    if(nJugadaAnterior === 0 || nJugadaAnterior === "0"){
+    if(nCartasMesa === 0){
 
         $("#jugadaAnterior").text("Aun no se han jugado cartas").show();
     }else{

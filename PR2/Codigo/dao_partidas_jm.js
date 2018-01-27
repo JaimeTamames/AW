@@ -37,7 +37,6 @@ class DAOPartidas {
                 } else {
 
                     let partida = {
-                        nombrePartida: nombrePartida,
                         idPartida: result.insertId,
                         ok: false
                     }
@@ -82,31 +81,8 @@ class DAOPartidas {
                     return;
                 } else {
 
-                    let partida = {
-                        nombrePartida: null,
-                        idPartida: idPartida,
-                        ok: false
-                    }
-
-                    connection.query(
-                        "SELECT  nombre " +
-                        "FROM partidas " +
-                        "WHERE id = ?",
-                        [idPartida],
-                        (err, result) => {
-                    if (err) {
-                        callback(err);
-                        return;
-                    } else {
-    
-                        partida.nombrePartida = result[0].nombre;
-                        partida.ok = true;
-    
-                        connection.release();
-                        callback(null, partida);
-                    }
-                }
-                );
+                    connection.release();
+                    callback(null, true);
                 }
             }
             );
@@ -176,7 +152,7 @@ class DAOPartidas {
                 return;
             }
             connection.query(
-                "SELECT juega_en.idPartida AS idPartida, partidas.nombre AS nombrePartida " +
+                "SELECT juega_en.idPartida AS id, partidas.nombre AS nombre " +
                 "FROM juega_en INNER JOIN partidas ON juega_en.idPartida = partidas.id " +
                 "WHERE juega_en.idUsuario = ?",
                     [idUsuario],
@@ -203,7 +179,7 @@ class DAOPartidas {
                 return;
             }
             connection.query(
-                "SELECT  usuarios.login AS nombre " +
+                "SELECT  usuarios.login AS nombre usuarios.id AS id " +
                 "FROM juega_en INNER JOIN usuarios ON juega_en.idUsuario = usuarios.id " +
                 "WHERE juega_en.idPartida = ?",
                     [idPartida],
