@@ -161,7 +161,7 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
     let usuario = {
         nombre: nombreUsuario,
         id: idUsuario,
-        numCartas: 0,
+        nCartas: 0,
         mano: [],
     };
 
@@ -170,7 +170,7 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
         nJugadores: 1,
         nombre: nombrePartida,
         id: 0,
-        empezada: false,
+        ganada: false,
         turno: "",
         mesa: {
             valorCartas: [],
@@ -178,7 +178,7 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
             jugadorAnterior: "",
             ncartasjugadorAnterior: 0,
             mensaje: "",
-            numeroJugado: 0, 
+            numeroJugado: "", 
         },
     };
 
@@ -290,7 +290,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                                     let usuario = {
                                         nombre: nombreUsuario,
                                         id: idUsuario,
-                                        numCartas: 0,
+                                        nCartas: 0,
                                         mano: [],
                                     };
 
@@ -435,9 +435,9 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
     let vCartas = request.body.vCartas;
     let nombreUsuario = request.body.nombreUsuario;
     let idPartida = request.body.idPartida;
-    let palo = request.body.palo;
+    let numeroJugado = request.body.numeroJugado;
 
-    daoP.estadoPartida(idPartida, (err, estado) => {
+    daoP.estadoPartida(idPartida, (err, estadoPartida) => {
 
         if (err) {
 
@@ -445,58 +445,73 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
             response.end();
         } else{ 
             
-            if (estado === undefined) {
+            if (estadoPartida === undefined) {
                         
                 response.status(404);
                 response.end("Este identificador no corresponde a ninguna partida");
 
             } else {
 
-                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno, actualizar ultima jugada   
+                let partida = JSON.parse(estadoPartida);
 
-                //Convierte el string en un array, con cada palabra en un indice
-                var array = estado.split(',');
-                
+                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno, actualizar ultima jugada   
+         
+                let indice = -1;
+
+                //Buscamos el indice de nuestro usuario
+                partida.jugador.forEach(function(elem, index) {
+                    
+                    if(elem.nombre === nombreUsuario){
+                        indice = index;
+                    }
+                });
+
                 //Elimina las cartas seleccionadas de la mano del jugador y meterlas en la mesa
                 for(let j = 0; j < vCartas.length; j++){
-            
+
                     //Quita de la mano
-                    array.splice(array.indexOf(vCartas[j]), 1);
+                    partida.jugador[indice].mano.splice(partida.jugador[indice].mano.indexOf(vCartas[j]), 1);
+
                     //Pone en la mesa
-                    array.splice(array.indexOf("mesa") + 1, 0, vCartas[j]);
+                    partida.mesa.valorCartas.push(vCartas[j]);
+
+                    //Aumenta numero de cartas en la mesa
+                    partida.mesa.nCartasMesa++;
+
+                    //Disminulle el numero de cartas del jugador
+                    partida.jugador[indice].nCartas--;
                 }
 
-                //Introduce palo
-                if(palo !== "noCambia"){
+                if(partida.jugador[indice].nCartas === 0){
 
-                    array.splice(array.indexOf("palo") + 1, 1, palo);
+                    partida.ganada = true;
+                }
+
+                //Introduce numeroJugado
+                if(numeroJugado !== "noCambia"){
+
+                    partida.mesa.numeroJugado = numeroJugado;
+                }
+
+                //Pasamos el turno
+                if(indice === 3){
+                    indice = 0
+                }else{
+                    indice++;
                 }
 
                 //Cambia el turno
-                switch (array[array.indexOf(nombreUsuario) - 1]) {
-                    case "jugador1":
-                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador2") + 1]);
-                    break;
-                    case "jugador2":
-                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador3") + 1]);
-                    break;
-                    case "jugador3":
-                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador4") + 1]);
-                    break;
-                    case "jugador4":
-                        array.splice(array.indexOf("turno") + 1, 1, array[array.indexOf("jugador1") + 1]);
-                    break;
-                }
+                partida.turno = partida.jugador[indice].nombre;
 
                 //Actualizar ultima jugada
-                array.splice(array.indexOf("jugadaAnterior") + 1, 1, vCartas.length);
-                array.splice(array.indexOf("jugadaAnterior") + 2, 1, nombreUsuario + " dice que ha colocado " + vCartas.length + " " + array[array.indexOf("palo") + 1] + "'s");
-
-                //Pasar el array a string
-                let partida = array.toString();
-
+                partida.mesa.jugadorAnterior = nombreUsuario;
+                partida.mesa.ncartasjugadorAnterior = vCartas.length
+                partida.mesa.mensaje = nombreUsuario + " dice que ha colocado " + vCartas.length + " " + partida.mesa.numeroJugado + "'s";
+                
+                let estado = JSON.stringify(partida);
+                
                 //Guadar estado de partida
-                daoP.guardarPartida(idPartida, partida, (err, callback) => {
+                daoP.guardarPartida(idPartida, estado, (err, callback) => {
 
                     if (err) {
             
@@ -518,13 +533,9 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
  
     let idPartida = request.body.idPartida;
     let nombreUsuario = request.body.nombreUsuario;
-    let nJugadaAnterior = 0;
-    let palo = null;
-    let vCartas = [];
-    let nCartasMesa = 0;
     let mentiroso = false;
 
-    daoP.estadoPartida(idPartida, (err, estado) => {
+    daoP.estadoPartida(idPartida, (err, estadoPartida) => {
 
         if (err) {
 
@@ -532,94 +543,76 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
             response.end();
         } else{ 
             
-            if (estado === undefined) {
+            if (estadoPartida === undefined) {
                         
                 response.status(404);
                 response.end("Este identificador no corresponde a ninguna partida");
 
             } else {
 
-                //Convierte el string en un array, con cada palabra en un indice
-                var array = estado.split(',');
-                     
-                //Obtenemos el numero de cartas que se jugaron en el turno anterior
-                nJugadaAnterior = array[array.indexOf("jugadaAnterior") + 1];
+                let partida = JSON.parse(estadoPartida);
 
-                //Obtenemos el palo que se esta jugando
-                palo = array[array.indexOf("palo") + 1];
+                partida.mesa.valorCartas.reverse();
 
-                //Eliminamos las cartas de la mesa
-                let i = array.indexOf("mesa") + 1;
-
-                while(array[i] !== "palo" && array[i] !== "null"){
-
-                    vCartas.push(array[i]);
-                    array.splice(i, 1);
-                    i++;
-                }
-
-                //Extraemos el jugador anterior
-                let juadorAnterior = null;
-                let aux = array[array.indexOf(nombreUsuario) - 1];
-
-                switch (aux) {
-                    case "jugador1":
-                        juadorAnterior = "jugador4";
-                    break;
-                    case "jugador2":
-                        juadorAnterior = "jugador1";
-                    break;
-                    case "jugador3":
-                        juadorAnterior = "jugador2";
-                    break;
-                    case "jugador4":
-                        juadorAnterior = "jugador3";
-                    break;
-                }
+                partida.mesa.mensaje = "";
 
                 //Comprobamos si el jugador anterior mintio o no
-                for(let i = 0; i < nJugadaAnterior; i++){
+                for(let i = 0; i < partida.mesa.ncartasjugadorAnterior; i++){
                     
-                    if(vCartas[i].toString().charAt(0) === palo){
+                    if(partida.mesa.valorCartas[i].charAt(0) === partida.mesa.numeroJugado && !mentiroso){
 
-                        mentiroso = false;
+                        mentiroso = false;                    
                     }else{
                         mentiroso = true;
-                        i = nJugadaAnterior;
                     }
+
+                    partida.mesa.mensaje +=  partida.mesa.valorCartas[i] + " ";
                 }
 
-                console.log(vCartas);
+                let indice = -1
 
-                //Si mintio le añadimos al jugador anterior todas las cartas, si no se las añadimos al jugador actual
+                //Sacamos el indice del jugador al que le vamos a meter todas las cartas
                 if(mentiroso){
 
-                    vCartas.forEach(elem => {
-                
-                        console.log(elem);
-                        array.splice(array.indexOf(juadorAnterior) + 2, 0, elem)
+                    partida.jugador.forEach(function(elem, index) {
+                    
+                        if(elem.nombre === partida.mesa.jugadorAnterior){
+                            indice = index;
+                        }
                     });
+
+                    partida.mesa.mensaje += partida.mesa.jugadorAnterior + " es un mentiroso, no echo " + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s!!";
+                    
                 }else{
 
-                    vCartas.forEach(elem => {
-                
-                        console.log(elem);
-                        array.splice(array.indexOf(nombreUsuario) + 1, 0, elem)
+                    partida.jugador.forEach(function(elem, index) {
+                    
+                        if(elem.nombre === nombreUsuario){
+                            indice = index;
+                        }
                     });
+
+                    partida.mesa.mensaje += partida.mesa.jugadorAnterior + " no es un mentiroso, si echo " + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s!!";
+                    
                 }
 
-                //Actualizar ultima jugada
-                array.splice(array.indexOf("jugadaAnterior") + 1, 1, 0);
-                array.splice(array.indexOf("jugadaAnterior") + 2, 1);
+                //Sacamos las cartas de la mesa y se las metemos en la mano
+                while(partida.mesa.valorCartas.length){
 
-                //Actualiza el palo
-                array.splice(array.indexOf("palo") + 1, 1, "null");
+                    partida.jugador[indice].mano.push(partida.mesa.valorCartas.pop());
+                    partida.jugador[indice].nCartas++;
+                }
 
-                //Pasar el array a string
-                let partida = array.toString();
+                //Actualiza datos de la mesa
+                partida.mesa.numeroJugado = "";
+                partida.mesa.ncartasjugadorAnterior = 0;
+                partida.mesa.nCartasMesa = 0;
+                partida.mesa
+
+                let estado = JSON.stringify(partida);
 
                 //Guadar estado de partida
-                daoP.guardarPartida(idPartida, partida, (err, callback) => {
+                daoP.guardarPartida(idPartida, estado, (err, callback) => {
 
                     if (err) {
             
@@ -636,23 +629,19 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
     });
 });
 
-
 //Comienza una partida, repartiendo las cartas y los turnos
 function comenzarPartida(partida){
 
     let ok = true;
 
-    let jugadorAux = partida.jugador;
+    let jugadorAux = partida.jugador.slice();;
 
-    partida.empezada = true;
     let i = 0;
 
     //Orden de jugadores aleatorio
-    while(i < 4) {
+    while(jugadorAux.length) {
 
-        var index = Math.floor( Math.random()*jugadorAux.length );
-
-        //console.log(index);
+        var index = Math.floor( Math.random()*jugadorAux.length);
 
         //Asignamos el turno del primer jugador
         if(ok){
@@ -667,28 +656,23 @@ function comenzarPartida(partida){
 
         // Elimina un jugador del array
         jugadorAux.splice(index, 1);
-
-        console.log(jugadorAux);
     }
-
-    console.log(partida);
 
     //Se reparten las cartas aleatoriamente
     partida.jugador = repartirCartas(partida.jugador);
 
-    //Actualizamos mensaje de mesa
-    partida.mesa.mensaje = "La partida ha comenzado, esperando primera mano!"
+    partida.mesa.mensaje = "Aun no se han jugado cartas, esperando primera mano...";
 
     let estado = JSON.stringify(partida);
                 
     //Guadar estado de partida
-    daoP.guardarPartida(idPartida, estado, (err, callback) => {
+    daoP.guardarPartida(partida.id, estado, (err, callback) => {
 
         if (err) {
             
             console.log(err);
         } else {                      
-            console.log("La partida que se acaba de empezar no se ha guardado correctamente")
+
         }
     });
 }

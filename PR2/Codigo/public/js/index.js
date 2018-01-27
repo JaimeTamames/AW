@@ -267,33 +267,32 @@ function jugarCartas() {
         nCartasMesa++;
     });
 
-    let palo = null;
-    let aux = false;
+    let numeroJugado = null;
 
-    //Obtenemos el palo seleccionado
+    //Obtenemos el numeroJugado seleccionado
     if(nCartasMesa === 0){
 
-        palo = $("#paloInput :selected").text();
+        numeroJugado = $("#paloInput :selected").text();
 
-        //Controla si se ha elegido un palo
-        if(palo === "Elige palo" && aux){
+        //Controla si se ha elegido un numeroJugado
+        if(numeroJugado === "Elige palo"){
 
             borrarmsg();
-            $("#partida").after(pintarError("No hay palo seleccionado"));
+            $("#partida").after(pintarError("No hay numero a jugar seleccionado"));
         }else{
 
-            juega (vCartas, login, idPartida, palo);
+            juega (vCartas, login, idPartida, numeroJugado);
         }
 
     }else{
 
-        palo = "noCambia";
+        numeroJugado = "noCambia";
 
-        juega (vCartas, login, idPartida, palo);
+        juega (vCartas, login, idPartida, numeroJugado);
     }
 }
 
-function juega(vCartas, login, idPartida, palo){
+function juega(vCartas, login, idPartida, numeroJugado){
 
     //Obtenemos las cartas seleccionadas
     $(".cartaSeleccionada").each(function (index, value) { 
@@ -319,7 +318,7 @@ function juega(vCartas, login, idPartida, palo){
                 vCartas: vCartas,
                 nombreUsuario: login,
                 idPartida: idPartida,
-                palo: palo,
+                numeroJugado: numeroJugado,
             }),
             success: (data, textStatus, jqXHR) => {
 
@@ -451,41 +450,58 @@ function cargarPartida(idPartida){
         },
            
         success: (data, textStatus, jqXHR) => {
-    
-            ocultar();
 
-            //Pinta info partida
-            pintaInfoMesa(data.partida.nJugadores, data.partida.id);
+            //Si se gana la partida
+            if(data.partida.ganada){
+
+                ocultar();
+
+                //Activa la pestaña seleccionada
+                let pestaña = document.getElementById(data.partida.id);
+                $(pestaña).children().addClass("active");
+
+                $("#ganador p").text(data.partida.mesa.jugadorAnterior + " ha ganado la partida!!");
+
+                $("#ganador").show();
+                $("#sesion").show();
+                $("#menu").show();
+
+            }else{
+
+                ocultar();
+
+                //Pinta info partida
+                pintaInfoMesa(data.partida.nJugadores, data.partida.id);
             
-            //Pinta info jugadores
-            pintaInfoJugadores(data.partida.jugador);
+                //Pinta info jugadores
+                pintaInfoJugadores(data.partida.jugador);
 
-            //Pinta las cartas del jugador
-            pintaCartasMano(data.partida.jugador, login);
+                //Pinta las cartas del jugador
+                pintaCartasMano(data.partida.jugador, login);
             
-            //Pinta las cartas de la mesa. Si no hay cartas en la mesa y es tu turno te muestra el selector del palo
-            pintaCartasMesa(data.partida.mesa.numeroJugado, data.partida.turno, data.partida.mesa.nCartasMesa);
+                //Pinta las cartas de la mesa. Si no hay cartas en la mesa y es tu turno te muestra el selector del palo
+                pintaCartasMesa(data.partida.mesa.numeroJugado, data.partida.turno, data.partida.mesa.nCartasMesa);
             
-            //Pinta el turno actual
-            pintaTurno(data.partida.turno);
+                //Pinta el turno actual
+                pintaTurno(data.partida.turno);
 
-            //Pinta las opciones de juego
-            pintaOpcionesJuego(data.partida.turno);
+                //Pinta las opciones de juego
+                pintaOpcionesJuego(data.partida.turno);
 
-            //Pinta la ultima jugada
-            pintaUltimaJugada(data.partida.mesa.nCartasMesa);
+                //Pinta la ultima jugada
+                pintaUltimaJugada(data.partida.mesa.mensaje);
+                
+                //Activa la pestaña seleccionada
+                let pestaña = document.getElementById(data.partida.id);
+                $(pestaña).children().addClass("active");
+
+                //Pinta nombre partida
+                $("#nombrePartidaInfo").text(data.partida.nombre);
             
-            //Activa la pestaña seleccionada
-            let pestaña = document.getElementById(data.partida.id);
-            $(pestaña).children().addClass("active");
-
-            //Pinta nombre partida
-            $("#nombrePartidaInfo").text(data.partida.nombre);
-        
-            $("#sesion").show();
-            $("#menu").show();    
-            $("#partida").show();
-
+                $("#sesion").show();
+                $("#menu").show();    
+                $("#partida").show();
+            }
         },
         error: (jqXHR, textStatus, errorThrown) =>{
     
@@ -582,7 +598,7 @@ function pintaCartasMano(arrayJugadores, nombre){
 //Funcion que pinta las cartas de la mesa, si es tu turno y no hay cartas en la mesa muestra el selector de palo
 function pintaCartasMesa(numeroJugado, turno, nCartasMesa){
 
-    if(turno === login && numeroJugado === 0){
+    if(turno === login && numeroJugado === ""){
 
         $("#seleccionarPalo").show();
     }
@@ -610,15 +626,10 @@ function pintarMesa(numeroJugado){
 }
 
 //Funcion que pinta la jugada del turno anterior
-function pintaUltimaJugada(nCartasMesa){
+function pintaUltimaJugada(mensaje){
 
-    if(nCartasMesa === 0){
+    $("#jugadaAnterior").text(mensaje).show();
 
-        $("#jugadaAnterior").text("Aun no se han jugado cartas").show();
-    }else{
-
-        $("#jugadaAnterior").text(jugadaAnterior).show();
-    }
 }
 
 //Funcion que pinta las opciones de juego si es tu turno
@@ -709,6 +720,7 @@ function ocultar(){
     $("#turno").hide();
     $("#seleccionarPalo").hide();
     $("#jugadaAnterior").hide();
+    $("#ganador").hide();
     borrarmsg();
     $("a.active").removeClass("active");
     $("li.active").removeClass("active show");
