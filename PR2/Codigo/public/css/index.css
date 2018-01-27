@@ -36,3 +36,8 @@
 
     color: white;
 }
+
+.historial {
+    height:250px;
+    overflow-y: scroll;
+  }

@@ -653,7 +653,7 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
 
                 //Actualizar ultima jugada
                 array.splice(array.indexOf("jugadaAnterior") + 1, 1, vCartas.length);
-                array.splice(array.indexOf("jugadaAnterior") + 2, 0, nombreUsuario + " dice que ha colocado " + vCartas.length + " " + array[array.indexOf("palo") + 1] + "'s");
+                array.splice(array.indexOf("jugadaAnterior") + 2, 1, nombreUsuario + " dice que ha colocado " + vCartas.length + " " + array[array.indexOf("palo") + 1] + "'s");
 
                 //Pasar el array a string
                 let partida = array.toString();
@@ -712,11 +712,12 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
                 palo = array[array.indexOf("palo") + 1];
 
                 //Eliminamos las cartas de la mesa
-                let i = array.indexOf("mesa");
+                let i = array.indexOf("mesa") + 1;
 
-                while(array[i + 1] !== "palo" && array[i + 1] !== "null"){
+                while(array[i] !== "palo" && array[i] !== "null"){
 
-                    vCartas.push(array.splice(i + 1, 1));
+                    vCartas.push(array[i]);
+                    array.splice(i, 1);
                     i++;
                 }
 
@@ -747,20 +748,25 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
                         mentiroso = false;
                     }else{
                         mentiroso = true;
+                        i = nJugadaAnterior;
                     }
                 }
+
+                console.log(vCartas);
 
                 //Si mintio le añadimos al jugador anterior todas las cartas, si no se las añadimos al jugador actual
                 if(mentiroso){
 
                     vCartas.forEach(elem => {
                 
+                        console.log(elem);
                         array.splice(array.indexOf(juadorAnterior) + 2, 0, elem)
                     });
                 }else{
 
                     vCartas.forEach(elem => {
                 
+                        console.log(elem);
                         array.splice(array.indexOf(nombreUsuario) + 1, 0, elem)
                     });
                 }

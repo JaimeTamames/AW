@@ -266,6 +266,7 @@ function jugarCartas() {
     });
 
     let palo = null;
+    let aux = false;
 
     //Obtenemos el palo seleccionado
     if(nCartasMesa === 0){
@@ -273,7 +274,7 @@ function jugarCartas() {
         palo = $("#paloInput :selected").text();
 
         //Controla si se ha elegido un palo
-        if(palo === "Elige palo"){
+        if(palo === "Elige palo" && aux){
 
             borrarmsg();
             $("#partida").after(pintarError("No hay palo seleccionado"));
@@ -596,7 +597,7 @@ function pintarCarta(carta){
 //Funcion que muestra las cartas de la mesa
 function pintarMesa(palo){
 
-    let result = $("<span>").addClass("d-inline-block bg-warning cartaMesa m-1 p-1");
+    let result = $("<span>").addClass("d-inline-block cartaMesa bg-warning m-1 p-1");
     result.append($("<h4>").text(palo));
     return result;
 }
