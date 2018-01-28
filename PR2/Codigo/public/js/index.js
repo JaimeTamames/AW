@@ -720,9 +720,6 @@ function vaciarInfoPartida(){
 
     $("#nombreJugadorInfo4").empty();
     $("#nCartasJugadorInfo4").empty();
-
-    //Historial
-    $("#historial tbody").empty();
 }
 
 //Funcion que borra los mensajes
@@ -745,6 +742,7 @@ function ocultar(){
     $("#seleccionarPalo").hide();
     $("#jugadaAnterior").hide();
     $("#ganador").hide();
+    $("#historial tbody").empty();
     borrarmsg();
     $("a.active").removeClass("active");
     $("li.active").removeClass("active show");

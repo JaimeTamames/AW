@@ -210,23 +210,27 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
                 //Para mandar al DAO
                 let estado = JSON.stringify(partida);
 
-                //Guadar estado de partida
-                daoP.guardarPartida(partida.id, estado, (err, callback) => {
+                //Añadimos al historial de la partida
+                let mensaje = "@" + nombreUsuario + " ha creado la partida " + nombrePartida;
+
+                daoP.añadeHistorial(partida.id, mensaje, (err, callback) => {
 
                     if (err) {
-
                         console.log(err);
                         response.end();
-
-                    } else {
-
-                        //Añadimos al historial de la partida
-                        let mensaje = "@" + nombreUsuario + " ha creado la partida " + nombrePartida;
-                        
-                        añadeHistorial(partida.id, mensaje);
-
-                        response.status(201);
-                        response.json({"partida": partida});
+                    }else{
+                        //Guadar estado de partida
+                        daoP.guardarPartida(partida.id, estado, (err, callback) => {
+            
+                            if (err) {
+                                
+                                console.log(err);
+                            } else {                      
+            
+                                response.status(201);
+                                response.json({"partida": partida});
+                            }
+                        });
                     }
                 });
 
@@ -309,12 +313,6 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                                         mano: [],
                                     };
 
-                                    //Añadimos al historial de la partida
-                                    let mensaje = "@" + nombreUsuario + " se ha unido a la partida";
-                        
-                                    añadeHistorial(partida.id, mensaje);
-
-
                                     partida.jugador.push(usuario);
                                     partida.nJugadores++;
 
@@ -327,18 +325,28 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                                     //Para mandar al DAO
                                     let estado = JSON.stringify(partida);
 
-                                    //Guadar estado de partida
-                                    daoP.guardarPartida(idPartida, estado, (err, callback) => {
+                                    //Añadimos al historial de la partida
+                                    let mensaje = "@" + nombreUsuario + " se ha unido a la partida";
+
+                                    daoP.añadeHistorial(idPartida, mensaje, (err, callback) => {
 
                                         if (err) {
-
                                             console.log(err);
                                             response.end();
-
-                                        } else {
-
-                                            response.status(200);
-                                            response.json({"nombre": partida.nombre, "id": partida.id});
+                                        }else{
+                                            //Guadar estado de partida
+                                            daoP.guardarPartida(idPartida, estado, (err, callback) => {
+                                
+                                                if (err) {
+                                                    
+                                                    console.log(err);
+                                                    response.end();
+                                                } else {                      
+                                
+                                                    response.status(200);
+                                                    response.json({"nombre": partida.nombre, "id": partida.id});
+                                                }
+                                            });
                                         }
                                     });
 
@@ -452,7 +460,7 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                     } else {   
                         
                         response.status(200);
-                        response.json({partida: partida, historial: callback});
+                        response.json({partida: partida, historial: callback.reverse()});
                     }
                 }); 
             }
@@ -489,11 +497,6 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                 //Reinicializar mentiroso por si se marco anteriormente
                 partida.mentiroso = false;
                 partida.mesa.valorCartasMentiroso = [];
-
-                //Añadimos al historial de la partida
-                let mensaje = "@" + nombreUsuario + " ha colocado " + vCartas.length + " " + partida.mesa.numeroJugado + "'s";
-                        
-                añadeHistorial(partida.id, mensaje);
          
                 let indice = -1;
 
@@ -521,19 +524,39 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                     partida.jugador[indice].nCartas--;
                 }
 
+                //Actualiza numeroJugado
+                if(numeroJugado !== "noCambia"){
+
+                    partida.mesa.numeroJugado = numeroJugado;
+                }
+
+                //Añadimos al historial de la partida
+                let mensaje = "@" + nombreUsuario + " ha colocado " + vCartas.length + " " + partida.mesa.numeroJugado + "'s";       
+                daoP.añadeHistorial(partida.id, mensaje, (err, callback) => {
+
+                    if (err) {
+                        console.log(err);
+                        response.end();
+                    }else{
+                        
+                    }
+                });
+
                 if(partida.jugador[indice].nCartas === 0){
 
                     partida.ganada = true;
 
                     //Añadimos al historial de la partida
                     let mensaje = "@" + nombreUsuario + " ha ganado la partida!";    
-                    añadeHistorial(partida.id, mensaje);
-                }
+                    daoP.añadeHistorial(partida.id, mensaje, (err, callback) => {
 
-                //Introduce numeroJugado
-                if(numeroJugado !== "noCambia"){
-
-                    partida.mesa.numeroJugado = numeroJugado;
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        }else{
+                            
+                        }
+                    });
                 }
 
                 //Pasamos el turno
@@ -627,8 +650,16 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
                     });
 
                     //Añadimos al historial de la partida
-                    let mensaje = "@" + nombreUsuario + " ha destapado al mentiroso de " + partida.mesa.jugadorAnterior + ", no echo "  + vCartas.length + " " + partida.mesa.numeroJugado + "'s";   
-                    añadeHistorial(partida.id, mensaje);
+                    let mensaje = "@" + nombreUsuario + " ha destapado al mentiroso de " + partida.mesa.jugadorAnterior + ", no echo "  + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s";   
+                    daoP.añadeHistorial(partida.id, mensaje, (err, callback) => {
+
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        }else{
+                            
+                        }
+                    });
 
                     partida.mesa.mensaje += partida.mesa.jugadorAnterior + " es un mentiroso, no echo " + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s!!";
                     
@@ -642,8 +673,16 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
                     });
 
                     //Añadimos al historial de la partida
-                    let mensaje = "@" + nombreUsuario + " ha destapado al honrado de " + partida.mesa.jugadorAnterior + ", si echo "  + vCartas.length + " " + partida.mesa.numeroJugado + "'s";   
-                    añadeHistorial(partida.id, mensaje);
+                    let mensaje = "@" + nombreUsuario + " ha destapado al honrado de " + partida.mesa.jugadorAnterior + ", si echo "  + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s";   
+                    daoP.añadeHistorial(partida.id, mensaje, (err, callback) => {
+
+                        if (err) {
+                            console.log(err);
+                            response.end();
+                        }else{
+                            
+                        }
+                    });
 
                     partida.mesa.mensaje += partida.mesa.jugadorAnterior + " no es un mentiroso, si echo " + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s!!";
                     
@@ -714,22 +753,28 @@ function comenzarPartida(partida){
     //Se reparten las cartas aleatoriamente
     partida.jugador = repartirCartas(partida.jugador);
 
-    partida.mesa.mensaje = "Aun no se han jugado cartas, esperando primera mano...";
-
-    //Añadimos al historial de la partida
-    let mensaje = "@Server la partida ha comenzado";            
-    añadeHistorial(partida.id, mensaje);
+    partida.mesa.mensaje = "Aun no se han jugado cartas, esperando primera mano...";           
 
     let estado = JSON.stringify(partida);
-                
-    //Guadar estado de partida
-    daoP.guardarPartida(partida.id, estado, (err, callback) => {
+
+    //Añadimos al historial de la partida
+    let mensaje = "@Server la partida ha comenzado"; 
+
+    daoP.añadeHistorial(partida.id, mensaje, (err, callback) => {
 
         if (err) {
-            
             console.log(err);
-        } else {                      
+        }else{
+            //Guadar estado de partida
+            daoP.guardarPartida(partida.id, estado, (err, callback) => {
 
+                if (err) {
+                    
+                    console.log(err);
+                } else {                      
+
+                }
+            });
         }
     });
 }
@@ -762,32 +807,6 @@ function repartirCartas(jugador){
     }
 
     return jugador;
-}
-
-function añadeHistorial(idPartida, mensaje){
-
-    daoP.añadeHistorial(idPartida, mensaje, (err, callback) => {
-
-        if (err) {
-            console.log(err);
-        }else{
-
-        }
-    });
-}
-
-function buscarHistorial(idPartida){
-
-    daoP.buscarHistorial(idPartida, (err, callback) => {
-
-        if (err) {
-
-            console.log(err);
-        } else {
-            
-            return callback;
-        }
-    });
 }
 
 //Declaracion del middelware para las paginas no encontradas
