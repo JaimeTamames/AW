@@ -16,7 +16,17 @@ const MySQLStore = express_mysql_session(express_session);
 var passport = require("passport");
 var passportHTTP = require("passport-http");
 
+//HTTPS
+var https = require("https");
+var fs = require("fs");
+var clavePrivada = fs.readFileSync("./certificados/mi_clave.pem");
+var certificado = fs.readFileSync("./certificados/certificado_firmado.crt");
+
 let app = express();
+
+//HTTPS
+var servidor = https.createServer(
+    { key: clavePrivada, cert: certificado }, app);
 
 //Configuracion de la BBDD
 const sessionStore = new MySQLStore({
@@ -210,7 +220,12 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
                         console.log(err);
                         response.end();
 
-                    } else {                      
+                    } else {
+
+                        //Añadimos al historial de la partida
+                        let mensaje = "@" + nombreUsuario + " ha creado la partida " + nombrePartida;
+                        
+                        añadeHistorial(partida.id, mensaje);
 
                         response.status(201);
                         response.json({"partida": partida});
@@ -296,6 +311,11 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                                         mano: [],
                                     };
 
+                                    //Añadimos al historial de la partida
+                                    let mensaje = "@" + nombreUsuario + " se ha unido a la partida";
+                        
+                                    añadeHistorial(partida.id, mensaje);
+
 
                                     partida.jugador.push(usuario);
                                     partida.nJugadores++;
@@ -317,7 +337,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
                                             console.log(err);
                                             response.end();
 
-                                        } else {                      
+                                        } else {
 
                                             response.status(200);
                                             response.json({"nombre": partida.nombre, "id": partida.id});
@@ -424,8 +444,12 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                     }
                 });
 
+                //Buscamos el historial
+                let historial = buscarHistorial(idPartida);
+
                 response.status(200);
-                response.json({partida: partida});
+                response.json({partida: partida, historial: historial});
+                
             }
         }
     }); 
@@ -453,15 +477,18 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                 response.end("Este identificador no corresponde a ninguna partida");
 
             } else {
-
+                
+                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno, actualizar ultima jugada  
                 let partida = JSON.parse(estadoPartida);
 
                 //Reinicializar mentiroso por si se marco anteriormente
-
                 partida.mentiroso = false;
                 partida.mesa.valorCartasMentiroso = [];
 
-                //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno, actualizar ultima jugada   
+                //Añadimos al historial de la partida
+                let mensaje = "@" + nombreUsuario + " ha colocado " + vCartas.length + " " + partida.mesa.numeroJugado + "'s";
+                        
+                añadeHistorial(partida.id, mensaje);
          
                 let indice = -1;
 
@@ -492,6 +519,10 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
                 if(partida.jugador[indice].nCartas === 0){
 
                     partida.ganada = true;
+
+                    //Añadimos al historial de la partida
+                    let mensaje = "@" + nombreUsuario + " ha ganado la partida!";    
+                    añadeHistorial(partida.id, mensaje);
                 }
 
                 //Introduce numeroJugado
@@ -590,6 +621,10 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
                         }
                     });
 
+                    //Añadimos al historial de la partida
+                    let mensaje = "@" + nombreUsuario + " ha destapado al mentiroso de " + partida.mesa.jugadorAnterior + ", no echo "  + vCartas.length + " " + partida.mesa.numeroJugado + "'s";   
+                    añadeHistorial(partida.id, mensaje);
+
                     partida.mesa.mensaje += partida.mesa.jugadorAnterior + " es un mentiroso, no echo " + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s!!";
                     
                 }else{
@@ -600,6 +635,10 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
                             indice = index;
                         }
                     });
+
+                    //Añadimos al historial de la partida
+                    let mensaje = "@" + nombreUsuario + " ha destapado al honrado de " + partida.mesa.jugadorAnterior + ", si echo "  + vCartas.length + " " + partida.mesa.numeroJugado + "'s";   
+                    añadeHistorial(partida.id, mensaje);
 
                     partida.mesa.mensaje += partida.mesa.jugadorAnterior + " no es un mentiroso, si echo " + partida.mesa.ncartasjugadorAnterior + " " + partida.mesa.numeroJugado + "'s!!";
                     
@@ -672,6 +711,10 @@ function comenzarPartida(partida){
 
     partida.mesa.mensaje = "Aun no se han jugado cartas, esperando primera mano...";
 
+    //Añadimos al historial de la partida
+    let mensaje = "@Server la partida ha comenzado";            
+    añadeHistorial(partida.id, mensaje);
+
     let estado = JSON.stringify(partida);
                 
     //Guadar estado de partida
@@ -716,10 +759,41 @@ function repartirCartas(jugador){
     return jugador;
 }
 
+function añadeHistorial(idPartida, mensaje){
+
+    daoP.añadeHistorial(idPartida, mensaje, (err, callback) => {
+
+        if (err) {
+            console.log(err);
+        }else{
+
+        }
+    });
+}
+
+function buscarHistorial(idPartida){
+
+    daoP.buscarHistorial(idPartida, (err, callback) => {
+
+        if (err) {
+
+            console.log(err);
+        } else {
+            
+            return callback;
+        }
+    });
+}
+
 //Declaracion del middelware para las paginas no encontradas
 app.use((request, response, next) => {
     response.status(404);
     response.end("Not found: " + request.url);
+});
+
+//Servidor https
+servidor.listen(5555, function(err) {
+    console.log("Escuchando en puerto 5555");
 });
 
 //Estado del servidor

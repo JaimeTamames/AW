@@ -3,6 +3,7 @@
 
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
     <title>Juego del mentiroso</title>
 
     <!-- Required meta tags -->
@@ -18,14 +19,6 @@
 </head>
 
 <body>
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="jquery/jquery-3.1.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="js/bootstrap.min.js"></script>
-
-    <script src="js/index.js"></script>
 
     <!-- Header -->
 
@@ -162,7 +155,7 @@
                                 </div>
                                 <div class="col-3"  id="seleccionarPalo" >
                                     <select class="form-control form-control-sm hidden" id="paloInput">
-                                        <option selected>Elige palo</option>
+                                        <option selected>Elige número</option>
                                         <option value="A">A</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -190,11 +183,6 @@
                             </span>
                         </div>
                     </div>
-
-                    <!-- Elegir Palo -->
-
-                
-
                 </div>
 
                 <!-- Tabla jugadores e historial -->
@@ -238,29 +226,13 @@
                             <h4>Historial</h4>
                         </div>
                         <div class="card-block">
-                            <table class="table table mb-0" id="historial">
+                            <table class="table table mb-0 scrollspy" id="historial">
                                 <thead>
                                     <tr>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td id="1">@antonio: Se ha unido a la partida</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td id="2">@jaime: Se ha unido a la partida</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td id="3">@adolfo: Se ha unido a la partida</td>
-
-                                    </tr>
-                                    <tr>
-                                        <td id="4">@pedro: Se ha unido a la partida</td>
-
-                                    </tr>
                                 </tbody>
                             </table>
                         </div>   
@@ -273,6 +245,14 @@
         <h4 class="alert-heading">¡Enhorabuena!</h4>
         <p></p>
     </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="jquery/jquery-3.1.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script src="js/index.js"></script>
 
 </body>
 

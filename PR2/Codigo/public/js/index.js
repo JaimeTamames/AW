@@ -50,8 +50,8 @@ function acceder(){
 
                 cadenaBase64 = btoa(usuario + ":" + contraseña);
 
-                $("#nombreUsuario").prop("value", "");
-                $("#contraseñaUsuario").prop("value", "");
+                $("#nombreUsuario").val("");
+                $("#contraseñaUsuario").val("");
 
                 ocultar();
 
@@ -154,7 +154,7 @@ function crearPartida(){
                 borrarmsg();
                 $("#unirsePartida").after(pintarInfo("Partida " + data.partida.nombre + " creada correctamente!"));
             
-                $("#nombreNuevaPartida").prop("value", "");
+                $("#nombreNuevaPartida").val("");
                 $("#misPartidas").after(pintarPestañas(data.partida));
             },
             error: (jqXHR, textStatus, errorThrown) =>{
@@ -194,7 +194,7 @@ function unirsePartida(){
                 borrarmsg();
                 $("#unirsePartida").after(pintarInfo("Te has unido a la partida con id " + data.id));
 
-                $("#idUnirsePartida").prop("value", "");
+                $("#idUnirsePartida").val("");
                 $("#misPartidas").after(pintarPestañas(data));
 
             },
@@ -469,6 +469,12 @@ function cargarPartida(idPartida){
 
                 ocultar();
 
+                //Pinta historial
+                data.historial.forEach(elem => {
+                    
+                    $("#historial tbody").append(pintaHistorial(elem));
+                });
+
                 //Pinta info partida
                 pintaInfoMesa(data.partida.nJugadores, data.partida.id);
             
@@ -490,15 +496,11 @@ function cargarPartida(idPartida){
                 //Pinta la ultima jugada
                 if(data.partida.mentiroso){
 
-                    //console.log(data);
-
                     for(let i = 0; i < data.partida.mesa.valorCartasMentiroso.length; i++){
 
-                        console.log(data.partida.mesa.valorCartasMentiroso[i]);
                         $("#cartas-mesa").append(pintarCarta(data.partida.mesa.valorCartasMentiroso[i]));
 
                     };                    
-
                 }
 
                 pintaUltimaJugada(data.partida.mesa.mensaje);
@@ -654,6 +656,12 @@ function pintaOpcionesJuego(turno){
     }
 }
 
+function pintaHistorial(mensaje){
+
+    let result = $("<tr>").append($("<td>").text(mensaje));
+    return result;
+}
+
 //Funcion que muestra un error
 function pintarError(mensaje) {
 
@@ -712,6 +720,9 @@ function vaciarInfoPartida(){
 
     $("#nombreJugadorInfo4").empty();
     $("#nCartasJugadorInfo4").empty();
+
+    //Historial
+    $("#historial tbody").empty();
 }
 
 //Funcion que borra los mensajes
