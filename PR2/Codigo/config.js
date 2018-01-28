@@ -8,7 +8,11 @@ module.exports = {
         dbUser: "root",
         dbPassword: "awaw",
         /* Puerto de escucha */
-        port: 3000
+        port: 5555
+    },
+    certificados: {
+        certificate: "./certificados/certificado_firmado.crt",
+        private_key: "./certificados/mi_clave.pem"
     }
 };
 

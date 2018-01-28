@@ -19,13 +19,13 @@ var passportHTTP = require("passport-http");
 //HTTPS
 var https = require("https");
 var fs = require("fs");
-var clavePrivada = fs.readFileSync("./certificados/mi_clave.pem");
-var certificado = fs.readFileSync("./certificados/certificado_firmado.crt");
+var clavePrivada = fs.readFileSync(config.certificados.private_key);
+var certificado = fs.readFileSync(config.certificados.certificate);
 
 let app = express();
 
 //HTTPS
-var servidor = https.createServer(
+var https = https.createServer(
     { key: clavePrivada, cert: certificado }, app);
 
 //Configuracion de la BBDD
@@ -816,12 +816,7 @@ app.use((request, response, next) => {
 });
 
 //Servidor https
-servidor.listen(5555, function(err) {
-    console.log("Escuchando en puerto 5555");
-});
-
-//Estado del servidor
-app.listen(config.mysqlConfig.port, function (err) {
+https.listen(config.mysqlConfig.port, function(err) {
     if (err) {
         console.log("No se ha podido iniciar el servidor.");
         console.log(err);
