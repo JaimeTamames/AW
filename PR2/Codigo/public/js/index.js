@@ -207,7 +207,7 @@ function unirsePartida(){
                     borrarmsg();
                     $("#unirsePartida").after(pintarError("La partida está llena"));
                 }
-                if(jqXHR.status === 403){
+                if(jqXHR.status === 404){
                     borrarmsg();
                     $("#unirsePartida").after(pintarError("La partida no existe"));
                 }
@@ -344,7 +344,6 @@ function mentiroso(){
 
     let idPartida = $("a.active").parent().prop("id");
 
-    alert("Entro en mentiroso");
    
     $.ajax({
         type: 'POST',
@@ -489,7 +488,21 @@ function cargarPartida(idPartida){
                 pintaOpcionesJuego(data.partida.turno);
 
                 //Pinta la ultima jugada
+                if(data.partida.mentiroso){
+
+                    //console.log(data);
+
+                    for(let i = 0; i < data.partida.mesa.valorCartasMentiroso.length; i++){
+
+                        console.log(data.partida.mesa.valorCartasMentiroso[i]);
+                        $("#cartas-mesa").append(pintarCarta(data.partida.mesa.valorCartasMentiroso[i]));
+
+                    };                    
+
+                }
+
                 pintaUltimaJugada(data.partida.mesa.mensaje);
+                
                 
                 //Activa la pestaña seleccionada
                 let pestaña = document.getElementById(data.partida.id);

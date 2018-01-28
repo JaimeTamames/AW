@@ -171,9 +171,11 @@ app.post("/crearPartida", passport.authenticate('basic', { failureRedirect: '/',
         nombre: nombrePartida,
         id: 0,
         ganada: false,
+        mentiroso: false,
         turno: "",
         mesa: {
             valorCartas: [],
+            valorCartasMentiroso: [],
             nCartasMesa: 0,
             jugadorAnterior: "",
             ncartasjugadorAnterior: 0,
@@ -241,7 +243,7 @@ app.post("/unirsePartida", passport.authenticate('basic', { failureRedirect: '/'
 
             if (estadoPartida === undefined) {
 
-                response.status(403);
+                response.status(404);
                 response.end("Este identificador no corresponde con ninguna partida");
 
             } else {
@@ -454,6 +456,11 @@ app.post("/jugarCartas", passport.authenticate('basic', { failureRedirect: '/', 
 
                 let partida = JSON.parse(estadoPartida);
 
+                //Reinicializar mentiroso por si se marco anteriormente
+
+                partida.mentiroso = false;
+                partida.mesa.valorCartasMentiroso = [];
+
                 //Buscar las cartas jugadas, quitarselas al jugador, meterlas en la mesa, meter el palo, pasar el turno, actualizar ultima jugada   
          
                 let indice = -1;
@@ -556,6 +563,8 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
 
                 partida.mesa.mensaje = "";
 
+                partida.mentiroso = true;
+
                 //Comprobamos si el jugador anterior mintio o no
                 for(let i = 0; i < partida.mesa.ncartasjugadorAnterior; i++){
                     
@@ -566,7 +575,7 @@ app.post("/mentiroso", passport.authenticate('basic', { failureRedirect: '/', fa
                         mentiroso = true;
                     }
 
-                    partida.mesa.mensaje +=  partida.mesa.valorCartas[i] + " ";
+                    partida.mesa.valorCartasMentiroso.push(partida.mesa.valorCartas[i]);
                 }
 
                 let indice = -1
