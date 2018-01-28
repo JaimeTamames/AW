@@ -658,7 +658,7 @@ function pintaOpcionesJuego(turno){
 
 function pintaHistorial(mensaje){
 
-    let result = $("<tr>").append($("<td>").text(mensaje));
+    let result = $("<tr>").append($("<td>").text(mensaje.evento));
     return result;
 }
 

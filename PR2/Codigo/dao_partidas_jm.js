@@ -280,7 +280,7 @@ class DAOPartidas {
     }
 
     //Busca el historial de una partida
-    buscarHistorial(idPartida, estado, callback) {
+    buscarHistorial(idPartida, callback) {
 
         this.pool.getConnection((err, connection) => {
             if (err) {

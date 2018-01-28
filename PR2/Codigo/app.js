@@ -61,13 +61,11 @@ passport.use(new passportHTTP.BasicStrategy(
             if (err) {
     
                 console.log(err);
-                response.end();
             } else {
     
                 if (!ok) {
 
                     callback(null, false);
-    
                 } else {
     
                     callback(null, { userId: user });
@@ -445,11 +443,18 @@ app.get("/estadoPartida", passport.authenticate('basic', { failureRedirect: '/',
                 });
 
                 //Buscamos el historial
-                let historial = buscarHistorial(idPartida);
+                daoP.buscarHistorial(idPartida, (err, callback) => {
 
-                response.status(200);
-                response.json({partida: partida, historial: historial});
-                
+                    if (err) {
+            
+                        console.log(err);
+                        response.end();
+                    } else {   
+                        
+                        response.status(200);
+                        response.json({partida: partida, historial: callback});
+                    }
+                }); 
             }
         }
     }); 
