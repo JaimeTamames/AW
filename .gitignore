@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # https://git-scm.com/docs/gitignore
 # https://help.github.com/articles/ignoring-files
 # Example.gitignore files : https://github.com/github/gitignore
@@ -7,51 +6,4 @@ _notes/
 /node_modules/
 EJ2/Entrega2print.css
 .DS_Store
-.DS_Store
-.DS_Store
-EJ3/.DS_Store
 /EJ6/GestorTareas/nbproject/private/
-.DS_Store
-EJ3/.DS_Store
-=======
-# https://git-scm.com/docs/gitignore
-# https://help.github.com/articles/ignoring-files
-# Example.gitignore files : https://github.com/github/gitignore
-_notes/
-/bower_components/
-/node_modules/
-EJ2/Entrega2print.css
-.DS_Store
-.DS_Store
-.DS_Store
-EJ3/.DS_Store
-/EJ6/GestorTareas/nbproject/private/
->>>>>>> c19ec8faf3ffd8edbe5c61b61ae17e9aadb3b827
-.DS_Store
-/EJ7/Entregable7Plantilla/nbproject/private/
-/EJ7/GestorTareas/nbproject/private/
-.DS_Store
-EJ7/GestorTareas/main.js
-.DS_Store
-PR1/.DS_Store
-/PR1/nbproject/private/
-.DS_Store
-PR1/.DS_Store
-PR1/RecursosGraficosP1/.DS_Store
-PR1/nbproject/project.properties
-PR1/nbproject/project.xml
-PR1/nbproject/project.properties
-.DS_Store
-.DS_Store
-.DS_Store
-PR1/.DS_Store
-PR1/.DS_Store
-.DS_Store
-PR1/.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
-.DS_Store
-PR1/.DS_Store
-.DS_Store
